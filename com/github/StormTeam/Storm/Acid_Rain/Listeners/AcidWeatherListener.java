@@ -14,19 +14,19 @@ import com.github.StormTeam.Storm.Acid_Rain.Events.AcidRainEvent;
 import com.github.StormTeam.Storm.Acid_Rain.Tasks.DamagerTask;
 import com.github.StormTeam.Storm.Acid_Rain.Tasks.DissolverTask;
 
-public class AcidListener implements Listener {
+public class AcidWeatherListener implements Listener {
 
     private static final Random rand = new Random();
     public static HashMap<World, DissolverTask> dissolverMap = new HashMap<World, DissolverTask>();
     public static HashMap<World, DamagerTask> damagerMap = new HashMap<World, DamagerTask>();
     private Storm storm;
 
-    public AcidListener(Storm storm) {
+    public AcidWeatherListener(Storm storm) {
         this.storm = storm;
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void acidicWeatherListener(WeatherChangeEvent event) {
+    public void onWeatherChange(WeatherChangeEvent event) {
         if (event.isCancelled()) {
             return;
         }
@@ -54,7 +54,7 @@ public class AcidListener implements Listener {
 
                 for (Player p : affectedWorld.getPlayers()) {
 
-                    Storm.util.message(p, glob.Acid__Rain_Message__On__Acid__Rain__Start);
+                    Storm.util.message(p, glob.Acid__Rain_Message_On__Acid__Rain__Start);
                 }
 
             } else {

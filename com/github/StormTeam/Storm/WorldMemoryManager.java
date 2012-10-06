@@ -1,7 +1,7 @@
 package com.github.StormTeam.Storm;
 
 import com.github.StormTeam.Storm.Acid_Rain.AcidRain;
-import com.github.StormTeam.Storm.Acid_Rain.Listeners.AcidListener;
+import com.github.StormTeam.Storm.Acid_Rain.Listeners.AcidWeatherListener;
 import com.github.StormTeam.Storm.Blizzard.Blizzard;
 import com.github.StormTeam.Storm.Blizzard.Listeners.BlizzardListeners;
 import org.bukkit.event.EventHandler;
@@ -43,11 +43,11 @@ public class WorldMemoryManager implements Listener {
             wConfigs.remove(e.getWorld());
         }
         if (AcidRain.acidicWorlds.contains(world)) {
-            if (AcidListener.damagerMap.containsKey(world)) {
-                AcidListener.damagerMap.get(world).stop();
+            if (AcidWeatherListener.damagerMap.containsKey(world)) {
+                AcidWeatherListener.damagerMap.get(world).stop();
             }
-            if (AcidListener.dissolverMap.containsKey(world)) {
-                AcidListener.dissolverMap.get(world).stop();
+            if (AcidWeatherListener.dissolverMap.containsKey(world)) {
+                AcidWeatherListener.dissolverMap.get(world).stop();
             }
             AcidRain.acidicWorlds.remove(world);
         }

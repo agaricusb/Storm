@@ -1,18 +1,21 @@
 package com.github.StormTeam.Storm.Blizzard;
 
-import com.github.StormTeam.Storm.Blizzard.Events.BlizzardEvent;
 import java.util.ArrayList;
 
 import org.bukkit.World;
 import org.bukkit.command.CommandExecutor;
 
-import com.github.StormTeam.Storm.Storm;
-import com.github.StormTeam.Storm.Blizzard.Listeners.BlizzardListeners;
-import com.github.StormTeam.Storm.Blizzard.Tasks.PlayerTask;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import com.github.StormTeam.Storm.Storm;
+import com.github.StormTeam.Storm.Blizzard.Listeners.BlizzardListeners;
+import com.github.StormTeam.Storm.Blizzard.Tasks.PlayerTask;
+import com.github.StormTeam.Storm.Blizzard.Events.BlizzardEvent;
+import org.apache.commons.lang.ArrayUtils;
+import org.bukkit.ChatColor;
 
 public class Blizzard {
 
@@ -23,20 +26,24 @@ public class Blizzard {
     public static void load(Storm ztorm) {
         storm = ztorm;
         Storm.pm.registerEvents(new BlizzardListeners(storm), storm);
-        ModSnow.mod(true);
+        ModSnow.mod();
         exec = new CommandExecutor() {
             @Override
             public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
                 if ((sender instanceof Player)) {
                     blizzard(((Player) sender).getWorld());
                     return true;
-                } else {                   
-                        World world = Bukkit.getServer().getWorld(args[0]);
-                        if (world != null) {
-                            world.setStorm(false); //Cancels other events
-                            blizzard(world);
-                            return true;
-                        }                    
+                } else {
+                    if(ArrayUtils.isEmpty(args)) {
+                        sender.sendMessage(ChatColor.RED + "You must supply a world when running this command from the console!"); 
+                        return true;
+                    }
+                    World world = Bukkit.getServer().getWorld(args[0]);
+                    if (world != null) {
+                        world.setStorm(false); //Cancels other events
+                        blizzard(world);
+                        return true;
+                    }
                 }
                 return false;
             }
@@ -46,7 +53,7 @@ public class Blizzard {
     }
 
     public static void unload() {
-        ModSnow.mod(false);
+        ModSnow.reset();
     }
 
     public static void blizzard(World world) {
@@ -60,10 +67,9 @@ public class Blizzard {
             PlayerTask dam = new PlayerTask(storm, world);
             dam.run();
             BlizzardListeners.damagerMap.put(world, dam);
-            Storm.util.broadcast(Storm.wConfigs.get(world).Blizzard_Message__On__Blizzard__Start);
+            Storm.util.broadcast(Storm.wConfigs.get(world).Blizzard_Message_On__Blizzard__Start);
             Storm.util.setStormNoEvent(world, true);
             Storm.pm.callEvent(new BlizzardEvent(world, true));
         }
-
     }
 }

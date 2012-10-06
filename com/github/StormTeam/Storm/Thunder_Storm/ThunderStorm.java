@@ -13,6 +13,8 @@ import com.github.StormTeam.Storm.Storm;
 import com.github.StormTeam.Storm.Thunder_Storm.Events.ThunderStormEvent;
 import com.github.StormTeam.Storm.Thunder_Storm.Listeners.ThunderListener;
 import com.github.StormTeam.Storm.Thunder_Storm.Tasks.StrikerTask;
+import org.apache.commons.lang.ArrayUtils;
+import org.bukkit.ChatColor;
 
 /**
  * @author Tudor
@@ -33,13 +35,17 @@ public class ThunderStorm {
                 if ((sender instanceof Player)) {
                     thunderstorm(((Player) sender).getWorld());
                     return true;
-                } else {                   
-                        World world = Bukkit.getServer().getWorld(args[0]);
-                        if (world != null) {
-                            world.setStorm(false); //Cancels other events
-                            thunderstorm(world);
-                            return true;
-                        }                    
+                } else {
+                    if (ArrayUtils.isEmpty(args)) {
+                        sender.sendMessage(ChatColor.RED + "You must supply a world when running this command from the console!");
+                        return true;
+                    }
+                    World world = Bukkit.getServer().getWorld(args[0]);
+                    if (world != null) {
+                        world.setStorm(false); //Cancels other events
+                        thunderstorm(world);
+                        return true;
+                    }
                 }
                 return false;
             }
@@ -58,7 +64,7 @@ public class ThunderStorm {
             StrikerTask stik = new StrikerTask(storm, world);
             stik.run();
             ThunderListener.strikerMap.put(world, stik);
-            Storm.util.broadcast(Storm.wConfigs.get(world).Thunder__Storm_Message__On__Thunder__Storm__Start);
+            Storm.util.broadcast(Storm.wConfigs.get(world).Thunder__Storm_Message_On__Thunder__Storm__Start);
             Storm.util.setStormNoEvent(world, true);
             Storm.pm.callEvent(new ThunderStormEvent(world, true));
         }

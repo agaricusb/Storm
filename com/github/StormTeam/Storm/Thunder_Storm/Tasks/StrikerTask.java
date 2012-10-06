@@ -1,22 +1,19 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.github.StormTeam.Storm.Thunder_Storm.Tasks;
 
-/**
- *
- * @author Tudor
- */
+import java.util.ArrayList;
+
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 
 import com.github.StormTeam.Storm.BlockTickSelector;
 import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.Storm;
-import java.util.ArrayList;
-import org.bukkit.block.BlockFace;
+
+/**
+ * @author Tudor
+ */
 
 public class StrikerTask {
 
@@ -31,8 +28,7 @@ public class StrikerTask {
         this.glob = Storm.wConfigs.get(affectedWorld);
         this.affectedWorld = affectedWorld;
         try {
-            ticker = new BlockTickSelector(affectedWorld,
-                    glob.Thunder__Storm_Strike__Chance);
+            ticker = new BlockTickSelector(affectedWorld, glob.Thunder__Storm_Strike__Chance);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -46,25 +42,19 @@ public class StrikerTask {
                 new Runnable() {
                     @Override
                     public void run() {
+                        ArrayList<Block> bloks = new ArrayList<Block>();
 
                         try {
-                            ArrayList<Block> bloks = ticker
-                                    .getRandomTickedBlocks();
-
-                            for (Block b : bloks) {
-
-                                Block tran = b.getRelative(BlockFace.DOWN);
-
-                                if (Storm.biomes.isRainy(tran
-                                        .getBiome())) {
-                                    affectedWorld.strikeLightning(tran.getLocation());
-                                }
-
-                            }
+                            bloks = ticker.getRandomTickedBlocks();
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-
+                        for (Block b : bloks) {
+                            Block tran = b.getRelative(BlockFace.DOWN);
+                            if (Storm.biomes.isRainy(tran.getBiome())) 
+                                affectedWorld.strikeLightning(tran.getLocation());
+                            
+                        }
                     }
                 },
                 0,

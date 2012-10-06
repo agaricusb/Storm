@@ -35,9 +35,9 @@ import org.bukkit.plugin.PluginManager;
 
 public class Storm extends JavaPlugin {
 
-    public static HashMap<World, GlobalVariables> wConfigs = new HashMap<World, GlobalVariables>();  
+    public static HashMap<World, GlobalVariables> wConfigs = new HashMap<World, GlobalVariables>();
     public static BiomeGroups biomes;
-    public static StormUtil util;  
+    public static StormUtil util;
     private Database db;
     public static PluginManager pm;
     public static double version;
@@ -45,34 +45,21 @@ public class Storm extends JavaPlugin {
     @Override
     public void onEnable() {
         try {
+
+            configureCompatibility(getServer().getVersion());
             
             pm = getServer().getPluginManager();
-            
-            String v = getServer().getVersion();
-            if (v.contains("1.2.")) {
-                version = 1.2;
-                getLogger().log(Level.INFO, "Loading with MC 1.2.X compatibility.");
-            } else {
-                if (v.contains("1.3.")) {
-                    version = 1.3;
-                    getLogger().log(Level.INFO, "Loading with MC 1.3.X compatibility.");
-                } else {
-                    getLogger().log(Level.SEVERE, "Unsupported MC version detected!");
-                }
-            }
-
             util = new StormUtil(this);
             biomes = new BiomeGroups();
-            db = Database.Obtain(this, null);           
-         
-            // Make per-world configuration files
-            System.out.println(Bukkit.getWorlds());
+            db = Database.Obtain(this, null);
+
+            // Make per-world configuration files            
             for (World w : Bukkit.getWorlds()) {
                 String world = w.getName();
                 GlobalVariables config = new GlobalVariables(this, world);
                 config.load();
                 wConfigs.put(w, config);
-            }           
+            }
 
             // Stats
             try {
@@ -87,10 +74,10 @@ public class Storm extends JavaPlugin {
             Blizzard.load(this);
             Meteor.load(this);
             ThunderStorm.load(this);
-           
+
             pm.registerEvents(new TextureManager(), this);
             pm.registerEvents(new WorldMemoryManager(this), this);
-             
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -105,5 +92,19 @@ public class Storm extends JavaPlugin {
     public void crashDisable(String crash) {
         util.log(Level.SEVERE, crash + " Storm disabled.");
         this.setEnabled(false);
+    }
+
+    public void configureCompatibility(String v) {        
+        if (v.contains("1.2.")) {
+            version = 1.2;
+            getLogger().log(Level.INFO, "Loading with MC 1.2.X compatibility.");
+        } else {
+            if (v.contains("1.3.")) {
+                version = 1.3;
+                getLogger().log(Level.INFO, "Loading with MC 1.3.X compatibility.");
+            } else {
+                getLogger().log(Level.SEVERE, "Unsupported MC version detected!");
+            }
+        }
     }
 }

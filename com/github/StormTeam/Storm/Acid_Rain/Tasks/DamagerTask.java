@@ -1,5 +1,6 @@
 package com.github.StormTeam.Storm.Acid_Rain.Tasks;
 
+import com.github.StormTeam.Storm.Acid_Rain.AcidRain;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
@@ -26,7 +27,7 @@ public class DamagerTask {
         glob = Storm.wConfigs.get(affectedWorld);
         hunger = new PotionEffect(
                 PotionEffectType.HUNGER,
-                glob.Acid__Rain_Schedule_Damager__Calculation__Intervals__In__Ticks + 60,
+                glob.Acid__Rain_Scheduler_Damager__Calculation__Intervals__In__Ticks + 60,
                 1);
     }
 
@@ -50,13 +51,15 @@ public class DamagerTask {
                                     return;
                                 }
                                 damagee.addPotionEffect(hunger, true);
-                                Storm.util.damagePlayer(damagee, glob.Acid__Rain_Damager_Message__On__Player__Damaged__By__Acid__Rain, glob.Acid__Rain_Player_Damage__From__Exposure);
+                                Storm.util.damagePlayer(damagee, glob.Acid__Rain_Message_On__Player__Damaged__By__Acid__Rain, glob.Acid__Rain_Player_Damage__From__Exposure);
+                                if(damagee.getHealth() <= 0)
+                                    AcidRain.deadPlayers.add(damagee.getName());
                             }
                         }
                     }
                 },
-                glob.Acid__Rain_Schedule_Damager__Calculation__Intervals__In__Ticks,
-                glob.Acid__Rain_Schedule_Damager__Calculation__Intervals__In__Ticks);
+                glob.Acid__Rain_Scheduler_Damager__Calculation__Intervals__In__Ticks,
+                glob.Acid__Rain_Scheduler_Damager__Calculation__Intervals__In__Ticks);
 
     }
 

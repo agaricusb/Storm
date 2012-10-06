@@ -66,7 +66,7 @@ public class ThunderListener
 
                 for (Player p : affectedWorld.getPlayers()) {
 
-                    Storm.util.message(p, glob.Thunder__Storm_Message__On__Thunder__Storm__Start);
+                    Storm.util.message(p, glob.Thunder__Storm_Message_On__Thunder__Storm__Start);
                 }
 
             } else {

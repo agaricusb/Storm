@@ -50,7 +50,7 @@ public class PlayerTask {
                                 }
 
                                 damagee.addPotionEffect(blindness, true);
-                                Storm.util.damagePlayer(damagee, glob.Blizzard_Damager_Message__On__Player__Damaged__Cold, glob.Blizzard_Player_Damage__From__Exposure);
+                                Storm.util.damagePlayer(damagee, glob.Blizzard_Damager_Message_On__Player__Damaged__Cold, glob.Blizzard_Player_Damage__From__Exposure);
                             }
                         }
                     }

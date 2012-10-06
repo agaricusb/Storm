@@ -63,8 +63,8 @@ public class Meteor {
 
         EntityMeteor mm = new EntityMeteor(
                 mcWorld, 15, 15, 15, 60, 100,
-                Storm.wConfigs.get(mcWorld.getWorld()).Natural__Disasters_Meteor_Message__On__Meteor__Crash, 9, 80,
-                Storm.wConfigs.get(mcWorld.getWorld()).Natural__Disasters_Meteor_Shockwave_Damage__Message, 0, false, 0);
+                Storm.wConfigs.get(mcWorld.getWorld()).Natural__Disasters_Meteor_Message_On__Meteor__Crash, 9, 80,
+                Storm.wConfigs.get(mcWorld.getWorld()).Natural__Disasters_Meteor_Message_Shockwave__Damage__Message, 0, false, 0);
 
         mm.spawn();
 

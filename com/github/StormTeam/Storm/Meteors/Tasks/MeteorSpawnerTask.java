@@ -73,10 +73,10 @@ public class MeteorSpawnerTask {
                 rand.nextInt(5) + 5,
                 rand.nextInt(50) + 25,
                 100,
-                glob.Natural__Disasters_Meteor_Message__On__Meteor__Crash,
+                glob.Natural__Disasters_Meteor_Message_On__Meteor__Crash,
                 9,
                 80,
-                glob.Natural__Disasters_Meteor_Shockwave_Damage__Message,
+                glob.Natural__Disasters_Meteor_Message_Shockwave__Damage__Message,
                 rand.nextInt(100) + 200,
                 glob.Natural__Disasters_Meteor_Meteor_Spawn,
                 rand.nextInt(6) + 3);
