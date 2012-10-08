@@ -25,6 +25,7 @@ public class ThunderStormEvent extends Event implements Cancellable {
 
     }
 
+    @Override
     public HandlerList getHandlers() {
 	return handlers;
     }
