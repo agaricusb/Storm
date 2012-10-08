@@ -45,6 +45,7 @@ public class GlobalVariables extends ReflectConfiguration {
     public int Thunder__Storm_Scheduler_Striker__Calculation__Intervals__In__Ticks = 10;
     //Blizzards
     public int Blizzard_Blizzard__Chance = 20;
+    public int Blizzard_Blizzard__Base__Interval = 72000;
     public String Blizzard_Message__On__Blizzard__Start = "It has started to snow violently! Seek a warm biome for safety!";
     public String Blizzard_Damager_Message__On__Player__Damaged__Cold = "You are freezing!";
     public int Blizzard_Damager_Blindness__Amplitude = 5;

@@ -65,7 +65,7 @@ public class Storm extends JavaPlugin {
 
             manager = new WeatherManager(this);
             pm.registerEvents(manager, this); //Register texture events
-            
+
             util = new StormUtil(this);
             biomes = new BiomeGroups();
             db = Database.Obtain(this, null);
@@ -89,11 +89,11 @@ public class Storm extends JavaPlugin {
 //            AcidRain.load(this);
 //            Lightning.load(this);
 //            Wildfire.load(this);
-//            Blizzard.load(this);
+            Blizzard.load(this);
 //            Meteor.load(this);
             ThunderStorm.load(this);
 
-            pm.registerEvents(new WorldMemoryManager(this), this);
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -102,7 +102,6 @@ public class Storm extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        Blizzard.unload();
         this.db.getEngine().close();
     }
 

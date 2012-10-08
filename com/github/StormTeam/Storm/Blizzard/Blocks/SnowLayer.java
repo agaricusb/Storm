@@ -1,11 +1,9 @@
 package com.github.StormTeam.Storm.Blizzard.Blocks;
 
 import org.bukkit.GameMode;
-import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.entity.Player;
 
 import com.github.StormTeam.Storm.Storm;
-import com.github.StormTeam.Storm.Blizzard.Blizzard;
 
 import net.minecraft.server.*;
 
@@ -19,13 +17,13 @@ public class SnowLayer extends BlockSnow {
     public void a(final World w, final int x, final int y,
             final int z, final Entity e) {
 
-        final CraftWorld cWorld = (CraftWorld) w.getWorld();
+        String name = w.getWorld().getName();
 
-        if (!Blizzard.blizzardingWorlds.contains(cWorld)) {
+        if (!Storm.manager.getActiveWeathers(name).contains("storm_blizzard")) {
             return;
         }
 
-        if (!Storm.wConfigs.containsKey(cWorld) && !Storm.wConfigs.get(cWorld).Features_Blizzards_Slowing__Snow) {
+        if (!Storm.wConfigs.containsKey(name) && !Storm.wConfigs.get(name).Features_Blizzards_Slowing__Snow) {
             return;
         }
 
@@ -39,7 +37,7 @@ public class SnowLayer extends BlockSnow {
         }
 
         inSnow.setVelocity(inSnow.getVelocity().clone()
-                .multiply(Storm.wConfigs.get(w.getWorld()).Blizzard_Player_Speed__Loss__While__In__Snow));
+                .multiply(Storm.wConfigs.get(name).Blizzard_Player_Speed__Loss__While__In__Snow));
 
     }
 }

@@ -18,9 +18,9 @@ public class PlayerTask {
     private GlobalVariables glob;
     private PotionEffect blindness;
 
-    public PlayerTask(Storm storm, World spawnWorld) {
+    public PlayerTask(Storm storm, String spawnWorld) {
         this.storm = storm;
-        this.affectedWorld = spawnWorld;
+        this.affectedWorld = Bukkit.getWorld(spawnWorld);
         glob = Storm.wConfigs.get(spawnWorld);
         blindness = new PotionEffect(
                 PotionEffectType.BLINDNESS,
