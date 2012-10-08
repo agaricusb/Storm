@@ -2,6 +2,7 @@ package com.github.StormTeam.Storm.Weather;
 
 import com.github.StormTeam.Storm.Pair;
 import com.github.StormTeam.Storm.Storm;
+import com.github.StormTeam.Storm.Triplet;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -40,15 +41,15 @@ public class WeatherManager implements Listener {
     }
 
     /**
-     * Registers a weather. allowedWorlds is any Iterable<String> that contains
-     * the names of the allowed worlds.
+     * Registers a weather. Only registers the weather for the worlds specified
+     * in worlds.
      *
      * @param weather Weather clas
      * @param name Weather name
-     * @param allowedWorlds Allowed worlds
+     * @param worlds Iterable of Triplet<worldName, chance, recalculationTicks>
      * @throws WeatherAlreadyRegisteredException
      */
-    public void registerWeather(Class<? extends StormWeather> weather, String name, Iterable<String> allowedWorlds, int chance, int recalculationTicks) throws WeatherAlreadyRegisteredException {
+    public void registerWeather(Class<? extends StormWeather> weather, String name, Iterable<Triplet<String, Integer, Integer>> worlds) throws WeatherAlreadyRegisteredException {
         synchronized (this) {
             if (registeredWeathers.containsKey(name)) {
                 throw new WeatherAlreadyRegisteredException(String.format("Weather %s is already registered", name));
@@ -56,11 +57,11 @@ public class WeatherManager implements Listener {
             try {
                 Map<String, StormWeather> instances = new HashMap<String, StormWeather>();
                 Map<String, Pair<Integer, WeatherTrigger>> triggers = new HashMap<String, Pair<Integer, WeatherTrigger>>();
-                for (String world : allowedWorlds) {
-                    instances.put(world, weather.getConstructor(Storm.class, String.class).newInstance(storm, world));
-                    WeatherTrigger trigger = new WeatherTrigger(this, name, world, chance);
-                    int id = Bukkit.getScheduler().scheduleSyncRepeatingTask(storm, trigger, recalculationTicks, recalculationTicks);
-                    triggers.put(world, new Pair<Integer, WeatherTrigger>(id, trigger));
+                for (Triplet<String, Integer, Integer> world : worlds) {
+                    instances.put(world.x, weather.getConstructor(Storm.class, String.class).newInstance(storm, world));
+                    WeatherTrigger trigger = new WeatherTrigger(this, name, world.x, world.y);
+                    int id = Bukkit.getScheduler().scheduleSyncRepeatingTask(storm, trigger, world.z, world.z);
+                    triggers.put(world.x, new Pair<Integer, WeatherTrigger>(id, trigger));
                 }
                 weatherTriggers.put(name, triggers);
                 registeredWeathers.put(name, new Pair<Class<? extends StormWeather>, Map<String, StormWeather>>(weather, instances));
