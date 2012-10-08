@@ -36,7 +36,7 @@ public class WildfireListeners implements Listener {
         }
 
         if (wildfireBlocks.containsKey(w)
-                && (wildfireBlocks.get(w).size() < glob.Natural__Disasters_Wildfires_Maximum__Fires)) {
+                && (wildfireBlocks.get(w).size() < glob.Natural__Disasters_Maximum__Fires)) {
 
             boolean doScan = false;
 

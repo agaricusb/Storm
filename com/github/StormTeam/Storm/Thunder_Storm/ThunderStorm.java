@@ -10,11 +10,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.World;
 
 import com.github.StormTeam.Storm.Storm;
-import com.github.StormTeam.Storm.Thunder_Storm.Events.ThunderStormEvent;
-import com.github.StormTeam.Storm.Thunder_Storm.Listeners.ThunderListener;
-import com.github.StormTeam.Storm.Thunder_Storm.Tasks.StrikerTask;
-import org.apache.commons.lang.ArrayUtils;
-import org.bukkit.ChatColor;
+import com.github.StormTeam.Storm.Weather.WeatherNotAllowedException;
+import com.github.StormTeam.Storm.Weather.WeatherNotFoundException;
+import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Tudor
@@ -27,23 +27,22 @@ public class ThunderStorm {
 
     public static void load(Storm ztorm) {
         storm = ztorm;
-        Storm.pm.registerEvents(new ThunderListener(storm), storm);
+
+        try {
+            Storm.manager.registerWeather(ThunderStormWeather.class, "storm_thunderstorm", Arrays.asList("world"), 0, 155555);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         exec = new CommandExecutor() {
             @Override
             public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
                 if ((sender instanceof Player)) {
-                    thunderstorm(((Player) sender).getWorld());
+                    thunderstorm(((Player) sender).getWorld().getName());
                     return true;
                 } else {
-                    if (ArrayUtils.isEmpty(args)) {
-                        sender.sendMessage(ChatColor.RED + "You must supply a world when running this command from the console!");
-                        return true;
-                    }
-                    World world = Bukkit.getServer().getWorld(args[0]);
-                    if (world != null) {
-                        world.setStorm(false); //Cancels other events
-                        thunderstorm(world);
+                    if (args[0] != null) {
+                        thunderstorm(args[0]);
                         return true;
                     }
                 }
@@ -53,20 +52,23 @@ public class ThunderStorm {
         storm.getCommand("thunderstorm").setExecutor(exec);
     }
 
-    public static void thunderstorm(World world) {
-        if (thunderingWorlds.contains(world)) {
-            thunderingWorlds.remove(world);
-            ThunderListener.strikerMap.get(world).stop();
-            Storm.util.setStormNoEvent(world, false);
-            Storm.pm.callEvent(new ThunderStormEvent(world, false));
+    public static void thunderstorm(String world) {
+        if (Storm.manager.getActiveWeathers(world).contains("storm_thunderstorm")) {
+            try {
+                Storm.manager.stopWeather("storm_thunderstorm", world);
+            } catch (WeatherNotFoundException ex) {
+                Logger.getLogger(ThunderStorm.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } else {
-            thunderingWorlds.add(world);
-            StrikerTask stik = new StrikerTask(storm, world);
-            stik.run();
-            ThunderListener.strikerMap.put(world, stik);
-            Storm.util.broadcast(Storm.wConfigs.get(world).Thunder__Storm_Message_On__Thunder__Storm__Start);
-            Storm.util.setStormNoEvent(world, true);
-            Storm.pm.callEvent(new ThunderStormEvent(world, true));
+            try {
+                try {
+                    Storm.manager.startWeather("storm_thunderstorm", world);
+                } catch (WeatherNotAllowedException ex) {
+                    Logger.getLogger(ThunderStorm.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } catch (WeatherNotFoundException ex) {
+                Logger.getLogger(ThunderStorm.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 }

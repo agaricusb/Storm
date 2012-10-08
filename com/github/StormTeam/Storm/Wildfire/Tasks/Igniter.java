@@ -16,104 +16,109 @@ import static com.github.StormTeam.Storm.Wildfire.Wildfire.wildfireBlocks;
 
 public class Igniter {
 
-    private int id;
-    private Random rand = new Random();
-    private World affectedWorld;
-    private Storm storm;
-    private GlobalVariables glob;
+	private int id;
+	private Random rand = new Random();
+	private World affectedWorld;
+	private Storm storm;
 
-    public Igniter(Storm storm, World spawnWorld) {
-        this.storm = storm;
-        this.affectedWorld = spawnWorld;
-        glob = Storm.wConfigs.get(spawnWorld);
-    }
+	private GlobalVariables glob;
 
-    public void run() {
+	public Igniter(Storm storm, World spawnWorld) {
+		this.storm = storm;
+		this.affectedWorld = spawnWorld;
+		glob = Storm.wConfigs.get(spawnWorld);
+	}
 
-        id = Bukkit.getScheduler().scheduleSyncRepeatingTask(
-                storm,
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        if (rand.nextInt(100) <= glob.Natural__Disasters_Meteor_Chance__To__Spawn) {
-                            Block toBurn;
-                            while (true) {
+	public void run() {
 
-                                Chunk chunk = Storm.util
-                                        .pickChunk(affectedWorld);
+		id = Bukkit.getScheduler().scheduleSyncRepeatingTask(
+		        storm,
+		        new Runnable() {
+			        @Override
+			        public void run() {
+				        if (rand.nextInt(100) <= glob.Natural__Disasters_Meteor_Chance__To__Spawn) {
+					        Block toBurn;
+					        while (true) {
 
-                                if (chunk == null) {
-                                    Storm.util
-                                            .log("Selected chunk is null. Aborting wildfire.");
-                                    return;
-                                }
+						        Chunk chunk = Storm.util
+						                .pickChunk(affectedWorld);
 
-                                final int x = rand.nextInt(16);
-                                final int z = rand.nextInt(16);
+						        if (chunk == null) {
+							        Storm.util
+							                .log("Selected chunk is null. Aborting wildfire.");
+							        return;
+						        }
 
-                                toBurn = chunk.getWorld()
-                                        .getHighestBlockAt(
-                                        chunk
-                                        .getBlock(
-                                        x,
-                                        4,
-                                        z)
-                                        .getLocation())
-                                        .getLocation()
-                                        .subtract(0, 1, 0)
-                                        .getBlock();
+						        final int x = rand.nextInt(16);
+						        final int z = rand.nextInt(16);
 
-                                if (Storm.util
-                                        .isBlockProtected(toBurn)) {
-                                } else {
+						        toBurn = chunk.getWorld()
+						                .getHighestBlockAt(
+						                        chunk
+						                                .getBlock(
+						                                        x,
+						                                        4,
+						                                        z)
+						                                .getLocation())
+						                .getLocation()
+						                .subtract(0, 1, 0)
+						                .getBlock();
 
-                                    if (Storm.util.isForest(toBurn
-                                            .getBiome())
-                                            && Wildfire.flammableList
-                                            .contains(
-                                            toBurn.getTypeId())) {
-                                        break;
-                                    }
+						        if (Storm.util
+						                .isBlockProtected(toBurn)) {
 
-                                }
+						        } else {
 
-                                toBurn = toBurn.getLocation().add(0, 1, 0)
-                                        .getBlock();
-                                toBurn.setType(Material.FIRE);
-                                World world;
-                                if (wildfireBlocks.containsKey((world = toBurn.getWorld()))) {
-                                    wildfireBlocks.get(world).add(toBurn);
-                                }
+							        if (Storm.util.isForest(toBurn
+							                .getBiome())
+							                && Wildfire.flammableList
+							                        .contains(
+							                                toBurn.getTypeId())) {
+								        break;
+							        }
 
-                                for (Player p : affectedWorld.getPlayers()) {
-                                    Storm.util
-                                            .message(
-                                            p,
-                                            glob.Natural__Disasters_Wildfires_Message_Message__On__Start
-                                            .replace(
-                                            "%x",
-                                            toBurn.getX()
-                                            + "")
-                                            .replace(
-                                            "%y",
-                                            toBurn.getY()
-                                            + "")
-                                            .replace(
-                                            "%z",
-                                            toBurn.getZ()
-                                            + ""));
-                                }
+						        }
 
-                            }
-                        }
-                    }
-                },
-                glob.Natural__Disasters_Wildfires_Scheduler__Recalculation__Intervals__In__Ticks,
-                glob.Natural__Disasters_Wildfires_Scheduler__Recalculation__Intervals__In__Ticks);
+						        toBurn = toBurn.getLocation().add(0, 1, 0)
+						                .getBlock();
+						        toBurn.setType(Material.FIRE);
+						        World world;
+						        if (wildfireBlocks.containsKey((world = toBurn.getWorld()))) {
+							        wildfireBlocks.get(world).add(toBurn);
+						        }
 
-    }
+						        for (Player p : affectedWorld.getPlayers()) {
+							        Storm.util
+							                .message(
+							                        p,
+							                        glob.Natural__Disasters_Wildfires_Message__On__Start
+							                                .replace(
+							                                        "%x",
+							                                        toBurn.getX()
+							                                                + "")
+							                                .replace(
+							                                        "%y",
+							                                        toBurn.getY()
+							                                                + "")
+							                                .replace(
+							                                        "%z",
+							                                        toBurn.getZ()
+							                                                + ""));
+						        }
 
-    public void stop() {
-        Bukkit.getScheduler().cancelTask(id);
-    }
+					        }
+				        }
+			        }
+
+		        }
+		        ,
+		        glob.Natural__Disasters_Wildfires_Scheduler__Recalculation__Intervals__In__Ticks,
+		        glob.Natural__Disasters_Wildfires_Scheduler__Recalculation__Intervals__In__Ticks);
+
+	}
+
+	public void stop() {
+		Bukkit.getScheduler().cancelTask(id);
+	}
+
 }

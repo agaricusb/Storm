@@ -40,7 +40,7 @@ public class DissolverTask {
                         try {
                             ArrayList<Block> bloks = ticker
                                     .getRandomTickedBlocks();
-System.out.println(bloks);
+
                             for (Block b : bloks) {
 
                                 Block tran = b.getRelative(BlockFace.DOWN);
@@ -49,17 +49,11 @@ System.out.println(bloks);
                                     if (Storm.biomes.isRainy(tran
                                             .getBiome())
                                             && tran.getTypeId() != 0) {
-                                        System.out.println("From: " + tran);
                                         Storm.util
                                                 .transform(
                                                 tran,
                                                 glob.Acid__Rain_Dissolver_Block__Transformations);
-                                         System.out.println("To: " + tran);
-                                    } else {
-                                         System.out.println("Not rainy! Biome: " + tran.getBiome());
                                     }
-                                } else {
-                                    System.out.println("Block protected!");
                                 }
                             }
                         } catch (Exception e) {

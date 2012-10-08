@@ -1,7 +1,7 @@
 package com.github.StormTeam.Storm;
 
 import com.github.StormTeam.Storm.Acid_Rain.AcidRain;
-import com.github.StormTeam.Storm.Acid_Rain.Listeners.AcidWeatherListener;
+import com.github.StormTeam.Storm.Acid_Rain.Listeners.AcidListener;
 import com.github.StormTeam.Storm.Blizzard.Blizzard;
 import com.github.StormTeam.Storm.Blizzard.Listeners.BlizzardListeners;
 import org.bukkit.event.EventHandler;
@@ -9,8 +9,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.world.WorldLoadEvent;
 
 import static com.github.StormTeam.Storm.Storm.wConfigs;
-import com.github.StormTeam.Storm.Thunder_Storm.Listeners.ThunderListener;
-import com.github.StormTeam.Storm.Thunder_Storm.ThunderStorm;
 import org.bukkit.World;
 import org.bukkit.event.world.WorldUnloadEvent;
 
@@ -43,11 +41,11 @@ public class WorldMemoryManager implements Listener {
             wConfigs.remove(e.getWorld());
         }
         if (AcidRain.acidicWorlds.contains(world)) {
-            if (AcidWeatherListener.damagerMap.containsKey(world)) {
-                AcidWeatherListener.damagerMap.get(world).stop();
+            if (AcidListener.damagerMap.containsKey(world)) {
+                AcidListener.damagerMap.get(world).stop();
             }
-            if (AcidWeatherListener.dissolverMap.containsKey(world)) {
-                AcidWeatherListener.dissolverMap.get(world).stop();
+            if (AcidListener.dissolverMap.containsKey(world)) {
+                AcidListener.dissolverMap.get(world).stop();
             }
             AcidRain.acidicWorlds.remove(world);
         }
@@ -57,13 +55,5 @@ public class WorldMemoryManager implements Listener {
             }
             Blizzard.blizzardingWorlds.remove(world);
         }
-
-        if (ThunderStorm.thunderingWorlds.contains(world)) {
-            if (ThunderListener.strikerMap.containsKey(world)) {
-                ThunderListener.strikerMap.get(world).stop();
-            }
-            ThunderStorm.thunderingWorlds.remove(world);
-        }
-
     }
 }

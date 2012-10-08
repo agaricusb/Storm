@@ -27,6 +27,7 @@ import com.github.StormTeam.Storm.Database.Database;
 import com.github.StormTeam.Storm.Lightning.Lightning;
 import com.github.StormTeam.Storm.Meteors.Meteor;
 import com.github.StormTeam.Storm.Thunder_Storm.ThunderStorm;
+import com.github.StormTeam.Storm.Weather.WeatherManager;
 import com.github.StormTeam.Storm.Wildfire.Wildfire;
 
 import java.util.HashMap;
@@ -41,19 +42,36 @@ public class Storm extends JavaPlugin {
     private Database db;
     public static PluginManager pm;
     public static double version;
+    public static WeatherManager manager;
 
     @Override
     public void onEnable() {
         try {
 
-            configureCompatibility(getServer().getVersion());
-            
             pm = getServer().getPluginManager();
+
+            String v = getServer().getVersion();
+            if (v.contains("1.2.")) {
+                version = 1.2;
+                getLogger().log(Level.INFO, "Loading with MC 1.2.X compatibility.");
+            } else {
+                if (v.contains("1.3.")) {
+                    version = 1.3;
+                    getLogger().log(Level.INFO, "Loading with MC 1.3.X compatibility.");
+                } else {
+                    getLogger().log(Level.SEVERE, "Unsupported MC version detected!");
+                }
+            }
+
+            manager = new WeatherManager(this);
+            pm.registerEvents(manager, this); //Register texture events
+            
             util = new StormUtil(this);
             biomes = new BiomeGroups();
             db = Database.Obtain(this, null);
 
-            // Make per-world configuration files            
+            // Make per-world configuration files
+            System.out.println(Bukkit.getWorlds());
             for (World w : Bukkit.getWorlds()) {
                 String world = w.getName();
                 GlobalVariables config = new GlobalVariables(this, world);
@@ -92,19 +110,5 @@ public class Storm extends JavaPlugin {
     public void crashDisable(String crash) {
         util.log(Level.SEVERE, crash + " Storm disabled.");
         this.setEnabled(false);
-    }
-
-    public void configureCompatibility(String v) {        
-        if (v.contains("1.2.")) {
-            version = 1.2;
-            getLogger().log(Level.INFO, "Loading with MC 1.2.X compatibility.");
-        } else {
-            if (v.contains("1.3.")) {
-                version = 1.3;
-                getLogger().log(Level.INFO, "Loading with MC 1.3.X compatibility.");
-            } else {
-                getLogger().log(Level.SEVERE, "Unsupported MC version detected!");
-            }
-        }
     }
 }

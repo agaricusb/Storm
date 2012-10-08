@@ -53,7 +53,7 @@ public class BlizzardListeners implements Listener {
                 Bukkit.getServer().getPluginManager().callEvent(startEvent);
 
                 if (glob.Features_Blizzards_Slowing__Snow) {
-                    ModSnow.reset();
+                    ModSnow.mod(true);
                 }
 
                 if (startEvent.isCancelled()) {
@@ -61,7 +61,10 @@ public class BlizzardListeners implements Listener {
                 }
 
                 for (Player p : event.getWorld().getPlayers()) {
-                    Storm.util.message(p, glob.Blizzard_Message_On__Blizzard__Start);
+                    Storm.util
+                            .message(
+                            p,
+                            glob.Blizzard_Message__On__Blizzard__Start);
                 }
 
                 if (glob.Features_Blizzards_Player__Damaging) {
@@ -70,6 +73,8 @@ public class BlizzardListeners implements Listener {
                     bliz.run();
                 }
 
+            } else {
+                return;
             }
         } else if (!event.toWeatherState()) {
 
@@ -85,8 +90,10 @@ public class BlizzardListeners implements Listener {
             Bukkit.getServer().getPluginManager().callEvent(endEvent);
 
             if (glob.Features_Blizzards_Slowing__Snow) {
-                ModSnow.mod();
+                ModSnow.mod(false);
             }
+
+            return;
         }
 
 
