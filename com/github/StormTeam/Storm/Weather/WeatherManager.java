@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.Map;
 import java.util.Random;
@@ -22,6 +23,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.world.WorldUnloadEvent;
 
 /**
  * Weather Manager for Storm. All members thread-safe unless documented.
@@ -385,7 +387,10 @@ public class WeatherManager implements Listener {
             return;
         }
 
-        final String texture = worldTextures.get(target.getName());
+        final String texture;
+        synchronized (this) {
+            texture = worldTextures.get(target.getName());
+        }
         if (texture == null) {
             Storm.util.clearTexture(hopper);
         } else {
@@ -403,9 +408,26 @@ public class WeatherManager implements Listener {
     public void loginEvent(PlayerJoinEvent e) {
         final Player player = e.getPlayer();
         final World world = player.getWorld();
-        final String texture = worldTextures.get(world.getName());
+        final String texture;
+        synchronized (this) {
+            texture = worldTextures.get(world.getName());
+        }
         if (texture != null) {
             Storm.util.setTexture(player, texture);
+        }
+    }
+
+    @EventHandler
+    public void worldUnloadEvent(WorldUnloadEvent event) {
+        String world = event.getWorld().getName();
+        List<String> worlds = Arrays.asList(world);
+        try {
+            synchronized (this) {
+                for (String weather : getActiveWeathersReal(world)) {
+                    stopWeatherReal(weather, worlds);
+                }
+            }
+        } catch (WeatherNotFoundException e) {
         }
     }
 }
