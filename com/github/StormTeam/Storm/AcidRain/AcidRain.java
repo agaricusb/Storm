@@ -1,87 +1,65 @@
-package com.github.StormTeam.Storm.AcidRain;
+package com.github.StormTeam.Storm.Acid_Rain;
 
-import java.util.*;
+import com.github.StormTeam.Storm.Acid_Rain.Events.AcidRainEvent;
+import org.bukkit.World;
 
-import org.bukkit.*;
+import com.github.StormTeam.Storm.Storm;
+import com.github.StormTeam.Storm.Acid_Rain.Listeners.AcidListener;
+import com.github.StormTeam.Storm.Acid_Rain.Tasks.DamagerTask;
+import com.github.StormTeam.Storm.Acid_Rain.Tasks.DissolverTask;
+import java.util.ArrayList;
+import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.github.StormTeam.Storm.GlobalVariables;
-import com.github.StormTeam.Storm.Storm;
-import com.github.StormTeam.Storm.Weather.StormWeather;
-import com.github.StormTeam.Storm.Weather.WeatherManager;
+public class AcidRain {
 
-public class AcidRain extends StormWeather {
+    public static ArrayList<World> acidicWorlds = new ArrayList<World>();
+    private static Storm storm;
+    private static CommandExecutor exec;
 
-    private GlobalVariables glob;
-    private DissolverTask dissolver;
-    private DamagerTask damager;
-    private static final Set<String> conflicts = new HashSet();
-    private int killID;
-
-    static {
-        conflicts.add("storm_blizzard");
+    public static void load(Storm ztorm) {
+        storm = ztorm;        
+        exec = new CommandExecutor() {
+            @Override
+            public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+                if ((sender instanceof Player)) {
+                    acidRain(((Player) sender).getWorld());
+                    return true;
+                } else {                  
+                        World world = Bukkit.getServer().getWorld(args[0]);
+                        if (world != null) {
+                            world.setStorm(false); //Cancels other events
+                            acidRain(world);
+                            return true;
+                        }                    
+                }
+                return false;
+            }
+        };
+        storm.getCommand("acidrain").setExecutor(exec);
     }
 
-    public AcidRain(Storm storm, String world) {
-        super(storm, world);
-        this.glob = Storm.wConfigs.get(world);
-    }
-
-    @Override
-    public void start() {
-        if (!glob.Features_Acid__Rain_Dissolving__Blocks && !glob.Features_Acid__Rain_Player__Damaging) {
-            return;
+    public static void acidRain(World world) {
+        if (acidicWorlds.contains(world)) {
+            acidicWorlds.remove(world);
+            AcidListener.damagerMap.get(world).stop();
+            AcidListener.dissolverMap.get(world).stop();
+            Storm.util.setStormNoEvent(world, false);
+            Storm.pm.callEvent(new AcidRainEvent(world, false));
+        } else {
+            acidicWorlds.add(world);
+            DamagerTask dam = new DamagerTask(storm, world);
+            AcidListener.damagerMap.put(world, dam);
+            dam.run();
+            DissolverTask dis = new DissolverTask(storm, world);
+            AcidListener.dissolverMap.put(world, dis);
+            dis.run();
+            Storm.util.broadcast(Storm.wConfigs.get(world).Acid__Rain_Message__On__Acid__Rain__Start);
+            Storm.util.setStormNoEvent(world, true);
+            Storm.pm.callEvent(new AcidRainEvent(world, true));
         }
-        final World world = Bukkit.getWorld(this.world);
-
-        for (Player p : world.getPlayers()) {
-            Storm.util.message(p, glob.Acid__Rain_Message__On__Acid__Rain__Start);
-        }
-
-        if (glob.Features_Acid__Rain_Dissolving__Blocks) {
-            dissolver = new DissolverTask(storm, world);
-            dissolver.run();
-        }
-
-        if (glob.Features_Acid__Rain_Player__Damaging) {
-            damager = new DamagerTask(storm, world);
-            damager.run();
-        }
-
-        killID = Bukkit.getScheduler().scheduleAsyncDelayedTask(
-                storm,
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            Storm.manager.stopWeather("storm_acidrain", world.getName());
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
-                    }
-                }, 7500 + Storm.random.nextInt(1024));
-    }
-
-    @Override
-    public void end() {
-        try {
-            dissolver.stop();
-            damager.stop();
-            dissolver = null;
-            damager = null;
-            Bukkit.getScheduler().cancelTask(killID);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public String getTexture() {
-        return glob.Textures_Acid__Rain__Texture__Path;
-    }
-
-    @Override
-    public Set<String> getConflicts() {
-        return conflicts;
     }
 }
