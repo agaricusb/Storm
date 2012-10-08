@@ -1,4 +1,6 @@
-package com.github.StormTeam.Storm.Acid_Rain.Tasks;
+package com.github.StormTeam.Storm.AcidRain;
+
+
 
 import java.util.Random;
 
@@ -23,7 +25,7 @@ public class DamagerTask {
     public DamagerTask(Storm storm, World affectedWorld) {
         this.storm = storm;
         this.affectedWorld = affectedWorld;
-        glob = Storm.wConfigs.get(affectedWorld);
+        glob = Storm.wConfigs.get(affectedWorld.getName());
         hunger = new PotionEffect(
                 PotionEffectType.HUNGER,
                 glob.Acid__Rain_Schedule_Damager__Calculation__Intervals__In__Ticks + 60,

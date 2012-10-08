@@ -37,7 +37,6 @@ public class WeatherManager implements Listener {
     private Map<String, Set<String>> activeWeather = new HashMap<String, Set<String>>();
     private Map<String, Map<String, Pair<Integer, WeatherTrigger>>> weatherTriggers = new HashMap<String, Map<String, Pair<Integer, WeatherTrigger>>>();
     private Storm storm;
-    public static Random random = new Random();
     private Map<String, String> worldTextures = new HashMap<String, String>();
 
     public WeatherManager(Storm storm) {

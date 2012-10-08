@@ -16,6 +16,7 @@ public class GlobalVariables extends ReflectConfiguration {
     }
     //Acid Rain
     public int Acid__Rain_Acid__Rain__Chance = 5;
+    public int Acid__Rain_Acid__Rain__Base__Interval = 72000;
     public String Acid__Rain_Message__On__Acid__Rain__Start = "Acid has started to fall from the sky!";
     public String Acid__Rain_Damager_Message__On__Player__Damaged__By__Acid__Rain = "You have been hurt by the acidic downfall!";
     public int Acid__Rain_Player_Damage__From__Exposure = 2;

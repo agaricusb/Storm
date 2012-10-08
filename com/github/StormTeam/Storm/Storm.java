@@ -1,6 +1,6 @@
 /*
  * Storm
- * Copyright (C) 2012 Icyene, Thidox
+ * Copyright (C) 2012 Icyene, Thidox, xiaomao
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,16 +21,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.github.StormTeam.Storm.Acid_Rain.AcidRain;
 import com.github.StormTeam.Storm.Blizzard.Blizzard;
 import com.github.StormTeam.Storm.Database.Database;
-import com.github.StormTeam.Storm.Lightning.Lightning;
-import com.github.StormTeam.Storm.Meteors.Meteor;
-import com.github.StormTeam.Storm.Thunder_Storm.ThunderStorm;
 import com.github.StormTeam.Storm.Weather.WeatherManager;
-import com.github.StormTeam.Storm.Wildfire.Wildfire;
 
 import java.util.HashMap;
+import java.util.Random;
 import java.util.logging.Level;
 import org.bukkit.plugin.PluginManager;
 
@@ -43,29 +39,27 @@ public class Storm extends JavaPlugin {
     public static PluginManager pm;
     public static double version;
     public static WeatherManager manager;
+    public static Random random = new Random();
 
     @Override
     public void onEnable() {
         try {
-
             pm = getServer().getPluginManager();
 
             String v = getServer().getVersion();
             if (v.contains("1.2.")) {
                 version = 1.2;
                 getLogger().log(Level.INFO, "Loading with MC 1.2.X compatibility.");
+            } else if (v.contains("1.3.")) {
+                version = 1.3;
+                getLogger().log(Level.INFO, "Loading with MC 1.3.X compatibility.");
             } else {
-                if (v.contains("1.3.")) {
-                    version = 1.3;
-                    getLogger().log(Level.INFO, "Loading with MC 1.3.X compatibility.");
-                } else {
-                    getLogger().log(Level.SEVERE, "Unsupported MC version detected!");
-                }
+                getLogger().log(Level.SEVERE, "Unsupported MC version detected!");
             }
 
             manager = new WeatherManager(this);
             pm.registerEvents(manager, this); //Register texture events
-            
+
             util = new StormUtil(this);
             biomes = new BiomeGroups();
             db = Database.Obtain(this, null);
@@ -91,10 +85,9 @@ public class Storm extends JavaPlugin {
 //            Wildfire.load(this);
 //            Blizzard.load(this);
 //            Meteor.load(this);
-            ThunderStorm.load(this);
+//            ThunderStorm.load(this);
 
             pm.registerEvents(new WorldMemoryManager(this), this);
-
         } catch (Exception e) {
             e.printStackTrace();
         }

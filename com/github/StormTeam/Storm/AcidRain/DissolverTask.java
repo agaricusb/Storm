@@ -1,4 +1,4 @@
-package com.github.StormTeam.Storm.Acid_Rain.Tasks;
+package com.github.StormTeam.Storm.AcidRain;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
