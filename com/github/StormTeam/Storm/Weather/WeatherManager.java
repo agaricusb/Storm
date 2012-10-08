@@ -13,6 +13,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Map;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -49,7 +51,7 @@ public class WeatherManager implements Listener {
      * @param worlds Iterable of Triplet<worldName, chance, recalculationTicks>
      * @throws WeatherAlreadyRegisteredException
      */
-    public void registerWeather(Class<? extends StormWeather> weather, String name, Iterable<Triplet<String, Integer, Integer>> worlds) throws WeatherAlreadyRegisteredException {
+    public void registerWeather(Class<? extends StormWeather> weather, String name) throws WeatherAlreadyRegisteredException {
         synchronized (this) {
             if (registeredWeathers.containsKey(name)) {
                 throw new WeatherAlreadyRegisteredException(String.format("Weather %s is already registered", name));
@@ -57,17 +59,56 @@ public class WeatherManager implements Listener {
             try {
                 Map<String, StormWeather> instances = new HashMap<String, StormWeather>();
                 Map<String, Pair<Integer, WeatherTrigger>> triggers = new HashMap<String, Pair<Integer, WeatherTrigger>>();
-                for (Triplet<String, Integer, Integer> world : worlds) {
-                    instances.put(world.x, weather.getConstructor(Storm.class, String.class).newInstance(storm, world));
-                    WeatherTrigger trigger = new WeatherTrigger(this, name, world.x, world.y);
-                    int id = Bukkit.getScheduler().scheduleSyncRepeatingTask(storm, trigger, world.z, world.z);
-                    triggers.put(world.x, new Pair<Integer, WeatherTrigger>(id, trigger));
-                }
                 weatherTriggers.put(name, triggers);
                 registeredWeathers.put(name, new Pair<Class<? extends StormWeather>, Map<String, StormWeather>>(weather, instances));
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    /**
+     * Initalize a weather for a world.
+     *
+     * @param name Weather name.
+     * @param world World name.
+     * @param chance Chance of occuring, in percent, i.e. probabiliyty * 100.
+     * @param recalculation Ticks before trying to start with chance.
+     */
+    public void enableWeatherForWorld(String name, String world, int chance, int recalculation) throws WeatherNotFoundException {
+        synchronized (this) {
+            if (!registeredWeathers.containsKey(name)) {
+                throw new WeatherNotFoundException(String.format("Weather %s not found", name));
+            }
+            Map<String, StormWeather> instances = registeredWeathers.get(name).RIGHT;
+            Map<String, Pair<Integer, WeatherTrigger>> triggers = weatherTriggers.get(name);
+            Class<? extends StormWeather> weather = registeredWeathers.get(name).LEFT;
+            try {
+                instances.put(world, weather.getConstructor(Storm.class, String.class).newInstance(storm, world));
+                WeatherTrigger trigger = new WeatherTrigger(this, name, world, chance);
+                int id = Bukkit.getScheduler().scheduleSyncRepeatingTask(storm, trigger, recalculation, recalculation);
+                triggers.put(world, new Pair<Integer, WeatherTrigger>(id, trigger));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * Uninitalize a weather on a world.
+     *
+     * @param name weather name
+     * @param world world name
+     * @throws WeatherNotFoundException
+     */
+    public void disableWeatherForWorld(String name, String world) throws WeatherNotFoundException {
+        synchronized (this) {
+            stopWeatherReal(name, Arrays.asList(world));
+            Map<String, StormWeather> instances = registeredWeathers.get(name).RIGHT;
+            Map<String, Pair<Integer, WeatherTrigger>> triggers = weatherTriggers.get(name);
+            instances.remove(world);
+            Bukkit.getScheduler().cancelTask(triggers.get(world).LEFT);
+            triggers.remove(world);
         }
     }
 
