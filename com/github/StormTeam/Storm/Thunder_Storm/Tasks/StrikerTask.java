@@ -28,7 +28,7 @@ public class StrikerTask {
 
     public StrikerTask(Storm storm, World affectedWorld) {
         this.storm = storm;
-        this.glob = Storm.wConfigs.get(affectedWorld);
+        this.glob = Storm.wConfigs.get(affectedWorld.getName());
         this.affectedWorld = affectedWorld;
         try {
             ticker = new BlockTickSelector(affectedWorld,

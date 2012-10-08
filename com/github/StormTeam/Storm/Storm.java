@@ -36,7 +36,7 @@ import org.bukkit.plugin.PluginManager;
 
 public class Storm extends JavaPlugin {
 
-    public static HashMap<World, GlobalVariables> wConfigs = new HashMap<World, GlobalVariables>();
+    public static HashMap<String, GlobalVariables> wConfigs = new HashMap<String, GlobalVariables>();
     public static BiomeGroups biomes;
     public static StormUtil util;
     private Database db;
@@ -76,7 +76,7 @@ public class Storm extends JavaPlugin {
                 String world = w.getName();
                 GlobalVariables config = new GlobalVariables(this, world);
                 config.load();
-                wConfigs.put(w, config);
+                wConfigs.put(world, config);
             }
 
             // Stats
@@ -86,14 +86,13 @@ public class Storm extends JavaPlugin {
             }
 
             //Modularity FTW!
-            AcidRain.load(this);
-            Lightning.load(this);
-            Wildfire.load(this);
-            Blizzard.load(this);
-            Meteor.load(this);
+//            AcidRain.load(this);
+//            Lightning.load(this);
+//            Wildfire.load(this);
+//            Blizzard.load(this);
+//            Meteor.load(this);
             ThunderStorm.load(this);
 
-            pm.registerEvents(new TextureManager(), this);
             pm.registerEvents(new WorldMemoryManager(this), this);
 
         } catch (Exception e) {

@@ -15,12 +15,10 @@ public class ThunderStormWeather extends StormWeather {
 
     private GlobalVariables glob;
     private StrikerTask striker;
-    private World bWorld;
 
     public ThunderStormWeather(Storm storm, String world) {
         super(storm, world);
-        bWorld = Bukkit.getWorld(world);
-        this.glob = Storm.wConfigs.get(bWorld);
+        this.glob = Storm.wConfigs.get(world);
     }
 
     @Override
@@ -33,21 +31,22 @@ public class ThunderStormWeather extends StormWeather {
         if (!glob.Features_Thunder__Storms) {
             return;
         }
-        for (Player p : bWorld.getPlayers()) {
+
+        World temp = Bukkit.getWorld(world);
+
+        for (Player p : temp.getPlayers()) {
             Storm.util.message(p, glob.Thunder__Storm_Message__On__Thunder__Storm__Start);
         }
-        striker = new StrikerTask(storm, bWorld);
+        striker = new StrikerTask(storm, temp);
         striker.run();
-        Storm.util.setStormNoEvent(bWorld, true);
+        Storm.util.setStormNoEvent(temp, true);
     }
 
     @Override
     public void end() {
-        try {
-            striker.stop();
-            Storm.util.setStormNoEvent(bWorld, false);
-        } catch (Exception e) {
-        }
+        striker.stop();
+        Storm.util.setStormNoEvent(Bukkit.getWorld(world), false);
+        striker = null;
     }
 
     @Override

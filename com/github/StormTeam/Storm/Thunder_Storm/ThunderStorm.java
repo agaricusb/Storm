@@ -10,11 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.World;
 
 import com.github.StormTeam.Storm.Storm;
-import com.github.StormTeam.Storm.Weather.WeatherNotAllowedException;
-import com.github.StormTeam.Storm.Weather.WeatherNotFoundException;
-import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import com.github.StormTeam.Storm.GlobalVariables;
 
 /**
  * @author Tudor
@@ -29,7 +25,17 @@ public class ThunderStorm {
         storm = ztorm;
 
         try {
-            Storm.manager.registerWeather(ThunderStormWeather.class, "storm_thunderstorm", Arrays.asList("world"), 0, 155555);
+            Storm.manager.registerWeather(ThunderStormWeather.class, "storm_thunderstorm");
+
+            for (World w : Bukkit.getWorlds()) {
+                String name = w.getName();
+                GlobalVariables temp = Storm.wConfigs.get(name);
+                if (temp.Features_Thunder__Storms) {
+                    Storm.manager.enableWeatherForWorld("storm_thunderstorm", name,
+                            temp.Thunder__Storm_Thunder__Storm__Chance, temp.Thunder__Storm_Thunder__Storm__Base__Interval);
+                }
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -38,11 +44,15 @@ public class ThunderStorm {
             @Override
             public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
                 if ((sender instanceof Player)) {
-                    thunderstorm(((Player) sender).getWorld().getName());
+                    if (!thunderstorm(((Player) sender).getWorld().getName())) {
+                        sender.sendMessage("Thunderstorms not enabled in specified world!");
+                    }
                     return true;
                 } else {
                     if (args[0] != null) {
-                        thunderstorm(args[0]);
+                        if (!thunderstorm(args[0])) {
+                            sender.sendMessage("Thunderstorms not enabled in specified world!");
+                        }
                         return true;
                     }
                 }
@@ -52,23 +62,17 @@ public class ThunderStorm {
         storm.getCommand("thunderstorm").setExecutor(exec);
     }
 
-    public static void thunderstorm(String world) {
-        if (Storm.manager.getActiveWeathers(world).contains("storm_thunderstorm")) {
-            try {
+    public static boolean thunderstorm(String world) {
+        try {
+            if (Storm.manager.getActiveWeathers(world).contains("storm_thunderstorm")) {
                 Storm.manager.stopWeather("storm_thunderstorm", world);
-            } catch (WeatherNotFoundException ex) {
-                Logger.getLogger(ThunderStorm.class.getName()).log(Level.SEVERE, null, ex);
+                return true;
+            } else {
+                Storm.manager.startWeather("storm_thunderstorm", world);
+                return true;
             }
-        } else {
-            try {
-                try {
-                    Storm.manager.startWeather("storm_thunderstorm", world);
-                } catch (WeatherNotAllowedException ex) {
-                    Logger.getLogger(ThunderStorm.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            } catch (WeatherNotFoundException ex) {
-                Logger.getLogger(ThunderStorm.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        } catch (Exception ex) {
+            return false;
         }
     }
 }
