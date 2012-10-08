@@ -50,23 +50,17 @@ public class StrikerTask {
                     public void run() {
 
                         try {
-                            ArrayList<Block> bloks = ticker
-                                    .getRandomTickedBlocks();
+                            ArrayList<Block> bloks = ticker.getRandomTickedBlocks();
 
                             for (Block b : bloks) {
-
                                 Block tran = b.getRelative(BlockFace.DOWN);
-
-                                if (Storm.biomes.isRainy(tran
-                                        .getBiome())) {
+                                if (Storm.biomes.isRainy(tran.getBiome())) {
                                     affectedWorld.strikeLightning(tran.getLocation());
                                 }
-
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-
                     }
                 },
                 0,
