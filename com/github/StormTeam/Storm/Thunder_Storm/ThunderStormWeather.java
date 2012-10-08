@@ -5,6 +5,7 @@ import com.github.StormTeam.Storm.Storm;
 import com.github.StormTeam.Storm.Thunder_Storm.Tasks.StrikerTask;
 import com.github.StormTeam.Storm.Weather.StormWeather;
 import java.util.Collections;
+import java.util.Random;
 
 import java.util.Set;
 import org.bukkit.Bukkit;
@@ -15,6 +16,8 @@ public class ThunderStormWeather extends StormWeather {
 
     private GlobalVariables glob;
     private StrikerTask striker;
+    private Random rand = new Random();
+    private int killID;
 
     public ThunderStormWeather(Storm storm, String world) {
         super(storm, world);
@@ -40,13 +43,30 @@ public class ThunderStormWeather extends StormWeather {
         striker = new StrikerTask(storm, temp);
         striker.run();
         Storm.util.setStormNoEvent(temp, true);
+
+        //Set the timer to kill
+        killID = Bukkit.getScheduler()
+                .scheduleAsyncDelayedTask(
+                storm,
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Storm.manager.stopWeather("storm_thunderstorm", world);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                }, 7500 + rand.nextInt(1024));
+
     }
 
     @Override
     public void end() {
         striker.stop();
         Storm.util.setStormNoEvent(Bukkit.getWorld(world), false);
-        striker = null;
+        striker = null; //Remove references        
+        Bukkit.getScheduler().cancelTask(killID);
     }
 
     @Override
