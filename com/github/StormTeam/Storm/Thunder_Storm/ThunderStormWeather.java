@@ -71,6 +71,6 @@ public class ThunderStormWeather extends StormWeather {
 
     @Override
     public Set<String> getConflicts() {
-        return Collections.EMPTY_SET;
+        return Collections.EMPTY_SET; //Yay.
     }
 }
