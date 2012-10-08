@@ -16,15 +16,17 @@ import com.github.StormTeam.Storm.BlockTickSelector;
 import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.Storm;
 import java.util.ArrayList;
+import java.util.Random;
 import org.bukkit.block.BlockFace;
 
 public class StrikerTask {
 
-    private int id;
+    private int id, end_;
     private Storm storm;
     private GlobalVariables glob;
     private BlockTickSelector ticker;
     private World affectedWorld;
+    private Random rand = new Random();
 
     public StrikerTask(Storm storm, World affectedWorld) {
         this.storm = storm;
@@ -70,9 +72,24 @@ public class StrikerTask {
                 0,
                 glob.Thunder__Storm_Scheduler_Striker__Calculation__Intervals__In__Ticks);
 
+        end_ = Bukkit.getScheduler()
+                .scheduleAsyncDelayedTask(
+                storm,
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Storm.manager.stopWeather("storm_thunderstorm", affectedWorld.getName());
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                }, 7500 + rand.nextInt(1024));
+
     }
 
     public void stop() {
         Bukkit.getScheduler().cancelTask(id);
+        Bukkit.getScheduler().cancelTask(end_);
     }
 }
