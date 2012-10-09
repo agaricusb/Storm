@@ -43,8 +43,7 @@ public class ThunderStormWeather extends StormWeather {
         }
         striker = new StrikerTask(storm, temp);
         striker.run();
-        Storm.util.setStormNoEvent(temp, true);
-
+       
         //Set the timer to kill
         killID = Bukkit.getScheduler()
                 .scheduleAsyncDelayedTask(
@@ -64,8 +63,7 @@ public class ThunderStormWeather extends StormWeather {
 
     @Override
     public void end() {
-        striker.stop();
-        Storm.util.setStormNoEvent(Bukkit.getWorld(world), false);
+        striker.stop();       
         striker = null; //Remove references        
         Bukkit.getScheduler().cancelTask(killID);
     }
