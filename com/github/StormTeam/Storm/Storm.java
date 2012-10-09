@@ -83,7 +83,7 @@ public class Storm extends JavaPlugin {
             } catch (Exception e) {
             }
 
-            //Modularity FTW!
+            //Wildfires and meteors not NAPI-compatible yet
             AcidRain.load(this);
             Lightning.load(this);
 //            Wildfire.load(this);
