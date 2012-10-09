@@ -51,20 +51,7 @@ public class BlizzardWeather extends StormWeather {
         Storm.util.setStormNoEvent(temp, true);
 
         //Set the timer to kill
-        killID = Bukkit.getScheduler()
-                .scheduleAsyncDelayedTask(
-                storm,
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            Storm.manager.stopWeather("storm_blizzard", world);
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
-                    }
-                }, 7500 + Storm.random.nextInt(1024));
-
+        killID = Storm.manager.createAutoKillTask("storm_blizzard", world, 7500 + Storm.random.nextInt(1024));
     }
 
     @Override
