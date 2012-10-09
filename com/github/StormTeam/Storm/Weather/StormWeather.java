@@ -50,7 +50,7 @@ public abstract class StormWeather {
     /**
      * Set to true to enable minecraft thunder mode.
      */
-    public boolean needThunderingFlag = false;
+    public boolean needThunderFlag = false;
     
     /**
      * Stores the world name this class manages.
