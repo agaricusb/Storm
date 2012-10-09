@@ -5,7 +5,6 @@ import com.github.StormTeam.Storm.Storm;
 import com.github.StormTeam.Storm.Thunder_Storm.Tasks.StrikerTask;
 import com.github.StormTeam.Storm.Weather.StormWeather;
 import java.util.Collections;
-import java.util.Random;
 
 import java.util.Set;
 import org.bukkit.Bukkit;
@@ -21,9 +20,8 @@ public class ThunderStormWeather extends StormWeather {
     public ThunderStormWeather(Storm storm, String world) {
         super(storm, world);
         this.glob = Storm.wConfigs.get(world);
-        this.needRainFlag = true;
-        this.needThunderFlag = true;
-    }
+        this.needRainFlag = true;      
+    }  
 
     @Override
     public String getTexture() {
@@ -36,6 +34,8 @@ public class ThunderStormWeather extends StormWeather {
             return;
         }
 
+        System.out.println("Thunderstorm start called!");
+
         World temp = Bukkit.getWorld(world);
 
         for (Player p : temp.getPlayers()) {
@@ -43,27 +43,15 @@ public class ThunderStormWeather extends StormWeather {
         }
         striker = new StrikerTask(storm, temp);
         striker.run();
-       
-        //Set the timer to kill
-        killID = Bukkit.getScheduler()
-                .scheduleAsyncDelayedTask(
-                storm,
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            Storm.manager.stopWeather("storm_thunderstorm", world);
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
-                    }
-                }, 7500 + Storm.random.nextInt(1024));
 
+        //Set the timer to kill
+        killID = Storm.manager.createAutoKillWeatherTask("storm_thunderstorm", world, 7500 + Storm.random.nextInt(1024));
     }
 
     @Override
     public void end() {
-        striker.stop();       
+        System.out.println("Thunderstorm end called!");
+        striker.stop();
         striker = null; //Remove references        
         Bukkit.getScheduler().cancelTask(killID);
     }

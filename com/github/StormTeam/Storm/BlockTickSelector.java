@@ -16,25 +16,24 @@ import net.minecraft.server.EntityHuman;
 import net.minecraft.server.WorldServer;
 import net.minecraft.server.Chunk;
 
-/*
- * @author Icyene
- * My pride and joy :3
- */
-
 public class BlockTickSelector {
 
     private WorldServer world;
-    private Method recheckGaps;
+    private Method a, recheckGaps;
     private int chan;
+    private final Random rand = new Random();
 
     public BlockTickSelector(World world, int selChance)
             throws NoSuchMethodException,
-            SecurityException, NoSuchFieldException,
-            InstantiationException, IllegalAccessException {
+            SecurityException, NoSuchFieldException, InstantiationException, IllegalAccessException {
 
         this.world = ((CraftWorld) world).getHandle();
-        recheckGaps = Chunk.class.getDeclaredMethod(Storm.version == 1.3 ? "k" : "o");  //If 1.3.X, method is named "k", else "o".
-        recheckGaps.setAccessible(true); //Is private by default
+
+        this.recheckGaps = Chunk.class.getDeclaredMethod(Storm.version == 1.3 ? "k" : "o"); //If 1.3.X, method is named "k", else "o".
+        this.recheckGaps.setAccessible(true); //Is private by default
+        this.a = net.minecraft.server.World.class.getDeclaredMethod("a", int.class, int.class, Chunk.class);
+        this.a.setAccessible(true);
+
     }
 
     public ArrayList<ChunkCoordIntPair> getRandomTickedChunks() throws InvocationTargetException, IllegalAccessException {
@@ -48,19 +47,19 @@ public class BlockTickSelector {
         List<org.bukkit.Chunk> loadedChunks = Arrays.asList(world.getWorld().getLoadedChunks());
 
         for (Object ob : world.players) {
-            
             EntityHuman entityhuman = (EntityHuman) ob;
-            int eX = (int) Math.floor(entityhuman.locX / 16), eZ = (int) Math.floor(entityhuman.locZ / 16);
-
-            for (int x = -7; x <= 7; x++) {
-                for (int z = -7; z <= 7; z++) {
-                    if (loadedChunks.contains(world.getChunkAt(x + eX, z + eZ).bukkitChunk)) { //Check if the bukkit chunk exists
+            int eX = (int) Math.floor(entityhuman.locX / 16),
+                    eZ = (int) Math.floor(entityhuman.locZ / 16);
+            byte range = 7;
+            for (int x = -range; x <= range; x++) {
+                for (int z = -range; z <= range; z++) {
+                    if (loadedChunks.contains(world.getChunkAt(x + eX, z + eZ).bukkitChunk)) {
                         doTick.add(new ChunkCoordIntPair(x + eX, z + eZ));
                     }
                 }
             }
         }
-        return doTick; //Empty list = failiure
+        return doTick;
     }
 
     public ArrayList<Block> getRandomTickedBlocks()
@@ -68,6 +67,7 @@ public class BlockTickSelector {
             IllegalAccessException, InvocationTargetException {
 
         ArrayList<Block> doTick = new ArrayList<Block>();
+
         ArrayList<ChunkCoordIntPair> ticked = getRandomTickedChunks();
 
         if (ticked.isEmpty()) {
@@ -75,14 +75,13 @@ public class BlockTickSelector {
         }
 
         for (ChunkCoordIntPair pair : ticked) {
-
-            int xOffset = pair.x << 4, zOffset = pair.z << 4; //Multiply by 16, don't use bad comments
+            int xOffset = pair.x << 4, zOffset = pair.z << 4;
             Chunk chunk = world.getChunkAt(pair.x, pair.z);
-
-            recheckGaps.invoke(chunk); //Recheck gaps
-
-            if (Storm.random.nextInt(100) < chan) {
-                int x = Storm.random.nextInt(15), z = Storm.random.nextInt(15);
+            
+            a.invoke(world, xOffset, zOffset, chunk); //Make sure chunk is loaded (?)
+            recheckGaps.invoke(chunk);
+            if (rand.nextInt(100) <= chan) {
+                int x = rand.nextInt(15), z = rand.nextInt(15);
                 doTick.add(world.getWorld().getBlockAt(x + xOffset, world.g(x + xOffset, z + zOffset), z + zOffset));
             }
         }

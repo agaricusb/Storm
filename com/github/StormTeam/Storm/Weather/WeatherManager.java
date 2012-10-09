@@ -2,7 +2,7 @@ package com.github.StormTeam.Storm.Weather;
 
 import com.github.StormTeam.Storm.Pair;
 import com.github.StormTeam.Storm.Storm;
-import com.github.StormTeam.Storm.Triplet;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -13,9 +13,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Map;
-import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -23,6 +20,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.event.world.WorldUnloadEvent;
 
 /**
@@ -161,9 +159,9 @@ public class WeatherManager implements Listener {
             return registeredWeathers.containsKey(weather);
         }
     }
-    
+
     protected StormWeather getSampleInstance(String weather) {
-        return registeredWeathers.get(w1).RIGHT.entrySet().iterator().next().getValue();
+        return registeredWeathers.get(weather).RIGHT.entrySet().iterator().next().getValue();
     }
 
     private boolean isConflictingWeatherOneWay(String w1, String w2) {
@@ -184,21 +182,24 @@ public class WeatherManager implements Listener {
         }
         return conflicts.contains(w2);
     }
-    
+
     protected void controlMinecraftFlags(String world) {
         try {
             Field needRain = StormWeather.class.getDeclaredField("needRainFlag");
             Field needThunder = StormWeather.class.getDeclaredField("needThunderFlag");
             boolean rain = false, thunder = false;
             for (String weather : getActiveWeathersReal(world)) {
+               // System.out.print
                 StormWeather sample = registeredWeathers.get(weather).RIGHT.get(world);
-                if (needRain.getBoolean(sample))
+                if (needRain.getBoolean(sample)) {
                     rain = true;
-                if (needThunder.getBoolean(sample))
+                }
+                if (needThunder.getBoolean(sample)) {
                     thunder = true;
+                }
             }
             if (currentRain != rain) {
-                Storm.util.setStormNoEvent(Bukkit.getWorld(world), rain);
+                Storm.util.setRainNoEvent(Bukkit.getWorld(world), rain);
                 currentRain = rain;
             }
             if (currentThunder != thunder) {
@@ -338,6 +339,7 @@ public class WeatherManager implements Listener {
                     worldTextures.put(world, texture);
                 }
                 getActiveWeathersReal(world).add(name);
+                controlMinecraftFlags(world);
             }
         }
     }
@@ -396,11 +398,12 @@ public class WeatherManager implements Listener {
                     worldTextures.put(world, null);
                 }
                 getActiveWeathersReal(world).remove(name);
+                controlMinecraftFlags(world);
             }
         }
     }
-    
-    public int createAutoKillWeatherTask(String name, String world, int time) {
+
+    public int createAutoKillWeatherTask(final String name, final String world, int time) {
         return Bukkit.getScheduler().scheduleAsyncDelayedTask(
                 storm,
                 new Runnable() {
@@ -474,15 +477,20 @@ public class WeatherManager implements Listener {
         } catch (WeatherNotFoundException e) {
         }
     }
-    
+
     @EventHandler
     public void weatherChangeEvent(WeatherChangeEvent event) {
         if (!event.toWeatherState()) {
             String world = event.getWorld().getName();
             List<String> worlds = Arrays.asList(world);
             synchronized (this) {
-                for (String weather : getActiveWeathersReal(world))
-                    stopWeatherReal(weather, worlds);
+                for (String weather : getActiveWeathersReal(world)) {
+                    try {
+                        stopWeatherReal(weather, worlds);
+                    } catch (WeatherNotFoundException ex) {
+                        ex.printStackTrace();
+                    }
+                }
             }
         }
     }

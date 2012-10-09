@@ -25,8 +25,9 @@ public class StrikerTask {
     private GlobalVariables glob;
     private BlockTickSelector ticker;
     private World affectedWorld;
-  
+
     public StrikerTask(Storm storm, World affectedWorld) {
+        System.out.println("Striked task constructed.");
         this.storm = storm;
         this.glob = Storm.wConfigs.get(affectedWorld.getName());
         this.affectedWorld = affectedWorld;
@@ -46,13 +47,14 @@ public class StrikerTask {
                 new Runnable() {
                     @Override
                     public void run() {
-
+                        System.out.println("Striked.");
                         try {
                             ArrayList<Block> bloks = ticker.getRandomTickedBlocks();
-
+                            System.out.println(bloks);
                             for (Block b : bloks) {
                                 Block tran = b.getRelative(BlockFace.DOWN);
                                 if (Storm.biomes.isRainy(tran.getBiome())) {
+                                    System.out.println("Striking block " + tran);
                                     affectedWorld.strikeLightning(tran.getLocation());
                                 }
                             }
@@ -62,11 +64,11 @@ public class StrikerTask {
                     }
                 },
                 0,
-                glob.Thunder__Storm_Scheduler_Striker__Calculation__Intervals__In__Ticks);     
+                glob.Thunder__Storm_Scheduler_Striker__Calculation__Intervals__In__Ticks);
 
     }
 
     public void stop() {
-        Bukkit.getScheduler().cancelTask(id);       
+        Bukkit.getScheduler().cancelTask(id);
     }
 }

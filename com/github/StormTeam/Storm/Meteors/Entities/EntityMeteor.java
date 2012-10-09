@@ -2,7 +2,6 @@ package com.github.StormTeam.Storm.Meteors.Entities;
 
 import com.github.StormTeam.Storm.Storm;
 import java.util.ArrayList;
-import java.util.Random;
 
 import net.minecraft.server.EntityFireball;
 import net.minecraft.server.EntityLiving;
@@ -106,27 +105,32 @@ public class EntityMeteor extends EntityFireball {
 
                 return;
             }
-
-            world.createExplosion(this, locX, this.locY, locZ, trailPower, true);
+            if (!Storm.util.isBlockProtected(world.getWorld().getBlockAt((int) locX, (int) locY, (int) locZ))) {
+                world.createExplosion(this, locX, this.locY, locZ, trailPower, true);
+            }
         } while (false);
-        motX *= 0.909F;
-        motY *= 0.909F;
-        motZ *= 0.909F;
+        motX *= 1.0F;
+        motY *= 1.0F;
+        motZ *= 1.0F;
     }
 
     @Override
     public void a(MovingObjectPosition movingobjectposition) {
         if (burrowCount > 0) {
             // Not yet dead, so burrow.
-            world.createExplosion(this, locX, locY, locZ, burrowPower, true);
+            if (!Storm.util.isBlockProtected(world.getWorld().getBlockAt((int) locX, (int) locY, (int) locZ))) {
+                world.createExplosion(this, locX, locY, locZ, burrowPower, true);
+            }
             --burrowCount;
             return;
         }
-        makeWinter();
-        try {
-            explode();
-        } catch (Exception e) {
-        } //Throws an NPE if explodes in unloaded chunk (locs are null). Can be ignored without consequence.
+        if (!Storm.util.isBlockProtected(world.getWorld().getBlockAt((int) locX, (int) locY, (int) locZ))) {
+            makeWinter();
+            try {
+                explode();
+            } catch (Exception e) {
+            } //Throws an NPE if explodes in unloaded chunk (locs are null). Can be ignored without consequence.
+        }
 
     }
 
@@ -277,9 +281,4 @@ public class EntityMeteor extends EntityFireball {
         return this.brightness;
     }
     public EntityLiving shooter;
-    public double dirX;
-    public double dirY;
-    public double dirZ;
-    public int yield = 0;
-    public boolean isIncendiary;
 }

@@ -4,7 +4,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -77,21 +76,23 @@ public class StormUtil extends BiomeGroups {
 
     }
 
-    public void setStormNoEvent(World world, boolean flag) {
+    public void setRainNoEvent(World world, boolean flag) {
+        System.err.println("Setting rain no event to " + flag + " for world " + world.getName());
         try {
             WorldData data = ((CraftWorld) world).getHandle().worldData;
             isRaining.set(data, flag);
-            rainTicks.setInt(flag ? 0xFFFFFFFF : 0);
-        } catch (Exception ex) {
+            rainTicks.setInt(data, flag ? Integer.MAX_VALUE : 0);
+        } catch (Exception ex) {            
             world.setStorm(true); //Can still set the storm
         }
     }
-    
+
     public void setThunderNoEvent(World world, boolean flag) {
+        System.err.println("Setting thunder no event to " + flag + " for world " + world.getName());
         try {
             WorldData data = ((CraftWorld) world).getHandle().worldData;
             isThundering.set(data, flag);
-            ThunderTicks.setInt(flag ? 0xFFFFFFFF : 0);
+            thunderTicks.setInt(data, flag ? Integer.MAX_VALUE : 0);
         } catch (Exception ex) {
             world.setStorm(true); //Can still set the storm
         }
@@ -197,7 +198,7 @@ public class StormUtil extends BiomeGroups {
     }
 
     public void clearTexture(Player toClear) {
-        setTexture(toClear, Storm.wConfigs.get(toClear.getWorld()).Textures_Default__Texture__Path);
+        setTexture(toClear, Storm.wConfigs.get(toClear.getWorld().getName()).Textures_Default__Texture__Path);
     }
 
     public boolean isPlayerUnderSky(Player player) {

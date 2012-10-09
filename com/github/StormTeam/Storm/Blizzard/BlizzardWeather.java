@@ -5,7 +5,6 @@ import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.Storm;
 import com.github.StormTeam.Storm.Weather.StormWeather;
 import java.util.HashSet;
-import java.util.Random;
 
 import java.util.Set;
 import org.bukkit.Bukkit;
@@ -48,10 +47,10 @@ public class BlizzardWeather extends StormWeather {
         damager = new PlayerTask(storm, world);
         damager.run();
 
-        Storm.util.setStormNoEvent(temp, true);
+        Storm.util.setRainNoEvent(temp, true);
 
         //Set the timer to kill
-        killID = Storm.manager.createAutoKillTask("storm_blizzard", world, 7500 + Storm.random.nextInt(1024));
+        killID = Storm.manager.createAutoKillWeatherTask("storm_blizzard", world, 7500 + Storm.random.nextInt(1024));
     }
 
     @Override
@@ -61,7 +60,7 @@ public class BlizzardWeather extends StormWeather {
         }
 
         damager.stop();
-        Storm.util.setStormNoEvent(Bukkit.getWorld(world), false);
+        Storm.util.setRainNoEvent(Bukkit.getWorld(world), false);
         damager = null; //Remove references        
         Bukkit.getScheduler().cancelTask(killID);
     }

@@ -1,6 +1,5 @@
 package com.github.StormTeam.Storm.Meteors;
 
-import com.github.StormTeam.Storm.Acid_Rain.AcidRainWeather;
 import com.github.StormTeam.Storm.GlobalVariables;
 import java.lang.reflect.Method;
 import java.util.logging.Level;
