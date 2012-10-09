@@ -399,6 +399,21 @@ public class WeatherManager implements Listener {
             }
         }
     }
+    
+    public int createAutoKillWeatherTask(String name, String world, int time) {
+        return Bukkit.getScheduler().scheduleAsyncDelayedTask(
+                storm,
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            stopWeather(name, world);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                }, time);
+    }
 
     /**
      * Event Handler to set appropriate texture for world when player switched
