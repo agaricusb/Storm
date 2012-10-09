@@ -459,4 +459,16 @@ public class WeatherManager implements Listener {
         } catch (WeatherNotFoundException e) {
         }
     }
+    
+    @EventHandler
+    public void weatherChangeEvent(WeatherChangeEvent event) {
+        if (!event.toWeatherState()) {
+            String world = event.getWorld().getName();
+            List<String> worlds = Arrays.asList(world);
+            synchronized (this) {
+                for (String weather : getActiveWeathersReal(world))
+                    stopWeatherReal(weather, worlds);
+            }
+        }
+    }
 }
