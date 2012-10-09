@@ -42,6 +42,8 @@ public class AcidRainWeather extends StormWeather {
             damager = new DamagerTask(storm, world);
             damager.run();
         }
+        
+        Storm.util.setStormNoEvent(temp, true);
 
         killID = Bukkit.getScheduler().scheduleAsyncDelayedTask(
                 storm,
@@ -65,6 +67,7 @@ public class AcidRainWeather extends StormWeather {
             dissolver = null;
             damager = null;
             Bukkit.getScheduler().cancelTask(killID);
+            Storm.util.setStormNoEvent(temp, false);
         } catch (Exception e) {
             e.printStackTrace();
         }
