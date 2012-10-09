@@ -251,8 +251,7 @@ public class EntityMeteor extends EntityFireball {
     }
 
     private Material chooseRandom(ArrayList<Material> m) {
-        Random rand = new Random();
-        return m.get(rand.nextInt(m.size()));
+        return m.get(Storm.random.nextInt(m.size()));
     }
 
     private static double lengthSq(double x, double y, double z) {

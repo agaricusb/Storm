@@ -29,11 +29,10 @@ import org.bukkit.craftbukkit.CraftWorld;
 
 public class StormUtil extends BiomeGroups {
 
-    private final Random rand = new Random();
     private WorldGuardPlugin wg;
     private boolean hasWG = false;
     private HashMap<String, BlockTickSelector> blockTickers = new HashMap<String, BlockTickSelector>();
-    private Field isRaining;
+    private Field isRaining, isThundering, rainTicks, thunderTicks;
     private Logger log;
 
     /**
@@ -64,6 +63,12 @@ public class StormUtil extends BiomeGroups {
         try {
             isRaining = WorldData.class.getDeclaredField("isRaining");
             isRaining.setAccessible(true);
+            isThundering = WorldData.class.getDeclaredField("isThundering");
+            isThundering.setAccessible(true);
+            rainTicks = WorldData.class.getDeclaredField("rainTicks");
+            rainTicks.setAccessible(true);
+            thunderTicks = WorldData.class.getDeclaredField("rainTicks");
+            thunderTicks.setAccessible(true);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -74,7 +79,19 @@ public class StormUtil extends BiomeGroups {
 
     public void setStormNoEvent(World world, boolean flag) {
         try {
-            isRaining.set(((CraftWorld) world).getHandle().worldData, flag);
+            WorldData data = ((CraftWorld) world).getHandle().worldData;
+            isRaining.set(data, flag);
+            rainTicks.setInt(flag ? 0xFFFFFFFF : 0);
+        } catch (Exception ex) {
+            world.setStorm(true); //Can still set the storm
+        }
+    }
+    
+    public void setThunderNoEvent(World world, boolean flag) {
+        try {
+            WorldData data = ((CraftWorld) world).getHandle().worldData;
+            isThundering.set(data, flag);
+            ThunderTicks.setInt(flag ? 0xFFFFFFFF : 0);
         } catch (Exception ex) {
             world.setStorm(true); //Can still set the storm
         }
@@ -170,7 +187,7 @@ public class StormUtil extends BiomeGroups {
 
     public Chunk pickChunk(World w) {
         Chunk[] loadedChunks = w.getLoadedChunks();
-        return loadedChunks[rand.nextInt(loadedChunks.length)];
+        return loadedChunks[Storm.random.nextInt(loadedChunks.length)];
     }
 
     public void setTexture(Player toSetOn, String pathToTexture) {

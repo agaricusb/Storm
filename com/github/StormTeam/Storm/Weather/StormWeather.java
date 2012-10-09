@@ -43,6 +43,16 @@ public abstract class StormWeather {
     public abstract Set<String> getConflicts();
     
     /**
+     * Set to true to enable minecraft rain mode.
+     */
+    public boolean needRainFlag = false;
+    
+    /**
+     * Set to true to enable minecraft thunder mode.
+     */
+    public boolean needThunderFlag = false;
+    
+    /**
      * Stores the world name this class manages.
      */
     public String world;

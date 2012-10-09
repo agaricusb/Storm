@@ -17,11 +17,11 @@ public class AcidRainWeather extends StormWeather {
     private DissolverTask dissolver;
     private DamagerTask damager; 
     private int killID;
-    private Random rand = new Random();
 
     public AcidRainWeather(Storm storm, String world) {
         super(storm, world);
         this.glob = Storm.wConfigs.get(world);
+        this.needRainFlag = true;
     }
 
     @Override
@@ -44,18 +44,8 @@ public class AcidRainWeather extends StormWeather {
             damager.run();
         }
 
-        killID = Bukkit.getScheduler().scheduleAsyncDelayedTask(
-                storm,
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            Storm.manager.stopWeather("storm_acidrain", world);
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
-                    }
-                }, 7500 + rand.nextInt(1024));
+        killID = Storm.manager.createAutoKillWeatherTask("storm_acidrain", world,
+                                                         7500 + Storm.random.nextInt(1024));
     }
 
     @Override

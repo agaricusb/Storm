@@ -1,19 +1,20 @@
-/*
+/**
  * Storm
  * Copyright (C) 2012 Icyene, Thidox
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program. If not, see
+ * <http://www.gnu.org/licenses/>.
  */
 package com.github.StormTeam.Storm;
 
@@ -30,6 +31,7 @@ import com.github.StormTeam.Storm.Thunder_Storm.ThunderStorm;
 import com.github.StormTeam.Storm.Weather.WeatherManager;
 
 import java.util.HashMap;
+import java.util.Random;
 import java.util.logging.Level;
 import org.bukkit.plugin.PluginManager;
 
@@ -38,6 +40,7 @@ public class Storm extends JavaPlugin {
     public static HashMap<String, GlobalVariables> wConfigs = new HashMap<String, GlobalVariables>();
     public static BiomeGroups biomes;
     public static StormUtil util;
+    public static final Random random = new Random();
     private Database db;
     public static PluginManager pm;
     public static double version;

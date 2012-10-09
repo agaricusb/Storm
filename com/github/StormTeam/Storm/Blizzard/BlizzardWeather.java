@@ -16,7 +16,6 @@ public class BlizzardWeather extends StormWeather {
 
     private GlobalVariables glob;
     private PlayerTask damager;
-    private Random rand = new Random();
     private int killID;
 
     public BlizzardWeather(Storm storm, String world) {
@@ -52,20 +51,7 @@ public class BlizzardWeather extends StormWeather {
         Storm.util.setStormNoEvent(temp, true);
 
         //Set the timer to kill
-        killID = Bukkit.getScheduler()
-                .scheduleAsyncDelayedTask(
-                storm,
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            Storm.manager.stopWeather("storm_blizzard", world);
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
-                    }
-                }, 7500 + rand.nextInt(1024));
-
+        killID = Storm.manager.createAutoKillTask("storm_blizzard", world, 7500 + Storm.random.nextInt(1024));
     }
 
     @Override

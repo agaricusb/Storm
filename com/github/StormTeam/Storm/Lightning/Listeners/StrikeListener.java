@@ -21,8 +21,6 @@ public class StrikeListener implements Listener {
     LightningUtils util;
     Storm storm;
 
-    Random rand = new Random();
-
     public StrikeListener(Storm storm) {
 	this.util = new LightningUtils(storm);
 	this.storm = storm;
@@ -47,7 +45,7 @@ public class StrikeListener implements Listener {
 	}
 
 	if (glob.Features_Lightning_Block__Attraction) {
-	    if (rand.nextInt(100) <= glob.Lightning_Attraction_Blocks_AttractionChance) {
+	    if (Storm.random.nextInt(100) < glob.Lightning_Attraction_Blocks_AttractionChance) {
 		strikeLocation = util.hitMetal(strike.getLightning()
 			.getLocation());
 		strike.getLightning().teleport(strikeLocation);
@@ -55,7 +53,7 @@ public class StrikeListener implements Listener {
 	    }
 	} else {
 	    if (glob.Features_Lightning_Player__Attraction) {
-		if (rand.nextInt(100) <= glob.Lightning_Attraction_Players_AttractionChance) {
+		if (Storm.random.nextInt(100) < glob.Lightning_Attraction_Players_AttractionChance) {
 		    strikeLocation = util.hitPlayers(strike.getLightning()
 			    .getLocation());
 		    strike.getLightning().teleport(strikeLocation);

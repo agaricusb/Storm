@@ -37,7 +37,7 @@ public class WeatherManager implements Listener {
     private Map<String, Set<String>> activeWeather = new HashMap<String, Set<String>>();
     private Map<String, Map<String, Pair<Integer, WeatherTrigger>>> weatherTriggers = new HashMap<String, Map<String, Pair<Integer, WeatherTrigger>>>();
     private Storm storm;
-    public static Random random = new Random();
+    private boolean currentRain, currentThunder;
     private Map<String, String> worldTextures = new HashMap<String, String>();
 
     public WeatherManager(Storm storm) {
@@ -161,9 +161,13 @@ public class WeatherManager implements Listener {
             return registeredWeathers.containsKey(weather);
         }
     }
+    
+    protected StormWeather getSampleInstance(String weather) {
+        return registeredWeathers.get(w1).RIGHT.entrySet().iterator().next().getValue();
+    }
 
     private boolean isConflictingWeatherOneWay(String w1, String w2) {
-        StormWeather sampleInstance = registeredWeathers.get(w1).RIGHT.entrySet().iterator().next().getValue();
+        StormWeather sampleInstance = getSampleInstance(w1);
         Method getConflicts;
         Set<String> conflicts;
         try {
@@ -179,6 +183,31 @@ public class WeatherManager implements Listener {
             return false;
         }
         return conflicts.contains(w2);
+    }
+    
+    protected void controlMinecraftFlags(String world) {
+        try {
+            Field needRain = StormWeather.class.getDeclaredField("needRainFlag");
+            Field needThunder = StormWeather.class.getDeclaredField("needThunderFlag");
+            boolean rain = false, thunder = false;
+            for (String weather : getActiveWeathersReal(world)) {
+                StormWeather sample = registeredWeathers.get(weather).RIGHT.get(world);
+                if (needRain.getBoolean(sample))
+                    rain = true;
+                if (needThunder.getBoolean(sample))
+                    thunder = true;
+            }
+            if (currentRain != rain) {
+                Storm.util.setStormNoEvent(Bukkit.getWorld(world), rain);
+                currentRain = rain;
+            }
+            if (currentThunder != thunder) {
+                Storm.util.setThunderNoEvent(Bukkit.getWorld(world), thunder);
+                currentThunder = thunder;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -370,6 +399,21 @@ public class WeatherManager implements Listener {
             }
         }
     }
+    
+    public int createAutoKillWeatherTask(String name, String world, int time) {
+        return Bukkit.getScheduler().scheduleAsyncDelayedTask(
+                storm,
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            stopWeather(name, world);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                }, time);
+    }
 
     /**
      * Event Handler to set appropriate texture for world when player switched
@@ -428,6 +472,18 @@ public class WeatherManager implements Listener {
                 }
             }
         } catch (WeatherNotFoundException e) {
+        }
+    }
+    
+    @EventHandler
+    public void weatherChangeEvent(WeatherChangeEvent event) {
+        if (!event.toWeatherState()) {
+            String world = event.getWorld().getName();
+            List<String> worlds = Arrays.asList(world);
+            synchronized (this) {
+                for (String weather : getActiveWeathersReal(world))
+                    stopWeatherReal(weather, worlds);
+            }
         }
     }
 }
