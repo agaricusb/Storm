@@ -25,6 +25,7 @@ import com.github.StormTeam.Storm.Acid_Rain.AcidRain;
 import com.github.StormTeam.Storm.Blizzard.Blizzard;
 import com.github.StormTeam.Storm.Database.Database;
 import com.github.StormTeam.Storm.Lightning.Lightning;
+import com.github.StormTeam.Storm.Meteors.Meteor;
 import com.github.StormTeam.Storm.Thunder_Storm.ThunderStorm;
 import com.github.StormTeam.Storm.Weather.WeatherManager;
 
@@ -83,12 +84,12 @@ public class Storm extends JavaPlugin {
             } catch (Exception e) {
             }
 
-            //Wildfires and meteors not NAPI-compatible yet
+            //Wildfires not NAPI-compatible yet
             AcidRain.load(this);
             Lightning.load(this);
 //            Wildfire.load(this);
             Blizzard.load(this);
-//            Meteor.load(this);
+            Meteor.load(this);
             ThunderStorm.load(this);
 
         } catch (Exception e) {

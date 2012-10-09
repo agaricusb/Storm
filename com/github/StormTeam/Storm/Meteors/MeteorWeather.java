@@ -7,6 +7,7 @@ import com.github.StormTeam.Storm.Weather.StormWeather;
 import java.util.Collections;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.Semaphore;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.World;
@@ -45,10 +46,19 @@ public class MeteorWeather extends StormWeather {
         int x = rand.nextInt(16);
         int z = rand.nextInt(16);
         Block b = chunk.getBlock(x, 4, z);
-        spawnMeteorNaturallyAndRandomly(chunk.getWorld(),
-                b.getX(),
-                b.getZ());
 
+        Semaphore mutex = new Semaphore(1);
+        try {
+            mutex.acquire();
+            spawnMeteorNaturallyAndRandomly(chunk.getWorld(),
+                    b.getX(),
+                    b.getZ());
+            mutex.release();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        //Abusing the API. Who cares?
         killID = Bukkit.getScheduler()
                 .scheduleAsyncDelayedTask(
                 storm,
@@ -61,7 +71,7 @@ public class MeteorWeather extends StormWeather {
                             ex.printStackTrace();
                         }
                     }
-                }, 100);
+                }, 1);
     }
 
     @Override
