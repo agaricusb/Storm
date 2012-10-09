@@ -59,10 +59,9 @@ public class BlockListener implements Listener {
 			
 			@Override
 			public void run() {
-				Random rand = new Random();
 				
-				float x = ((float) rand.nextInt(10) - 5F) / 10F;
-				float z = ((float) rand.nextInt(10) - 5F) / 10F;
+				float x = ((float) Storm.random.nextInt(10) - 5F) / 10F;
+				float z = ((float) Storm.random.nextInt(10) - 5F) / 10F;
 				
 				b.setType(Material.AIR);
 				fB.setVelocity(new Vector(x, 0.3F, z));
@@ -91,9 +90,8 @@ public class BlockListener implements Listener {
 		FallingBlock fB = e.getPlayer().getWorld().spawnFallingBlock(b.getLocation(), b.getType(), b.getData());
 		fB.setDropItem(true);
 		
-		Random rand = new Random();
-		float x = ((float) rand.nextInt(10) - 5F) / 10F;
-		float z = ((float) rand.nextInt(10) - 5F) / 10F;
+		float x = ((float) Storm.random.nextInt(10) - 5F) / 10F;
+		float z = ((float) Storm.random.nextInt(10) - 5F) / 10F;
 
 		b.setType(Material.AIR);
 		fB.setVelocity(new Vector(x, 0.3F, z));

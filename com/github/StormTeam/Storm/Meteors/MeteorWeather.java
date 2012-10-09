@@ -22,7 +22,6 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 public class MeteorWeather extends StormWeather {
 
     private GlobalVariables glob;
-    private Random rand = new Random();
     private int killID;
 
     public MeteorWeather(Storm storm, String world) {
@@ -42,8 +41,8 @@ public class MeteorWeather extends StormWeather {
             return;
         }
 
-        int x = rand.nextInt(16);
-        int z = rand.nextInt(16);
+        int x = Storm.random.nextInt(16);
+        int z = Storm.random.nextInt(16);
         Block b = chunk.getBlock(x, 4, z);
         spawnMeteorNaturallyAndRandomly(chunk.getWorld(),
                 b.getX(),
@@ -84,26 +83,26 @@ public class MeteorWeather extends StormWeather {
 
         EntityMeteor meteor = new EntityMeteor(
                 meteoriteWorld,
-                rand.nextInt(7) + 1,
+                Storm.random.nextInt(7) + 1,
                 10,
-                rand.nextInt(5) + 5,
-                rand.nextInt(50) + 25,
+                Storm.random.nextInt(5) + 5,
+                Storm.random.nextInt(50) + 25,
                 100,
                 glob.Natural__Disasters_Meteor_Message__On__Meteor__Crash,
                 9,
                 80,
                 glob.Natural__Disasters_Meteor_Shockwave_Damage__Message,
-                rand.nextInt(100) + 200,
+                Storm.random.nextInt(100) + 200,
                 glob.Natural__Disasters_Meteor_Meteor_Spawn,
-                rand.nextInt(6) + 3);
+                Storm.random.nextInt(6) + 3);
 
         meteor.spawn();
 
         meteor.setPosition(
                 x,
-                rand.nextInt(100) + 156,
+                Storm.random.nextInt(100) + 156,
                 z);
-        meteor.yaw = (float) rand.nextInt(360);
+        meteor.yaw = (float) Storm.random.nextInt(360);
         meteor.pitch = -9;
         meteoriteWorld.addEntity(meteor, CreatureSpawnEvent.SpawnReason.DEFAULT);
 

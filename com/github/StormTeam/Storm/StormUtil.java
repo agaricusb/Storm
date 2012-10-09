@@ -29,7 +29,6 @@ import org.bukkit.craftbukkit.CraftWorld;
 
 public class StormUtil extends BiomeGroups {
 
-    private final Random rand = new Random();
     private WorldGuardPlugin wg;
     private boolean hasWG = false;
     private HashMap<String, BlockTickSelector> blockTickers = new HashMap<String, BlockTickSelector>();
@@ -170,7 +169,7 @@ public class StormUtil extends BiomeGroups {
 
     public Chunk pickChunk(World w) {
         Chunk[] loadedChunks = w.getLoadedChunks();
-        return loadedChunks[rand.nextInt(loadedChunks.length)];
+        return loadedChunks[Storm.random.nextInt(loadedChunks.length)];
     }
 
     public void setTexture(Player toSetOn, String pathToTexture) {

@@ -16,7 +16,6 @@ public class ThunderStormWeather extends StormWeather {
 
     private GlobalVariables glob;
     private StrikerTask striker;
-    private Random rand = new Random();
     private int killID;
 
     public ThunderStormWeather(Storm storm, String world) {
@@ -57,7 +56,7 @@ public class ThunderStormWeather extends StormWeather {
                             ex.printStackTrace();
                         }
                     }
-                }, 7500 + rand.nextInt(1024));
+                }, 7500 + Storm.random.nextInt(1024));
 
     }
 
@@ -71,6 +70,6 @@ public class ThunderStormWeather extends StormWeather {
 
     @Override
     public Set<String> getConflicts() {
-        return Collections.EMPTY_SET; //Yay.
+        return Collections.EMPTY_SET;
     }
 }

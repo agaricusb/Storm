@@ -16,7 +16,6 @@ public class BlizzardWeather extends StormWeather {
 
     private GlobalVariables glob;
     private PlayerTask damager;
-    private Random rand = new Random();
     private int killID;
 
     public BlizzardWeather(Storm storm, String world) {
@@ -64,7 +63,7 @@ public class BlizzardWeather extends StormWeather {
                             ex.printStackTrace();
                         }
                     }
-                }, 7500 + rand.nextInt(1024));
+                }, 7500 + Storm.random.nextInt(1024));
 
     }
 

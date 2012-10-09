@@ -23,8 +23,6 @@ import com.github.StormTeam.Storm.Storm;
  */
 
 public class LightningUtils {
-
-    final Random rand = new Random();
     Storm storm;
 
     public LightningUtils(Storm storm) {
@@ -69,7 +67,7 @@ public class LightningUtils {
 	ChunkSnapshot snapshot = chunk.getChunkSnapshot(true, false, false);
 	List<Location> list = findLightningRods(chunk);
 	if ((list != null) && (!list.isEmpty())) {
-	    Location tmp = list.get(rand.nextInt(list.size()));
+	    Location tmp = list.get(Storm.random.nextInt(list.size()));
 	    return tmp;
 	}
 	Entity[] entities = chunk.getEntities();
@@ -134,12 +132,12 @@ public class LightningUtils {
 	List<Player> players = world.getPlayers();
 	if ((players == null) || (players.isEmpty()))
 	    return null;
-	Player player = players.get(rand.nextInt(players.size()));
+	Player player = players.get(Storm.random.nextInt(players.size()));
 
 	List<Block> blocks = player.getLastTwoTargetBlocks(null, 100);
-	if ((blocks != null) && (rand.nextInt(100) < 30)) {
+	if ((blocks != null) && (Storm.random.nextInt(100) < 30)) {
 	    return world.getChunkAt(
-		    (blocks.get(rand.nextInt(blocks.size()))).getLocation());
+		    (blocks.get(Storm.random.nextInt(blocks.size()))).getLocation());
 	}
 	return world.getChunkAt(player.getLocation());
     }

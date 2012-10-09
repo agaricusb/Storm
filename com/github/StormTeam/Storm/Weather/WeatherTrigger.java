@@ -4,6 +4,7 @@
  */
 package com.github.StormTeam.Storm.Weather;
 
+import com.github.StormTeam.Storm.Storm;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -26,7 +27,7 @@ public class WeatherTrigger implements Runnable {
      */
     @Override
     public void run() {
-        if (WeatherManager.random.nextInt(100) < chance) {
+        if (Storm.random.nextInt(100) < chance) {
             try {
                 manager.startWeather(weather, world);
             } catch (Exception e) {

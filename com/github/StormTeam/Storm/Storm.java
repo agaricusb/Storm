@@ -29,6 +29,7 @@ import com.github.StormTeam.Storm.Thunder_Storm.ThunderStorm;
 import com.github.StormTeam.Storm.Weather.WeatherManager;
 
 import java.util.HashMap;
+import java.util.Random;
 import java.util.logging.Level;
 import org.bukkit.plugin.PluginManager;
 
@@ -37,6 +38,7 @@ public class Storm extends JavaPlugin {
     public static HashMap<String, GlobalVariables> wConfigs = new HashMap<String, GlobalVariables>();
     public static BiomeGroups biomes;
     public static StormUtil util;
+    public static final Random random = new Random();
     private Database db;
     public static PluginManager pm;
     public static double version;

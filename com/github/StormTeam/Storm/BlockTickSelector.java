@@ -26,7 +26,6 @@ public class BlockTickSelector {
     private WorldServer world;
     private Method recheckGaps;
     private int chan;
-    private final Random rand = new Random();
 
     public BlockTickSelector(World world, int selChance)
             throws NoSuchMethodException,
@@ -77,13 +76,13 @@ public class BlockTickSelector {
 
         for (ChunkCoordIntPair pair : ticked) {
 
-            int xOffset = pair.x << 4, zOffset = pair.z << 4; //Multiply by 4, obviously.
+            int xOffset = pair.x << 4, zOffset = pair.z << 4; //Multiply by 16, don't use bad comments
             Chunk chunk = world.getChunkAt(pair.x, pair.z);
 
             recheckGaps.invoke(chunk); //Recheck gaps
 
-            if (rand.nextInt(100) <= chan) {
-                int x = rand.nextInt(15), z = rand.nextInt(15);
+            if (Storm.random.nextInt(100) < chan) {
+                int x = Storm.random.nextInt(15), z = Storm.random.nextInt(15);
                 doTick.add(world.getWorld().getBlockAt(x + xOffset, world.g(x + xOffset, z + zOffset), z + zOffset));
             }
         }
