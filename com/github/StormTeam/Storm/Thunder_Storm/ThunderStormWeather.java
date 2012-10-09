@@ -21,6 +21,8 @@ public class ThunderStormWeather extends StormWeather {
     public ThunderStormWeather(Storm storm, String world) {
         super(storm, world);
         this.glob = Storm.wConfigs.get(world);
+        this.needRainFlag = true;
+        this.needThunderFlag = true;
     }
 
     @Override
