@@ -32,7 +32,7 @@ public class StormUtil extends BiomeGroups {
     private WorldGuardPlugin wg;
     private boolean hasWG = false;
     private HashMap<String, BlockTickSelector> blockTickers = new HashMap<String, BlockTickSelector>();
-    private Field isRaining;
+    private Field isRaining, isThundering;
     private Logger log;
 
     /**
@@ -63,6 +63,8 @@ public class StormUtil extends BiomeGroups {
         try {
             isRaining = WorldData.class.getDeclaredField("isRaining");
             isRaining.setAccessible(true);
+            isThundering = WorldData.class.getDeclaredField("isThundering");
+            isThundering.setAccessible(true);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -74,6 +76,14 @@ public class StormUtil extends BiomeGroups {
     public void setStormNoEvent(World world, boolean flag) {
         try {
             isRaining.set(((CraftWorld) world).getHandle().worldData, flag);
+        } catch (Exception ex) {
+            world.setStorm(true); //Can still set the storm
+        }
+    }
+    
+    public void setThunderNoEvent(World world, boolean flag) {
+        try {
+            isThundering.set(((CraftWorld) world).getHandle().worldData, flag);
         } catch (Exception ex) {
             world.setStorm(true); //Can still set the storm
         }
