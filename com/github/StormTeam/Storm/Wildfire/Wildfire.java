@@ -2,7 +2,6 @@ package com.github.StormTeam.Storm.Wildfire;
 
 import com.github.StormTeam.Storm.GlobalVariables;
 import java.util.Arrays;
-import java.util.List;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -89,10 +88,10 @@ public class Wildfire {
             wildfireBlocks.get(world).add(fire);
             return;
         }
-        GetWFBlocks(world).add(fire);
+        getWFBlocks(world).add(fire);
     }
     
-    public static Set<org.bukkit.block.Block> GetWFBlocks(String world) {
+    public static Set<org.bukkit.block.Block> getWFBlocks(String world) {
         Set<org.bukkit.block.Block> set = wildfireBlocks.get(world);
         if (set == null) {
             set = new HashSet();

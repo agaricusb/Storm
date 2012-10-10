@@ -47,7 +47,7 @@ public class StrikerTask {
                             System.out.println(bloks);
                             for (Block b : bloks) {
                                 Block tran = b.getRelative(BlockFace.DOWN);
-                                if (Storm.biomes.isRainy(tran.getBiome())) {                                    
+                                if (Storm.util.isRainy(tran.getBiome())) {                                    
                                     affectedWorld.strikeLightning(tran.getLocation());
                                 }
                             }

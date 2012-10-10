@@ -46,7 +46,7 @@ public class DissolverTask {
                                 Block tran = b.getRelative(BlockFace.DOWN);
 
                                 if (!Storm.util.isBlockProtected(tran)) {
-                                    if (Storm.biomes.isRainy(tran
+                                    if (Storm.util.isRainy(tran
                                             .getBiome())
                                             && tran.getTypeId() != 0) {
                                         Storm.util

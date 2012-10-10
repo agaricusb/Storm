@@ -46,8 +46,7 @@ public class Storm extends JavaPlugin {
      *                      The-people-who-made-this-plugin
      */
     
-    public static HashMap<String, GlobalVariables> wConfigs = new HashMap<String, GlobalVariables>();
-    public static BiomeGroups biomes;
+    public static HashMap<String, GlobalVariables> wConfigs = new HashMap<String, GlobalVariables>();   
     public static StormUtil util;
     public static final Random random = new Random();
     private Database db;
@@ -67,8 +66,7 @@ public class Storm extends JavaPlugin {
             manager = new WeatherManager(this);
             pm.registerEvents(manager, this); //Register texture events
 
-            util = new StormUtil(this);
-            biomes = new BiomeGroups();
+            util = new StormUtil(this);            
             db = Database.Obtain(this, null);
 
             // Stats

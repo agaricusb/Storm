@@ -23,10 +23,12 @@ import org.bukkit.plugin.Plugin;
 import com.sk89q.worldguard.bukkit.BukkitUtil;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import net.minecraft.server.WorldData;
+import org.bukkit.block.Biome;
 import org.bukkit.craftbukkit.CraftWorld;
 
-public class StormUtil extends BiomeGroups {
+public class StormUtil {
 
     private WorldGuardPlugin wg;
     private boolean hasWG = false;
@@ -242,5 +244,41 @@ public class StormUtil extends BiomeGroups {
             }
         }
         return false;
+    }
+    //Biome stuff
+    private final List<Biome> rainBiomes = Arrays.asList(Biome.EXTREME_HILLS,
+            Biome.FOREST, Biome.FOREST_HILLS,
+            Biome.JUNGLE,
+            Biome.JUNGLE_HILLS, Biome.MUSHROOM_ISLAND,
+            Biome.MUSHROOM_SHORE,
+            Biome.PLAINS, Biome.OCEAN, Biome.RIVER,
+            Biome.SWAMPLAND, Biome.SKY,
+            Biome.SMALL_MOUNTAINS);
+    private final List<Biome> desertBiomes = Arrays.asList(Biome.DESERT, Biome.DESERT_HILLS);
+    private final List<Biome> forestBiomes = Arrays.asList(Biome.FOREST, Biome.FOREST_HILLS);
+    private final List<Biome> jungleBiomes = Arrays.asList(Biome.JUNGLE_HILLS, Biome.MUSHROOM_ISLAND);
+    private final List<Biome> snowyBiomes = Arrays.asList(Biome.FROZEN_OCEAN, Biome.FROZEN_RIVER,
+            Biome.ICE_MOUNTAINS,
+            Biome.ICE_PLAINS, Biome.TAIGA,
+            Biome.TAIGA_HILLS);
+
+    public boolean isRainy(Biome b) {
+        return rainBiomes.contains(b);
+    }
+
+    public boolean isForest(Biome b) {
+        return forestBiomes.contains(b) || jungleBiomes.contains(b);
+    }
+
+    public boolean isDesert(Biome b) {
+        return desertBiomes.contains(b);
+    }
+
+    public boolean isTundra(Biome b) {
+        return snowyBiomes.contains(b);
+    }
+
+    public boolean isSnowy(Biome b) {
+        return isTundra(b);
     }
 }

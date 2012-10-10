@@ -32,7 +32,7 @@ public class SnowLayer extends BlockSnow {
             return;
         }
 
-        if (!Storm.biomes.isTundra(inSnow.getLocation().getBlock().getBiome())) {
+        if (!Storm.util.isTundra(inSnow.getLocation().getBlock().getBiome())) {
             return;
         }
 
