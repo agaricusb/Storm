@@ -23,7 +23,7 @@ public class Wildfire {
     public static HashMap<String, List<org.bukkit.block.Block>> wildfireBlocks = new HashMap<String, List<org.bukkit.block.Block>>();
     public static List<Integer> flammableList = Arrays.asList(Block.FENCE.id, Block.WOOD.id, Block.WOOD_STAIRS.id,
             Block.WOODEN_DOOR.id, Block.LEAVES.id, Block.BOOKSHELF.id,
-            Block.GRASS.id, Block.WOOL.id, Block.VINE.id);
+            Block.GRASS.id, Block.WOOL.id);
     public static Storm storm;
     private static CommandExecutor exec;
 

@@ -36,6 +36,16 @@ import org.bukkit.plugin.PluginManager;
 
 public class Storm extends JavaPlugin {
 
+    /**
+     * Dear BukkitDev administrator(s):
+     * 
+     *      Thank you for your time in reviewing this project! If you find anything in it that makes you cry inside, will you
+     *      please let us know so we can fix/improve it?      
+     * 
+     *              Thanks in advance, 
+     *                      The-people-who-made-this-plugin
+     */
+    
     public static HashMap<String, GlobalVariables> wConfigs = new HashMap<String, GlobalVariables>();
     public static BiomeGroups biomes;
     public static StormUtil util;
@@ -51,19 +61,9 @@ public class Storm extends JavaPlugin {
 
             pm = getServer().getPluginManager();
 
-            String v = getServer().getVersion();
-            if (v.contains("1.2.")) {
-                version = 1.2;
-                getLogger().log(Level.INFO, "Loading with MC 1.2.X compatibility.");
-            } else {
-                if (v.contains("1.3.")) {
-                    version = 1.3;
-                    getLogger().log(Level.INFO, "Loading with MC 1.3.X compatibility.");
-                } else {
-                    getLogger().log(Level.SEVERE, "Unsupported MC version detected!");
-                }
-            }
-
+            configureVersion();
+            initConfiguration();
+            
             manager = new WeatherManager(this);
             pm.registerEvents(manager, this); //Register texture events
 
@@ -71,23 +71,12 @@ public class Storm extends JavaPlugin {
             biomes = new BiomeGroups();
             db = Database.Obtain(this, null);
 
-            // Make per-world configuration files           
-            for (World w : Bukkit.getWorlds()) {
-                String world = w.getName();
-                GlobalVariables config = new GlobalVariables(this, world);
-                config.load();
-                wConfigs.put(world, config);
-            }
-
-            pm.registerEvents(new WorldConfigLoader(this), this); //For late loading worlds
-
             // Stats
             try {
                 new MetricsLite(this).start();
             } catch (Exception e) {
             }
-
-            //Wildfires not NAPI-compatible yet
+          
             AcidRain.load(this);
             Lightning.load(this);
             Wildfire.load(this);
@@ -108,5 +97,33 @@ public class Storm extends JavaPlugin {
     public void crashDisable(String crash) {
         util.log(Level.SEVERE, crash + " Storm disabled.");
         this.setEnabled(false);
+    }
+    
+    private void configureVersion() {
+          String v = getServer().getVersion();
+            if (v.contains("1.2.")) {
+                version = 1.2;
+                getLogger().log(Level.INFO, "Loading with MC 1.2.X compatibility.");
+            } else {
+                if (v.contains("1.3.")) {
+                    version = 1.3;
+                    getLogger().log(Level.INFO, "Loading with MC 1.3.X compatibility.");
+                } else {
+                    getLogger().log(Level.SEVERE, "Unsupported MC version detected!");
+                }
+            }
+    }
+    
+    private void initConfiguration() {
+        
+            // Make per-world configuration files           
+            for (World w : Bukkit.getWorlds()) {
+                String world = w.getName();
+                GlobalVariables config = new GlobalVariables(this, world);
+                config.load();
+                wConfigs.put(world, config);
+            }
+
+            pm.registerEvents(new WorldConfigLoader(this), this); //For late loading worlds
     }
 }

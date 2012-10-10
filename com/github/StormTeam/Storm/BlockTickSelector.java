@@ -67,7 +67,6 @@ public class BlockTickSelector {
             IllegalAccessException, InvocationTargetException {
 
         ArrayList<Block> doTick = new ArrayList<Block>();
-
         ArrayList<ChunkCoordIntPair> ticked = getRandomTickedChunks();
 
         if (ticked.isEmpty()) {
