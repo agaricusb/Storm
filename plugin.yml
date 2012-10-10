@@ -1,6 +1,7 @@
 name: Storm
 author: [Icyene, hammale, Thidox]
 version: 0.0.7B
+softdepend: [WorldGuard]
 main: com.github.StormTeam.Storm.Storm
 description: Redefining weather.
 
