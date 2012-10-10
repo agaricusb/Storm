@@ -14,9 +14,10 @@ import com.github.StormTeam.Storm.GlobalVariables;
 public class Blizzard {
 
     private static CommandExecutor exec;
+    public static SnowModder modder;
 
     public static void load(Storm ztorm) {
-
+        modder = new SnowModder();
         try {
             Storm.manager.registerWeather(BlizzardWeather.class, "storm_blizzard");
 
@@ -44,7 +45,7 @@ public class Blizzard {
                 } else {
                     if (args[0] != null) {
                         if (!blizzard(args[0])) {
-                           sender.sendMessage("Blizzards not enabled in specified world or are conflicting with another weather!");
+                            sender.sendMessage("Blizzards not enabled in specified world or are conflicting with another weather!");
                         }
                         return true;
                     }
@@ -61,7 +62,7 @@ public class Blizzard {
             if (Storm.manager.getActiveWeathers(world).contains("storm_blizzard")) {
                 Storm.manager.stopWeather("storm_blizzard", world);
                 return true;
-            } else {               
+            } else {
                 return !Storm.manager.startWeather("storm_blizzard", world);
             }
         } catch (Exception ex) {

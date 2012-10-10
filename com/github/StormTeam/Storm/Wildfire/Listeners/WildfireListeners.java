@@ -16,54 +16,45 @@ import static com.github.StormTeam.Storm.Wildfire.Wildfire.wildfireBlocks;
 
 public class WildfireListeners implements Listener {
 
-    // Dear future me. Please forgive me.
-    // I can't even begin to express how sorry I am.
     @EventHandler
-    public void onBlockIgnite(final BlockIgniteEvent event) {
+    public void onBlockIgnite(BlockIgniteEvent event) {
 
         if (!event.getCause().equals(IgniteCause.SPREAD)) {
             return;
         }
         Location loc = event.getBlock().getLocation();
-        World w = loc.getWorld();
+        World world = loc.getWorld();
+        int ox = (int) loc.getX(), oy = (int) loc.getY(), oz = (int) loc.getZ();
+        String name = loc.getWorld().getName();
 
         GlobalVariables glob;
 
-        if (Storm.wConfigs.containsKey(w)) {
-            glob = Storm.wConfigs.get(w);
-        } else {
+        if (!Storm.wConfigs.containsKey(name)) {
             return;
         }
+        glob = Storm.wConfigs.get(name);
 
-        if (wildfireBlocks.containsKey(w)
-                && (wildfireBlocks.get(w).size() < glob.Natural__Disasters_Maximum__Fires)) {
+        if (wildfireBlocks.containsKey(name)
+                && (wildfireBlocks.get(name).size() < glob.Natural__Disasters_Maximum__Fires)) {
 
             boolean doScan = false;
 
-            final int radiuski = glob.Natural__Disasters_Wildfires_Scan__Radius;
+            int radiuski = glob.Natural__Disasters_Wildfires_Scan__Radius;
 
             for (int x = -radiuski; x <= radiuski; x++) {
                 for (int y = -radiuski; y <= radiuski; y++) {
                     for (int z = -radiuski; z <= radiuski; z++) {
-                        if (wildfireBlocks.containsKey(w)
-                                && wildfireBlocks.get(w).contains(
-                                new Location(w, x + loc.getX(), y
-                                + loc.getY(), z + loc.getZ())
-                                .getBlock())) {
+                        if (wildfireBlocks.containsKey(name) && wildfireBlocks.get(name).contains(
+                                new Location(world, x + ox, y + oy /*OY!*/, z + oz).getBlock())) {
 
                             doScan = true;
-
                         }
-
                     }
                 }
             }
 
             if (doScan) {
-
-                scanForIgnitables(loc, w, radiuski,
-                        glob.Natural__Disasters_Wildfires_Spread__Limit);
-
+                scanForIgnitables(loc, world, radiuski, glob.Natural__Disasters_Wildfires_Spread__Limit);
             }
         }
 
@@ -71,11 +62,11 @@ public class WildfireListeners implements Listener {
 
     @EventHandler
     public void onBlockEx(final BlockFadeEvent event) {
-        final Block b = event.getBlock();
-        final World w = b.getWorld();
+        Block faded = event.getBlock();
+        String name = faded.getWorld().getName();
 
-        if (wildfireBlocks.containsKey(w)) {
-            wildfireBlocks.remove(b.getWorld());
+        if (wildfireBlocks.containsKey(name)) {
+            wildfireBlocks.get(name).remove(faded);
         }
 
     }
@@ -83,7 +74,6 @@ public class WildfireListeners implements Listener {
     private void scanForIgnitables(final Location loc, final World w,
             int radiuski, int spreadLimit) {
         Block bR;
-
         int C = 0;
 
         for (int x = -radiuski; x <= radiuski; x++) {
@@ -134,28 +124,22 @@ public class WildfireListeners implements Listener {
 
                     burn(bR);
                     C++;
-
                 }
             }
         }
     }
 
-    public void burn(final Block toBurn) {
-
-        if (!canBurn(toBurn)) {
-            return;
+    public void burn(Block toBurn) {
+        if (canBurn(toBurn)) {
+            String name = toBurn.getWorld().getName();
+            if (wildfireBlocks.containsKey(name)) {
+                toBurn.setTypeId(51);
+                wildfireBlocks.get(name).add(toBurn);
+            }
         }
-
-        toBurn.setTypeId(51);
-        World world = toBurn.getWorld();
-        if (wildfireBlocks.containsKey(world)) {
-            wildfireBlocks.get(world).add(toBurn);
-        }
-
     }
 
     public boolean canBurn(Block toCheck) {
         return Wildfire.flammableList.contains(toCheck.getTypeId());
-
     }
 }

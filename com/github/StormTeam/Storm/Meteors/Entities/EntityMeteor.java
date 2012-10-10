@@ -141,13 +141,10 @@ public class EntityMeteor extends EntityFireball {
                 locX, locY, locZ), shockwaveDamageRadius, shockwaveDamage,
                 damageMessage, "storm.meteor.immune");
 
-        for (Player p : world.getWorld().getPlayers()) {
-            Storm.util.message(
-                    p,
-                    this.meteorCrashMessage.replace("%x", (int) locX + "")
-                    .replace("%z", (int) locZ + "")
-                    .replace("%y", (int) locY + ""));
-        }
+        Storm.util.broadcast(this.meteorCrashMessage.replace("%x", (int) locX + "")
+                .replace("%z", (int) locZ + "")
+                .replace("%y", (int) locY + ""), world.getWorld());
+
         if (this.spawnMeteorOnImpact) {
             this.spawnMeteor(new Location(world.getWorld(), locX, locY, locZ));
         }
@@ -178,10 +175,10 @@ public class EntityMeteor extends EntityFireball {
         double radius_ = radius + 0.5;
         final int ceilRadiusX, ceilRadiusY, ceilRadiusZ;
         final double invRadiusX, invRadiusY, invRadiusZ;
-        
+
         invRadiusX = invRadiusY = invRadiusZ = 1 / radius_;
         ceilRadiusX = ceilRadiusY = ceilRadiusZ = (int) radius_ + 1;
-        
+
         double nextXn = 0;
         forX:
         for (int x = 0; x <= ceilRadiusX; ++x) {
@@ -210,8 +207,8 @@ public class EntityMeteor extends EntityFireball {
                     }
 
                     if (!filled && lengthSq(nextXn, yn, zn) <= 1
-                                && lengthSq(xn, nextYn, zn) <= 1
-                                && lengthSq(xn, yn, nextZn) <= 1) {
+                            && lengthSq(xn, nextYn, zn) <= 1
+                            && lengthSq(xn, yn, nextZn) <= 1) {
                         continue;
                     }
 

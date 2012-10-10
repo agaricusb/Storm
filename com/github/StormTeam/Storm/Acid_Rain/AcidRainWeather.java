@@ -5,7 +5,6 @@ import com.github.StormTeam.Storm.Acid_Rain.Tasks.DissolverTask;
 import java.util.*;
 
 import org.bukkit.*;
-import org.bukkit.entity.Player;
 
 import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.Storm;
@@ -30,9 +29,7 @@ public class AcidRainWeather extends StormWeather {
             return;
         }
 
-        for (Player p : Bukkit.getWorld(world).getPlayers()) {
-            Storm.util.message(p, glob.Acid__Rain_Messages_On__Acid__Rain__Start);
-        }
+        Storm.util.broadcast(glob.Acid__Rain_Messages_On__Acid__Rain__Start, world);
 
         if (glob.Features_Acid__Rain_Dissolving__Blocks) {
             dissolver = new DissolverTask(storm, world);
@@ -50,9 +47,7 @@ public class AcidRainWeather extends StormWeather {
     @Override
     public void end() {
         try {
-            for (Player p : Bukkit.getWorld(world).getPlayers()) {
-                Storm.util.message(p, glob.Acid__Rain_Messages_On__Acid__Rain__Stop);
-            }
+            Storm.util.broadcast(glob.Acid__Rain_Messages_On__Acid__Rain__Stop, world);
             dissolver.stop();
             damager.stop();
             dissolver = null;

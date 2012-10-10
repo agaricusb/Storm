@@ -5,7 +5,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -21,8 +20,7 @@ public class BlockTickSelector {
     private WorldServer world;
     private Method a, recheckGaps;
     private int chan;
-    private final Random rand = new Random();
-
+ 
     public BlockTickSelector(World world, int selChance)
             throws NoSuchMethodException,
             SecurityException, NoSuchFieldException, InstantiationException, IllegalAccessException {
@@ -75,12 +73,11 @@ public class BlockTickSelector {
 
         for (ChunkCoordIntPair pair : ticked) {
             int xOffset = pair.x << 4, zOffset = pair.z << 4;
-            Chunk chunk = world.getChunkAt(pair.x, pair.z);
-            
+            Chunk chunk = world.getChunkAt(pair.x, pair.z);            
             a.invoke(world, xOffset, zOffset, chunk); //Make sure chunk is loaded (?)
             recheckGaps.invoke(chunk);
-            if (rand.nextInt(100) <= chan) {
-                int x = rand.nextInt(15), z = rand.nextInt(15);
+            if (Storm.random.nextInt(100) <= chan) {
+                int x = Storm.random.nextInt(15), z = Storm.random.nextInt(15);
                 doTick.add(world.getWorld().getBlockAt(x + xOffset, world.g(x + xOffset, z + zOffset), z + zOffset));
             }
         }
