@@ -4,6 +4,8 @@ import com.github.StormTeam.Storm.GlobalVariables;
 import java.util.Arrays;
 import java.util.List;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.bukkit.World;
 import org.bukkit.Location;
@@ -20,10 +22,10 @@ import org.bukkit.Bukkit;
 
 public class Wildfire {
 
-    public static HashMap<String, List<org.bukkit.block.Block>> wildfireBlocks = new HashMap<String, List<org.bukkit.block.Block>>();
-    public static List<Integer> flammableList = Arrays.asList(Block.FENCE.id, Block.WOOD.id, Block.WOOD_STAIRS.id,
+    public static HashMap<String, Set<org.bukkit.block.Block>> wildfireBlocks = new HashMap<String, Set<org.bukkit.block.Block>>();
+    public static Set<Integer> flammable = new HashSet<Integer>(Arrays.asList(Block.FENCE.id, Block.WOOD.id, Block.WOOD_STAIRS.id,
             Block.WOODEN_DOOR.id, Block.LEAVES.id, Block.BOOKSHELF.id,
-            Block.GRASS.id, Block.WOOL.id);
+            Block.GRASS.id, Block.WOOL.id));
     public static Storm storm;
     private static CommandExecutor exec;
 
@@ -87,6 +89,15 @@ public class Wildfire {
             wildfireBlocks.get(world).add(fire);
             return;
         }
-        wildfireBlocks.put(world, Arrays.asList(fire));
+        GetWFBlocks(world).add(fire);
+    }
+    
+    public static Set<org.bukkit.block.Block> GetWFBlocks(String world) {
+        Set<org.bukkit.block.Block> set = wildfireBlocks.get(world);
+        if (set == null) {
+            set = new HashSet();
+            wildfireBlocks.put(world, set);
+        }
+        return set;
     }
 }
