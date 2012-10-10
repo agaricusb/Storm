@@ -175,17 +175,13 @@ public class EntityMeteor extends EntityFireball {
 
     public void makeSphere(Location pos, Material block, double radius,
             boolean filled, boolean random, ArrayList<Material> m) {
-        double radiusX = radius + 0.5;
-        double radiusY = radius + 0.5;
-        double radiusZ = radius + 0.5;
-
-        final double invRadiusX = 1 / radiusX;
-        final double invRadiusY = 1 / radiusY;
-        final double invRadiusZ = 1 / radiusZ;
-
-        final int ceilRadiusX = (int) Math.ceil(radiusX);
-        final int ceilRadiusY = (int) Math.ceil(radiusY);
-        final int ceilRadiusZ = (int) Math.ceil(radiusZ);
+        double radius_ = radius + 0.5;
+        final int ceilRadiusX, ceilRadiusY, ceilRadiusZ;
+        final double invRadiusX, invRadiusY, invRadiusZ;
+        
+        invRadiusX = invRadiusY = invRadiusZ = 1 / radius_;
+        ceilRadiusX = ceilRadiusY = ceilRadiusZ = (int) radius_ + 1;
+        
         double nextXn = 0;
         forX:
         for (int x = 0; x <= ceilRadiusX; ++x) {
@@ -213,40 +209,18 @@ public class EntityMeteor extends EntityFireball {
                         break forZ;
                     }
 
-                    if (!filled) {
-                        if (lengthSq(nextXn, yn, zn) <= 1
+                    if (!filled && lengthSq(nextXn, yn, zn) <= 1
                                 && lengthSq(xn, nextYn, zn) <= 1
                                 && lengthSq(xn, yn, nextZn) <= 1) {
-                            continue;
-                        }
+                        continue;
                     }
 
-                    if (!random) {
-                        pos.clone().add(x, y, z).getBlock().setType(block);
-                        pos.clone().add(-x, y, z).getBlock().setType(block);
-                        pos.clone().add(x, y, -z).getBlock().setType(block);
-                        pos.clone().add(-x, -y, z).getBlock().setType(block);
-                        pos.clone().add(x, -y, -z).getBlock().setType(block);
-                        pos.clone().add(-x, y, -z).getBlock().setType(block);
-                        pos.clone().add(-x, -y, -z).getBlock().setType(block);
-                        pos.clone().add(x, -y, z).getBlock().setType(block);
-                    } else {
-                        pos.clone().add(x, y, z).getBlock()
-                                .setType(chooseRandom(m));
-                        pos.clone().add(-x, y, z).getBlock()
-                                .setType(chooseRandom(m));
-                        pos.clone().add(x, y, -z).getBlock()
-                                .setType(chooseRandom(m));
-                        pos.clone().add(-x, -y, z).getBlock()
-                                .setType(chooseRandom(m));
-                        pos.clone().add(x, -y, -z).getBlock()
-                                .setType(chooseRandom(m));
-                        pos.clone().add(-x, y, -z).getBlock()
-                                .setType(chooseRandom(m));
-                        pos.clone().add(-x, -y, -z).getBlock()
-                                .setType(chooseRandom(m));
-                        pos.clone().add(x, -y, z).getBlock()
-                                .setType(chooseRandom(m));
+                    for (int i = 0; i < 8; ++i) {
+                        pos.clone().add((i & 4) == 0 ? x : -x,
+                                (i & 2) == 0 ? y : -y,
+                                (i & 1) == 0 ? z : -z)
+                                .getBlock()
+                                .setType(random ? chooseRandom(m) : block);
                     }
                 }
             }
