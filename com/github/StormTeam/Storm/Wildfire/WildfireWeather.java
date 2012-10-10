@@ -10,7 +10,6 @@ import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
 
 /**
  * @author Tudor
@@ -37,6 +36,10 @@ public class WildfireWeather extends StormWeather { //TODO: Make use of getTicke
         while (true) {
             Chunk chunk = Storm.util.pickChunk(affectedWorld);
 
+            if (chunk == null) {
+                return;
+            }
+
             int x = Storm.random.nextInt(15), z = Storm.random.nextInt(15);
 
             toBurn = chunk.getWorld().getHighestBlockAt(chunk.getBlock(x, 4, z).getLocation()).getLocation().subtract(0, 1, 0).getBlock();
@@ -52,14 +55,11 @@ public class WildfireWeather extends StormWeather { //TODO: Make use of getTicke
             if (Wildfire.wildfireBlocks.containsKey((world = toBurn.getWorld().getName()))) {
                 Wildfire.wildfireBlocks.get(world).add(toBurn);
                 toBurn.setType(Material.FIRE);
-                for (Player player : affectedWorld.getPlayers()) {
-                    Storm.util.message(player,
-                            glob.Natural__Disasters_Wildfires_Messages_On__Start.replace("%x", toBurn.getX() + "")
-                            .replace("%y", toBurn.getY() + "").replace("%z", toBurn.getZ() + ""));
-                }
+                Storm.util.broadcast(glob.Natural__Disasters_Wildfires_Messages_On__Start.replace("%x", toBurn.getX() + "")
+                        .replace("%y", toBurn.getY() + "").replace("%z", toBurn.getZ() + ""), affectedWorld);
             }
         }
-        //Abusing the API once again. Who cares?
+        //Abusing the API once again. Once again, who cares?
         killID = Storm.manager.createAutoKillWeatherTask("storm_wildfire", world, 1);
     }
 

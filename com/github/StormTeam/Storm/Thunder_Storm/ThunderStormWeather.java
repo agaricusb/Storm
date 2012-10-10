@@ -32,13 +32,12 @@ public class ThunderStormWeather extends StormWeather {
     public void start() {
         if (!glob.Features_Thunder__Storms) {
             return;
-        }    
+        }
 
         World temp = Bukkit.getWorld(world);
 
-        for (Player p : temp.getPlayers()) {
-            Storm.util.message(p, glob.Thunder__Storm_Messages_On__Thunder__Storm__Start);
-        }
+        Storm.util.broadcast(glob.Thunder__Storm_Messages_On__Thunder__Storm__Start, world);
+
         striker = new StrikerTask(storm, temp);
         striker.run();
 
@@ -47,10 +46,8 @@ public class ThunderStormWeather extends StormWeather {
     }
 
     @Override
-    public void end() {        
-        for (Player p : Bukkit.getWorld(world).getPlayers()) {
-            Storm.util.message(p, glob.Thunder__Storm_Messages_On__Thunder__Storm__Stop);
-        }
+    public void end() {
+        Storm.util.broadcast(glob.Thunder__Storm_Messages_On__Thunder__Storm__Stop, world);
         striker.stop();
         striker = null; //Remove references        
         Bukkit.getScheduler().cancelTask(killID);

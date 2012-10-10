@@ -9,7 +9,6 @@ import java.util.HashSet;
 import java.util.Set;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.entity.Player;
 
 public class BlizzardWeather extends StormWeather {
 
@@ -36,12 +35,10 @@ public class BlizzardWeather extends StormWeather {
 
         World temp = Bukkit.getWorld(world);
 
-        for (Player p : temp.getPlayers()) {
-            Storm.util.message(p, glob.Blizzard_Messages_On__Blizzard__Start);
-        }
-
+        Storm.util.broadcast(glob.Blizzard_Messages_On__Blizzard__Start, temp);
+        
         if (glob.Features_Blizzards_Slowing__Snow) {
-            ModSnow.mod(true);
+            Blizzard.modder.modBestFit();
         }
 
         damager = new DamagerTask(storm, world);
@@ -56,15 +53,12 @@ public class BlizzardWeather extends StormWeather {
     @Override
     public void end() {
         if (glob.Features_Blizzards_Slowing__Snow) {
-            ModSnow.mod(false);
-        }
-
-        for (Player p : Bukkit.getWorld(world).getPlayers()) {
-            Storm.util.message(p, glob.Blizzard_Messages_On__Blizzard__Stop);
-        }
-
-        damager.stop();
+            Blizzard.modder.reset();
+        }       
+        Storm.util.broadcast(glob.Blizzard_Messages_On__Blizzard__Stop, world);
+        
         Storm.util.setRainNoEvent(Bukkit.getWorld(world), false);
+        damager.stop();
         damager = null; //Remove references        
         Bukkit.getScheduler().cancelTask(killID);
     }

@@ -94,7 +94,7 @@ public class Storm extends JavaPlugin {
         this.db.getEngine().close();
     }
 
-    public void crashDisable(String crash) {
+    public final void crashDisable(String crash) {
         util.log(Level.SEVERE, crash + " Storm disabled.");
         this.setEnabled(false);
     }

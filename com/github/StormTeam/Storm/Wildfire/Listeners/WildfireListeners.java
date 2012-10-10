@@ -12,23 +12,22 @@ import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.Storm;
 import com.github.StormTeam.Storm.Wildfire.Wildfire;
-import static com.github.StormTeam.Storm.Wildfire.Wildfire.GetWFBlocks;
+import static com.github.StormTeam.Storm.Wildfire.Wildfire.wildfireBlocks;
 
 public class WildfireListeners implements Listener {
     @EventHandler
-    public void onBlockIgnite(final BlockIgniteEvent event) {
+    public void onBlockIgnite(BlockIgniteEvent event) {
+
         if (!event.getCause().equals(IgniteCause.SPREAD)) {
             return;
         }
         Location loc = event.getBlock().getLocation();
-        World w = loc.getWorld();
-        String name = w.getName();
+        String name = loc.getWorld().getName();
 
-        GlobalVariables glob = Storm.wConfigs.get(w);
-
-        if (glob == null) {
+        if (!Storm.wConfigs.containsKey(name)) {
             return;
         }
+        GlobalVariables glob = Storm.wConfigs.get(name);
 
         if (GetWFBlocks(name).size() < glob.Natural__Disasters_Maximum__Fires) {
             final int radiuski = glob.Natural__Disasters_Wildfires_Scan__Radius;
@@ -51,11 +50,7 @@ public class WildfireListeners implements Listener {
 
     @EventHandler
     public void onBlockEx(final BlockFadeEvent event) {
-        final Block b = event.getBlock();
-        final World w = b.getWorld();
-
-        GetWFBlocks(w.getName()).remove(b);
-    }
+        GetWFBlocks(faded.getWorld().getName()).remove(event.getBlock());    }
 
     private void scanForIgnitables(final Location loc, final World w,
             final int radiuski, final int spreadLimit) {
@@ -93,7 +88,6 @@ public class WildfireListeners implements Listener {
         }
 
         GetWFBlocks(toBurn.getWorld().getName()).add(toBurn);
-
     }
 
     public boolean canBurn(Block toCheck) {

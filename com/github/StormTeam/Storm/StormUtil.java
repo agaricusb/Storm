@@ -77,7 +77,6 @@ public class StormUtil extends BiomeGroups {
     }
 
     public void setRainNoEvent(World world, boolean flag) {
-        System.err.println("Setting rain no event to " + flag + " for world " + world.getName());
         try {
             WorldData data = ((CraftWorld) world).getHandle().worldData;
             isRaining.set(data, flag);
@@ -88,7 +87,6 @@ public class StormUtil extends BiomeGroups {
     }
 
     public void setThunderNoEvent(World world, boolean flag) {
-        System.err.println("Setting thunder no event to " + flag + " for world " + world.getName());
         try {
             WorldData data = ((CraftWorld) world).getHandle().worldData;
             isThundering.set(data, flag);
@@ -110,6 +108,16 @@ public class StormUtil extends BiomeGroups {
         if (!message.isEmpty()) {
             Bukkit.getServer().broadcastMessage(parseColors(message));
         }
+    }
+
+    public void broadcast(String message, World world) {
+        for (Player p : world.getPlayers()) {
+            message(p, message);
+        }
+    }
+
+    public void broadcast(String message, String world) {
+        broadcast(message, Bukkit.getWorld(world));
     }
 
     public void message(Player player, String message) {
