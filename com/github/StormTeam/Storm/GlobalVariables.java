@@ -17,9 +17,10 @@ public class GlobalVariables extends ReflectConfiguration {
     //Acid Rain
     public int Acid__Rain_Acid__Rain__Chance = 5;
     public int Acid__Rain_Acid__Rain__Base__Interval = 72000;
-    public String Acid__Rain_Message__On__Acid__Rain__Start = "Acid has started to fall from the sky!";
-    public String Acid__Rain_Damager_Message__On__Player__Damaged__By__Acid__Rain = "You have been hurt by the acidic downfall!";
-    public int Acid__Rain_Player_Damage__From__Exposure = 2;
+    public String Acid__Rain_Messages_On__Acid__Rain__Start = "Acid has started to fall from the sky!";
+    public String Acid__Rain_Messages_On__Acid__Rain__Stop = "Acid rain ceases to fall!";
+    public String Acid__Rain_Messages_On__Player__Damaged__By__Acid__Rain = "You have been hurt by the acidic downfall!";
+    public int Acid__Rain_Player_Damage__From__Exposure = 1;
     public List<List<String>> Acid__Rain_Dissolver_Block__Transformations = new ArrayList<List<String>>() {
         {
             add(Arrays.asList("18", "0"));
@@ -29,38 +30,40 @@ public class GlobalVariables extends ReflectConfiguration {
 
         }
     };
-    public List<Integer> Acid__Rain__Absorbing__Blocks = new ArrayList<Integer>() {
+    public List<Integer> Acid__Rain_Player_Absorbing__Blocks = new ArrayList<Integer>() {
         {
             add(Block.GOLD_BLOCK.id);
         }
     };
-    public int Acid__Rain__Absorbing__Radius = 2;
+    public int Acid__Rain_Player_Absorbing__Radius = 2;
     public int Acid__Rain_Dissolver_Block__Deterioration__Chance = 60;
-    public int Acid__Rain_Scheduler_Dissolver__Calculation__Intervals__In__Ticks = 100;
-    public int Acid__Rain_Schedule_Damager__Calculation__Intervals__In__Ticks = 20;
+    public int Acid__Rain_Scheduler_Dissolver__Calculation__Intervals__In__Ticks = 10;
+    public int Acid__Rain_Scheduler_Damager__Calculation__Intervals__In__Ticks = 40;
     //Thunder Storms
     public int Thunder__Storm_Thunder__Storm__Chance = 4;
     public int Thunder__Storm_Thunder__Storm__Base__Interval = 72000;
-    public String Thunder__Storm_Message__On__Thunder__Storm__Start = "An electrical storm has started! Get inside for safety!";
+    public String Thunder__Storm_Messages_On__Thunder__Storm__Start = "An electrical storm has started! Get inside for safety!";
+    public String Thunder__Storm_Messages_On__Thunder__Storm__Stop = "Zeus has stopped bowling!";
     public int Thunder__Storm_Strike__Chance = 5;
     public int Thunder__Storm_Scheduler_Striker__Calculation__Intervals__In__Ticks = 10;
     //Blizzards
     public int Blizzard_Blizzard__Chance = 20;
     public int Blizzard_Blizzard__Base__Interval = 72000;
-    public String Blizzard_Message__On__Blizzard__Start = "It has started to snow violently! Seek a warm biome for safety!";
-    public String Blizzard_Damager_Message__On__Player__Damaged__Cold = "You are freezing!";
-    public int Blizzard_Damager_Blindness__Amplitude = 5;
-    public List<Integer> Blizzard_Damager_Heating__Blocks = Arrays.asList(
+    public String Blizzard_Messages_On__Blizzard__Start = "It has started to snow violently! Seek a warm biome for safety!";
+    public String Blizzard_Messages_On__Blizzard__Stop = "The blizzard has stopped!";
+    public String Blizzard_Messages_On__Player__Damaged__Cold = "You are freezing!";
+    public int Blizzard_Player_Blindness__Amplitude = 5;
+    public List<Integer> Blizzard_Player_Heating__Blocks = Arrays.asList(
             Block.FIRE.id, Block.LAVA.id, Block.STATIONARY_LAVA.id,
             Block.BURNING_FURNACE.id);
-    public int Blizzard_Damager_Heat__Radius = 2;
+    public int Blizzard_Player_Heat__Radius = 2;
     public int Blizzard_Player_Damage__From__Exposure = 2;
     public double Blizzard_Player_Speed__Loss__While__In__Snow = 0.4D;
     public int Blizzard_Scheduler_Player__Damager__Calculation__Intervals__In__Ticks = 200;
     //Better Lightning
     public int Lightning_Damage_Damage = 5;
     public int Lightning_Damage_Damage__Radius = 10;
-    public String Lightning_Damage_Hit__Message = "You were zapped by lightning. Ouch!";
+    public String Lightning_Messages_On__Player__Hit = "You were zapped by lightning. Ouch!";
     public int Lightning_Attraction_Blocks_AttractionChance = 80;
     public List<Integer> Lightning_Attraction_Blocks_Attractors = Arrays
             .asList(Block.IRON_BLOCK.id, Block.DIAMOND_BLOCK.id, Block.GOLD_BLOCK.id,
@@ -85,18 +88,18 @@ public class GlobalVariables extends ReflectConfiguration {
     //Natural Disasters
     //-Meteors
     public int Natural__Disasters_Meteor_Chance__To__Spawn = 8;
-    public String Natural__Disasters_Meteor_Message__On__Meteor__Crash = "A meteor has exploded at %x, %y, %z.";
+    public int Natural__Disasters_Meteor_Meteor__Base__Interval = 72000;
+    public String Natural__Disasters_Meteor_Messages_On__Meteor__Crash = "A meteor has exploded at %x, %y, %z.";
+    public String Natural__Disasters_Meteor_Messages_On__Damaged__By__Shockwave = "You have been flattened by a meteor!";
     public int Natural__Disasters_Meteor_Shockwave_Damage = 10;
     public int Natural__Disasters_Meteor_Shockwave_Damage__Radius = 100;
-    public String Natural__Disasters_Meteor_Shockwave_Damage__Message = "You have been flattened by a meteor!";
-    public int Natural__Disasters_Meteor_Scheduler__Recalculation__Intervals__In__Ticks = 72000;
     public boolean Natural__Disasters_Meteor_Meteor_Spawn = true;
-    //-Wildfires
+    //-Wildfires //TODO update to NAPI!
     public int Natural__Disasters_Wildfires_Chance__To__Start = 20;
+    public int Natural__Disasters_Wildfires_Wildfire__Base__Interval = 72000;
     public int Natural__Disasters_Wildfires_Spread__Limit = 2;
     public int Natural__Disasters_Wildfires_Scan__Radius = 2;
-    public String Natural__Disasters_Wildfires_Message__On__Start = "A wildfire has been spotted around %x, %y, %z!";
-    public long Natural__Disasters_Wildfires_Scheduler__Recalculation__Intervals__In__Ticks = 72000;
+    public String Natural__Disasters_Wildfires_Messages_On__Start = "A wildfire has been spotted around %x, %y, %z!";
     public int Natural__Disasters_Maximum__Fires = 100;
 //   public int Natural__Disasters_Earthquakes_Chance__To__Spawn = 1;
 //   public String Natural__Disasters_Earthquakes_Message__On__Earthquake__Start = "The ground beneath you begins quaking! Run mortal, run!";

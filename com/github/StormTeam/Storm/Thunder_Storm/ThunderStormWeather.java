@@ -20,8 +20,8 @@ public class ThunderStormWeather extends StormWeather {
     public ThunderStormWeather(Storm storm, String world) {
         super(storm, world);
         this.glob = Storm.wConfigs.get(world);
-        this.needRainFlag = true;      
-    }  
+        this.needRainFlag = true;
+    }
 
     @Override
     public String getTexture() {
@@ -32,14 +32,12 @@ public class ThunderStormWeather extends StormWeather {
     public void start() {
         if (!glob.Features_Thunder__Storms) {
             return;
-        }
-
-        System.out.println("Thunderstorm start called!");
+        }    
 
         World temp = Bukkit.getWorld(world);
 
         for (Player p : temp.getPlayers()) {
-            Storm.util.message(p, glob.Thunder__Storm_Message__On__Thunder__Storm__Start);
+            Storm.util.message(p, glob.Thunder__Storm_Messages_On__Thunder__Storm__Start);
         }
         striker = new StrikerTask(storm, temp);
         striker.run();
@@ -49,8 +47,10 @@ public class ThunderStormWeather extends StormWeather {
     }
 
     @Override
-    public void end() {
-        System.out.println("Thunderstorm end called!");
+    public void end() {        
+        for (Player p : Bukkit.getWorld(world).getPlayers()) {
+            Storm.util.message(p, glob.Thunder__Storm_Messages_On__Thunder__Storm__Stop);
+        }
         striker.stop();
         striker = null; //Remove references        
         Bukkit.getScheduler().cancelTask(killID);

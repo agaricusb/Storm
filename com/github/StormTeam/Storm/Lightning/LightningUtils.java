@@ -48,7 +48,7 @@ public class LightningUtils {
 	for (Player p : storm.getServer().getOnlinePlayers()) {
 	    Location ploc = new Location(p.getWorld(), p.getLocation().getX(),
 		    255, p.getLocation().getZ());
-	    if (chunk.distance(ploc) <= 40) {
+	    if (chunk.distance(ploc) <= 40 && !p.hasPermission("storm.lightning.immune")) {
 		for (int id : glob.Lightning_Attraction_Players_Attractors) {
 		    if (p.getInventory().getItemInHand().getTypeId() == id
 			    || Arrays.asList(

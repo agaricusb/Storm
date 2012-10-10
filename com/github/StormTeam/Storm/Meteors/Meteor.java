@@ -32,7 +32,7 @@ public class Meteor {
                 if (temp.Features_Meteor) {
                     Storm.manager.enableWeatherForWorld("storm_meteor", name,
                             temp.Natural__Disasters_Meteor_Chance__To__Spawn,
-                            temp.Natural__Disasters_Meteor_Scheduler__Recalculation__Intervals__In__Ticks);
+                            temp.Natural__Disasters_Meteor_Meteor__Base__Interval);
                 }
             }
 
@@ -51,18 +51,20 @@ public class Meteor {
                         trajectoryMeteor(snd.getTargetBlock(null, 0).getLocation(),
                                 ploc.toVector().add(ploc.getDirection().normalize()).toLocation(ploc.getWorld()));
                     } else {
-                        sender.sendMessage("Meteors not enabled in specified world!");
+                        sender.sendMessage("Meteors not enabled in specified world or are conflicting with another weather!");
                     }
                     return true;
                 } else {
 
                     if (args[0] != null) {
                         try {
-                            Storm.manager.startWeather("storm_meteor", args[0]);
+                            if (!Storm.manager.startWeather("storm_meteor", args[0])) {
+                                sender.sendMessage("Meteors not enabled in specified world or are conflicting with another weather!");
+                            }
                             return true;
 
                         } catch (Exception e) {
-                             sender.sendMessage("Meteors not enabled in specified world!");
+                            sender.sendMessage("Meteors not enabled in specified world or are conflicting with another weather!");
                         }
                     }
                 }
@@ -71,8 +73,7 @@ public class Meteor {
         };
 
 
-        ztorm.getCommand(
-                "meteor").setExecutor(exec);
+        ztorm.getCommand("meteor").setExecutor(exec);
     }
 
     public static void patchMeteor() {
@@ -94,8 +95,9 @@ public class Meteor {
         GlobalVariables glob = Storm.wConfigs.get(mcWorld.getWorld().getName());
         EntityMeteor mm = new EntityMeteor(
                 mcWorld, 15, 15, 15, 60, 100,
-                glob.Natural__Disasters_Meteor_Message__On__Meteor__Crash, 9, 80,
-                glob.Natural__Disasters_Meteor_Shockwave_Damage__Message, 0, false, 0);
+                glob.Natural__Disasters_Meteor_Messages_On__Meteor__Crash, 9, 
+                glob.Natural__Disasters_Meteor_Shockwave_Damage__Radius,
+                glob.Natural__Disasters_Meteor_Messages_On__Damaged__By__Shockwave, 0, false, 0);
 
         mm.spawn();
 

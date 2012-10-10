@@ -38,13 +38,13 @@ public class Blizzard {
             public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
                 if ((sender instanceof Player)) {
                     if (!blizzard(((Player) sender).getWorld().getName())) {
-                        sender.sendMessage("Blizzards not enabled in specified world!");
+                        sender.sendMessage("Blizzards not enabled in specified world or are conflicting with another weather!");
                     }
                     return true;
                 } else {
                     if (args[0] != null) {
                         if (!blizzard(args[0])) {
-                            sender.sendMessage("Blizzards not enabled in specified world!");
+                           sender.sendMessage("Blizzards not enabled in specified world or are conflicting with another weather!");
                         }
                         return true;
                     }
@@ -61,9 +61,8 @@ public class Blizzard {
             if (Storm.manager.getActiveWeathers(world).contains("storm_blizzard")) {
                 Storm.manager.stopWeather("storm_blizzard", world);
                 return true;
-            } else {
-                Storm.manager.startWeather("storm_blizzard", world);
-                return true;
+            } else {               
+                return !Storm.manager.startWeather("storm_blizzard", world);
             }
         } catch (Exception ex) {
             return false;

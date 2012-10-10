@@ -1,6 +1,6 @@
 package com.github.StormTeam.Storm.Blizzard;
 
-import com.github.StormTeam.Storm.Blizzard.Tasks.PlayerTask;
+import com.github.StormTeam.Storm.Blizzard.Tasks.DamagerTask;
 import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.Storm;
 import com.github.StormTeam.Storm.Weather.StormWeather;
@@ -14,7 +14,7 @@ import org.bukkit.entity.Player;
 public class BlizzardWeather extends StormWeather {
 
     private GlobalVariables glob;
-    private PlayerTask damager;
+    private DamagerTask damager;
     private int killID;
 
     public BlizzardWeather(Storm storm, String world) {
@@ -37,14 +37,14 @@ public class BlizzardWeather extends StormWeather {
         World temp = Bukkit.getWorld(world);
 
         for (Player p : temp.getPlayers()) {
-            Storm.util.message(p, glob.Blizzard_Message__On__Blizzard__Start);
+            Storm.util.message(p, glob.Blizzard_Messages_On__Blizzard__Start);
         }
 
         if (glob.Features_Blizzards_Slowing__Snow) {
             ModSnow.mod(true);
         }
 
-        damager = new PlayerTask(storm, world);
+        damager = new DamagerTask(storm, world);
         damager.run();
 
         Storm.util.setRainNoEvent(temp, true);
@@ -57,6 +57,10 @@ public class BlizzardWeather extends StormWeather {
     public void end() {
         if (glob.Features_Blizzards_Slowing__Snow) {
             ModSnow.mod(false);
+        }
+
+        for (Player p : Bukkit.getWorld(world).getPlayers()) {
+            Storm.util.message(p, glob.Blizzard_Messages_On__Blizzard__Stop);
         }
 
         damager.stop();

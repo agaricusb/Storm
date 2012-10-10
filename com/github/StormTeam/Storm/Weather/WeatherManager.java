@@ -1,5 +1,8 @@
 package com.github.StormTeam.Storm.Weather;
 
+import com.github.StormTeam.Storm.Weather.Exceptions.WeatherNotFoundException;
+import com.github.StormTeam.Storm.Weather.Exceptions.WeatherNotAllowedException;
+import com.github.StormTeam.Storm.Weather.Exceptions.WeatherAlreadyRegisteredException;
 import com.github.StormTeam.Storm.Pair;
 import com.github.StormTeam.Storm.Storm;
 import java.lang.reflect.Field;

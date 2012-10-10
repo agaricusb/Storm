@@ -41,7 +41,7 @@ public class StrikeListener implements Listener {
 	    Storm.util.damageNearbyPlayers(strikeLocation,
 		    glob.Lightning_Damage_Damage__Radius,
 		    glob.Lightning_Damage_Damage,
-		    glob.Lightning_Damage_Hit__Message);
+		    glob.Lightning_Messages_On__Player__Hit);
 	}
 
 	if (glob.Features_Lightning_Block__Attraction) {

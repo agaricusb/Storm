@@ -45,13 +45,13 @@ public class ThunderStorm {
             public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
                 if ((sender instanceof Player)) {
                     if (!thunderstorm(((Player) sender).getWorld().getName())) {
-                        sender.sendMessage("Thunderstorms not enabled in specified world!");
+                        sender.sendMessage("Thunderstorms not enabled in specified world or are conflicting with another weather!");
                     }
                     return true;
                 } else {
                     if (args[0] != null) {
                         if (!thunderstorm(args[0])) {
-                            sender.sendMessage("Thunderstorms not enabled in specified world!");
+                            sender.sendMessage("Thunderstorms not enabled in specified world or are conflicting with another weather!");
                         }
                         return true;
                     }
@@ -67,9 +67,8 @@ public class ThunderStorm {
             if (Storm.manager.getActiveWeathers(world).contains("storm_thunderstorm")) {
                 Storm.manager.stopWeather("storm_thunderstorm", world);
                 return true;
-            } else {
-                Storm.manager.startWeather("storm_thunderstorm", world);
-                return true;
+            } else {                
+                return !Storm.manager.startWeather("storm_thunderstorm", world);
             }
         } catch (Exception ex) {
             return false;

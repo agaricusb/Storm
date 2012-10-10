@@ -10,7 +10,7 @@ import org.bukkit.potion.PotionEffectType;
 import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.Storm;
 
-public class PlayerTask {
+public class DamagerTask {
 
     private int id;
     private World affectedWorld;
@@ -18,14 +18,14 @@ public class PlayerTask {
     private GlobalVariables glob;
     private PotionEffect blindness;
 
-    public PlayerTask(Storm storm, String spawnWorld) {
+    public DamagerTask(Storm storm, String spawnWorld) {
         this.storm = storm;
         this.affectedWorld = Bukkit.getWorld(spawnWorld);
         glob = Storm.wConfigs.get(spawnWorld);
         blindness = new PotionEffect(
                 PotionEffectType.BLINDNESS,
                 glob.Blizzard_Scheduler_Player__Damager__Calculation__Intervals__In__Ticks + 60,
-                glob.Blizzard_Damager_Blindness__Amplitude);
+                glob.Blizzard_Player_Blindness__Amplitude);
 
     }
 
@@ -42,15 +42,16 @@ public class PlayerTask {
                                 .getPlayers()) {
                             if (!damagee.getGameMode().equals(
                                     GameMode.CREATIVE) && Storm.util
-                                    .isPlayerUnderSky(damagee) && Storm.util.isSnowy(damagee.getLocation().getBlock().getBiome())) {
+                                    .isPlayerUnderSky(damagee) && Storm.util.isSnowy(damagee.getLocation().getBlock().getBiome())
+                                    && !damagee.hasPermission("storm.blizzard.immune")) {
 
-                                if (glob.Blizzard_Damager_Heating__Blocks.contains(damagee.getItemInHand().getTypeId()) || Storm.util.isLocationNearBlock(damagee.getLocation(),
-                                        glob.Blizzard_Damager_Heating__Blocks, glob.Blizzard_Damager_Heat__Radius)) {
+                                if (glob.Blizzard_Player_Heating__Blocks.contains(damagee.getItemInHand().getTypeId()) || Storm.util.isLocationNearBlock(damagee.getLocation(),
+                                        glob.Blizzard_Player_Heating__Blocks, glob.Blizzard_Player_Heat__Radius)) {
                                     return;
                                 }
 
                                 damagee.addPotionEffect(blindness, true);
-                                Storm.util.damagePlayer(damagee, glob.Blizzard_Damager_Message__On__Player__Damaged__Cold, glob.Blizzard_Player_Damage__From__Exposure);
+                                Storm.util.damagePlayer(damagee, glob.Blizzard_Messages_On__Player__Damaged__Cold, glob.Blizzard_Player_Damage__From__Exposure);
                             }
                         }
                     }

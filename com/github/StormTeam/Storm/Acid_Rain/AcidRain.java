@@ -35,13 +35,13 @@ public class AcidRain {
             public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
                 if ((sender instanceof Player)) {
                     if (!acidrain(((Player) sender).getWorld().getName())) {
-                        sender.sendMessage("Acid rain not enabled in specified world!");
+                        sender.sendMessage("Acid rain not enabled in specified world or are conflicting with another weather!");
                     }
                     return true;
                 } else {
                     if (args[0] != null) {
                         if (!acidrain(args[0])) {
-                            sender.sendMessage("Acid rain not enabled in specified world!");
+                            sender.sendMessage("Wildfires not enabled in specified world or are conflicting with another weather!");
                         }
                         return true;
                     }
@@ -59,8 +59,7 @@ public class AcidRain {
                 Storm.manager.stopWeather("storm_acidrain", world);
                 return true;
             } else {
-                Storm.manager.startWeather("storm_acidrain", world);
-                return true;
+                return !Storm.manager.startWeather("storm_acidrain", world);
             }
         } catch (Exception ex) {
             return false;

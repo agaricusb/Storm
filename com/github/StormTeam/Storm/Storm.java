@@ -27,6 +27,7 @@ import com.github.StormTeam.Storm.Lightning.Lightning;
 import com.github.StormTeam.Storm.Meteors.Meteor;
 import com.github.StormTeam.Storm.Thunder_Storm.ThunderStorm;
 import com.github.StormTeam.Storm.Weather.WeatherManager;
+import com.github.StormTeam.Storm.Wildfire.Wildfire;
 
 import java.util.HashMap;
 import java.util.Random;
@@ -78,7 +79,7 @@ public class Storm extends JavaPlugin {
                 wConfigs.put(world, config);
             }
 
-            pm.registerEvents(new WorldConfigLoader(this), this);
+            pm.registerEvents(new WorldConfigLoader(this), this); //For late loading worlds
 
             // Stats
             try {
@@ -89,7 +90,7 @@ public class Storm extends JavaPlugin {
             //Wildfires not NAPI-compatible yet
             AcidRain.load(this);
             Lightning.load(this);
-//            Wildfire.load(this);
+            Wildfire.load(this);
             Blizzard.load(this);
             Meteor.load(this);
             ThunderStorm.load(this);

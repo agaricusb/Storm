@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.github.StormTeam.Storm.Thunder_Storm.Tasks;
 
 /**
@@ -26,8 +22,7 @@ public class StrikerTask {
     private BlockTickSelector ticker;
     private World affectedWorld;
 
-    public StrikerTask(Storm storm, World affectedWorld) {
-        System.out.println("Striked task constructed.");
+    public StrikerTask(Storm storm, World affectedWorld) {       
         this.storm = storm;
         this.glob = Storm.wConfigs.get(affectedWorld.getName());
         this.affectedWorld = affectedWorld;
@@ -46,15 +41,13 @@ public class StrikerTask {
                 storm,
                 new Runnable() {
                     @Override
-                    public void run() {
-                        System.out.println("Striked.");
+                    public void run() {                     
                         try {
                             ArrayList<Block> bloks = ticker.getRandomTickedBlocks();
                             System.out.println(bloks);
                             for (Block b : bloks) {
                                 Block tran = b.getRelative(BlockFace.DOWN);
-                                if (Storm.biomes.isRainy(tran.getBiome())) {
-                                    System.out.println("Striking block " + tran);
+                                if (Storm.biomes.isRainy(tran.getBiome())) {                                    
                                     affectedWorld.strikeLightning(tran.getLocation());
                                 }
                             }

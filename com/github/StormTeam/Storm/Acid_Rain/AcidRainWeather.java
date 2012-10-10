@@ -15,7 +15,7 @@ public class AcidRainWeather extends StormWeather {
 
     private GlobalVariables glob;
     private DissolverTask dissolver;
-    private DamagerTask damager; 
+    private DamagerTask damager;
     private int killID;
 
     public AcidRainWeather(Storm storm, String world) {
@@ -29,9 +29,9 @@ public class AcidRainWeather extends StormWeather {
         if (!glob.Features_Acid__Rain_Dissolving__Blocks && !glob.Features_Acid__Rain_Player__Damaging) {
             return;
         }
-      
+
         for (Player p : Bukkit.getWorld(world).getPlayers()) {
-            Storm.util.message(p, glob.Acid__Rain_Message__On__Acid__Rain__Start);
+            Storm.util.message(p, glob.Acid__Rain_Messages_On__Acid__Rain__Start);
         }
 
         if (glob.Features_Acid__Rain_Dissolving__Blocks) {
@@ -44,13 +44,15 @@ public class AcidRainWeather extends StormWeather {
             damager.run();
         }
 
-        killID = Storm.manager.createAutoKillWeatherTask("storm_acidrain", world,
-                                                         7500 + Storm.random.nextInt(1024));
+        killID = Storm.manager.createAutoKillWeatherTask("storm_acidrain", world, 7500 + Storm.random.nextInt(1024));
     }
 
     @Override
     public void end() {
         try {
+            for (Player p : Bukkit.getWorld(world).getPlayers()) {
+                Storm.util.message(p, glob.Acid__Rain_Messages_On__Acid__Rain__Stop);
+            }
             dissolver.stop();
             damager.stop();
             dissolver = null;

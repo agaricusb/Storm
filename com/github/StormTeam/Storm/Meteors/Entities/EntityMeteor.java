@@ -139,7 +139,7 @@ public class EntityMeteor extends EntityFireball {
 
         Storm.util.damageNearbyPlayers(new Location(this.world.getWorld(),
                 locX, locY, locZ), shockwaveDamageRadius, shockwaveDamage,
-                damageMessage);
+                damageMessage, "storm.meteor.immune");
 
         for (Player p : world.getWorld().getPlayers()) {
             Storm.util.message(

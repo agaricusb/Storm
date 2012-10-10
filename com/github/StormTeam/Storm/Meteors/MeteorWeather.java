@@ -77,10 +77,10 @@ public class MeteorWeather extends StormWeather {
                 Storm.random.nextInt(5) + 5,
                 Storm.random.nextInt(50) + 25,
                 100,
-                glob.Natural__Disasters_Meteor_Message__On__Meteor__Crash,
+                glob.Natural__Disasters_Meteor_Messages_On__Meteor__Crash,
                 9,
                 80,
-                glob.Natural__Disasters_Meteor_Shockwave_Damage__Message,
+                glob.Natural__Disasters_Meteor_Messages_On__Damaged__By__Shockwave,
                 Storm.random.nextInt(100) + 200,
                 glob.Natural__Disasters_Meteor_Meteor_Spawn,
                 Storm.random.nextInt(6) + 3);

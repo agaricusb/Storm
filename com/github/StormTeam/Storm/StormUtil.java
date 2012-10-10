@@ -82,7 +82,7 @@ public class StormUtil extends BiomeGroups {
             WorldData data = ((CraftWorld) world).getHandle().worldData;
             isRaining.set(data, flag);
             rainTicks.setInt(data, flag ? Integer.MAX_VALUE : 0);
-        } catch (Exception ex) {            
+        } catch (Exception ex) {
             world.setStorm(true); //Can still set the storm
         }
     }
@@ -125,6 +125,14 @@ public class StormUtil extends BiomeGroups {
     public void damageNearbyPlayers(Location location, double radius, int damage, String message) {
         for (Player p : getNearbyPlayers(location, radius)) {
             damagePlayer(p, message, damage);
+        }
+    }
+
+    public void damageNearbyPlayers(Location location, double radius, int damage, String message, String permission) {
+        for (Player p : getNearbyPlayers(location, radius)) {
+            if (!p.hasPermission(permission)) {
+                damagePlayer(p, message, damage);
+            }
         }
     }
 

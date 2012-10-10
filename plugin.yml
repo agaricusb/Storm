@@ -8,51 +8,67 @@ commands:
    meteor:
       description: Spawns a meteor and targets the block the player is looking at.
       usage: /<command> 
-      permission: storm.meteor
+      permission: storm.meteor.command
       permission-message: You don't have the permission to make 2012 reality.
    wildfire:
       description: Starts a wildfire where player is looking at.
       usage: /<command> 
-      permission: storm.wildfire
+      permission: storm.wildfire.command
       permission-message: You don't have the permission to start a wildfire! No mass destruction for you!
    acidrain:
       description: Starts acid rain in specified world.
       usage: /<command> 
-      permission: storm.acidrain
+      permission: storm.acidrain.command
       permission-message: You don't have the permission to make green drops fall!
    blizzard:
       description: Starts a blizzard in specified world.
       usage: /<command> 
-      permission: storm.blizzard
+      permission: storm.blizzard.command
       permission-message: You don't have the permission to freeze player's toes off!
    thunderstorm:
       description: Starts a thunder storm in specified world.
       usage: /<command>
-      permission: storm.thunderstorm
+      permission: storm.thunderstorm.command
       permission-message: "You do not have the permission to start a thunder storm!"
 
 permissions:
     storm.*:
         description: Gives access to all Storm commands.
         children:
-            storm.meteor: true
-            storm.wildfire: true
-            storm.acidrain: true
-            storm.blizzard: true
-            storm.thunderstorm: true
-    storm.meteor:
+            storm.meteor.command: true
+            storm.wildfire.command: true
+            storm.acidrain.command: true
+            storm.blizzard.command: true
+            storm.thunderstorm.command: true
+            storm.meteor.immune: true          
+            storm.acidrain.immune: true
+            storm.blizzard.immune: true
+            storm.lightning.immune: true
+    storm.meteor.command:
         description: Allows you to fire a meteor.        
         default: op
-    storm.wildfire:
+    storm.wildfire.command:
         description: Allows you to start a wildfire.    
         default: op
-    storm.acidrain:
+    storm.acidrain.command:
         description: Allows you to toggle acid rain.      
         default: op 
-    storm.blizzard:
+    storm.blizzard.command:
         description: Allows you to toggle blizzards.
         default: op
-    storm.thunderstorm:
+    storm.thunderstorm.command:
         description: Allows you to toggle thunder storms.
+        default: op
+    storm.acidrain.immune:
+        description: Immunity from acid rain.
+        default: op
+    storm.lightning.immune:
+        description: Prevents lightning from being attracted to you.
+        default: op
+    storm.blizzard.immune:
+        description: Immunity from blizzards.
+        default: op
+    storm.meteor.immune:
+        description: Immunity from meteor shockwave.
         default: op
         
