@@ -19,8 +19,6 @@ import org.bukkit.World;
 
 public class Meteor {
 
-    private static CommandExecutor exec;
-
     public static void load(Storm ztorm) {
 
         try {
@@ -40,7 +38,7 @@ public class Meteor {
             e.printStackTrace();
         }
 
-        exec = new CommandExecutor() {
+        CommandExecutor exec = new CommandExecutor() {
             @Override
             public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
                 if ((sender instanceof Player)) {
@@ -63,7 +61,7 @@ public class Meteor {
                             }
                             return true;
 
-                        } catch (Exception e) {                         
+                        } catch (Exception e) {
                             sender.sendMessage("Meteors not enabled in specified world or are conflicting with another weather!");
                         }
                     }

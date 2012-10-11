@@ -11,6 +11,7 @@ import net.minecraft.server.StepSound;
 public class SnowModder {
 
     private Class<?> bc = Block.class;
+    @SuppressWarnings("FieldCanBeLocal")
     private Method v, p, c, a, h, a_st;
 
     public void mod13X() throws Exception {

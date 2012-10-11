@@ -13,8 +13,10 @@ import org.bukkit.potion.PotionEffectType;
  * @author Giant
  */
 public class QuakeTask implements Runnable {
-	
+
+    @SuppressWarnings("FieldCanBeLocal")
 	private Storm s;
+    @SuppressWarnings("FieldCanBeLocal")
 	private Quake q;
 	private int i = 0;
 	

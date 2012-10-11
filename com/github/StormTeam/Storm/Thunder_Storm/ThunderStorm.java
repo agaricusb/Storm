@@ -18,8 +18,8 @@ import com.github.StormTeam.Storm.GlobalVariables;
 public class ThunderStorm {
 
     public static ArrayList<World> thunderingWorlds = new ArrayList<World>();
+    @SuppressWarnings("FieldCanBeLocal")
     private static Storm storm;
-    private static CommandExecutor exec;
 
     public static void load(Storm ztorm) {
         storm = ztorm;
@@ -40,7 +40,7 @@ public class ThunderStorm {
             e.printStackTrace();
         }
 
-        exec = new CommandExecutor() {
+        CommandExecutor exec = new CommandExecutor() {
             @Override
             public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
                 if ((sender instanceof Player)) {

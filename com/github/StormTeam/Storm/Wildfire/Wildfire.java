@@ -26,7 +26,6 @@ public class Wildfire {
             Block.WOODEN_DOOR.id, Block.LEAVES.id, Block.BOOKSHELF.id,
             Block.GRASS.id, Block.WOOL.id);
     public static Storm storm;
-    private static CommandExecutor exec;
 
     public static void load(Storm ztorm) {
         try {
@@ -46,7 +45,7 @@ public class Wildfire {
             e.printStackTrace();
         }
 
-        exec = new CommandExecutor() {
+        CommandExecutor exec = new CommandExecutor() {
             @Override
             public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
                 if ((sender instanceof Player)) {

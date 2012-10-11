@@ -10,7 +10,8 @@ import com.github.StormTeam.Storm.Earthquake.Earthquake;
 
 public class PlayerListener implements Listener {
 	
-	private Storm storm;
+	@SuppressWarnings("FieldCanBeLocal")
+    private Storm storm;
 	
 	public PlayerListener(Storm storm) {
 		this.storm = storm;

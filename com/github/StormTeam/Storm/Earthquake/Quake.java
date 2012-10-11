@@ -21,7 +21,8 @@ import org.bukkit.Bukkit;
 public class Quake {
 
 	private Storm storm;
-	
+
+    @SuppressWarnings("FieldCanBeLocal")
 	private Integer quakeID;
 	
 	private String world;
