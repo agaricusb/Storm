@@ -76,6 +76,12 @@ public class StormUtil {
 
     }
 
+    /**
+     * Controls minecraft's rain flag in world data.
+     *
+     * @param world Bukkit world object
+     * @param flag whether to set it to raining or not
+     */
     public void setRainNoEvent(World world, boolean flag) {
         try {
             WorldData data = ((CraftWorld) world).getHandle().worldData;
