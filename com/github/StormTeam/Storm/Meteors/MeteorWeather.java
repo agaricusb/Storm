@@ -29,7 +29,7 @@ public class MeteorWeather extends StormWeather {
     }
 
     @Override
-    public void start() { 
+    public void start() {
 
         if (!glob.Features_Meteor) {
             return;
@@ -44,10 +44,10 @@ public class MeteorWeather extends StormWeather {
         int x = Storm.random.nextInt(16);
         int z = Storm.random.nextInt(16);
         Block b = chunk.getBlock(x, 4, z);
-        
+
             spawnMeteorNaturallyAndRandomly(chunk.getWorld(),
                     b.getX(),
-                    b.getZ());  
+                    b.getZ());
 
         //Abusing the API. Who cares?
         killID = Storm.manager.createAutoKillWeatherTask("storm_meteor", world, 1);
