@@ -124,4 +124,4 @@ public class GlobalVariables extends ReflectConfiguration {
     public boolean Features_Meteor = true;
     public boolean Features_Wildfires = true;
     public boolean Features_Force__Weather__Textures = true;
-};
+}
