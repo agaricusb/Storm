@@ -10,8 +10,8 @@ public abstract class StormWeather {
     /**
      * Constructor. DO NOT CHANGE ARGUMENTS.
      * 
-     * @param storm
-     * @param world 
+     * @param storm Storm plugin object
+     * @param world World name to act opon
      */
     public StormWeather(Storm storm, String world) {
         this.storm = storm;
@@ -40,6 +40,7 @@ public abstract class StormWeather {
      * 
      * @return A Set<String> of conflicting weathers.
      */
+    @SuppressWarnings("UnusedDeclaration")
     public abstract Set<String> getConflicts();
     
     /**
