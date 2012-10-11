@@ -25,7 +25,6 @@ public class MeteorWeather extends StormWeather {
 
     public MeteorWeather(Storm storm, String world) {
         super(storm, world);
-        glob = Storm.wConfigs.get(world);
     }
 
     @Override
@@ -44,10 +43,10 @@ public class MeteorWeather extends StormWeather {
         int x = Storm.random.nextInt(16);
         int z = Storm.random.nextInt(16);
         Block b = chunk.getBlock(x, 4, z);
-        
+
             spawnMeteorNaturallyAndRandomly(chunk.getWorld(),
                     b.getX(),
-                    b.getZ());  
+                    b.getZ());
 
         //Abusing the API. Who cares?
         killID = Storm.manager.createAutoKillWeatherTask("storm_meteor", world, 1);
