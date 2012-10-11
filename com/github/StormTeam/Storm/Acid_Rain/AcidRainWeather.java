@@ -19,8 +19,8 @@ public class AcidRainWeather extends StormWeather {
 
     public AcidRainWeather(Storm storm, String world) {
         super(storm, world);
-        this.glob = Storm.wConfigs.get(world);
-        this.needRainFlag = true;
+        glob = Storm.wConfigs.get(world);
+        needRainFlag = true;
     }
 
     @Override

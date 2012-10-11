@@ -63,7 +63,7 @@ public class Meteor {
                             }
                             return true;
 
-                        } catch (Exception e) {
+                        } catch (Exception e) {                         
                             sender.sendMessage("Meteors not enabled in specified world or are conflicting with another weather!");
                         }
                     }

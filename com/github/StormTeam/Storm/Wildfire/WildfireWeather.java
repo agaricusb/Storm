@@ -22,7 +22,8 @@ public class WildfireWeather extends StormWeather { //TODO: Make use of getTicke
 
     public WildfireWeather(Storm storm, String world) {
         super(storm, world);
-        this.affectedWorld = Bukkit.getWorld(world);
+        affectedWorld = Bukkit.getWorld(world);
+        glob = Storm.wConfigs.get(world);
     }
 
     @Override

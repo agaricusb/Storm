@@ -18,7 +18,7 @@ public class BlizzardWeather extends StormWeather {
 
     public BlizzardWeather(Storm storm, String world) {
         super(storm, world);
-        this.glob = Storm.wConfigs.get(world);
+        glob = Storm.wConfigs.get(world);
     }
 
     @Override

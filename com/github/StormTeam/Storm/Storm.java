@@ -55,13 +55,13 @@ public class Storm extends JavaPlugin {
     public void onEnable() {
         try {
             pm = getServer().getPluginManager();
+            util = new StormUtil(this);
 
             configureVersion();
             initConfiguration();
 
             pm.registerEvents((manager = new WeatherManager(this)), this); //Register texture events
-            util = new StormUtil(this);
-
+          
             new MetricsLite(this).start();
 
             AcidRain.load(this);

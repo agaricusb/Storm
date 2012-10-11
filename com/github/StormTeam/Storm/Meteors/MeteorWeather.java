@@ -25,6 +25,7 @@ public class MeteorWeather extends StormWeather {
 
     public MeteorWeather(Storm storm, String world) {
         super(storm, world);
+        glob = Storm.wConfigs.get(world);
     }
 
     @Override
