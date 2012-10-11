@@ -12,8 +12,6 @@ import com.github.StormTeam.Storm.GlobalVariables;
 
 public class AcidRain {
 
-    private static CommandExecutor exec;
-
     public static void load(Storm ztorm) {
         try {
             Storm.manager.registerWeather(AcidRainWeather.class, "storm_acidrain");
@@ -30,7 +28,7 @@ public class AcidRain {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        exec = new CommandExecutor() {
+        CommandExecutor exec = new CommandExecutor() {
             @Override
             public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
                 if ((sender instanceof Player)) {

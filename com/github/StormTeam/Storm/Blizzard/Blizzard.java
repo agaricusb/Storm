@@ -13,7 +13,6 @@ import com.github.StormTeam.Storm.GlobalVariables;
 
 public class Blizzard {
 
-    private static CommandExecutor exec;
     public static SnowModder modder;
 
     public static void load(Storm ztorm) {
@@ -34,7 +33,7 @@ public class Blizzard {
             e.printStackTrace();
         }
 
-        exec = new CommandExecutor() {
+        CommandExecutor exec = new CommandExecutor() {
             @Override
             public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
                 if ((sender instanceof Player)) {
