@@ -29,7 +29,7 @@ public class MeteorWeather extends StormWeather {
     }
 
     @Override
-    public void start() {
+    public void start() { 
 
         if (!glob.Features_Meteor) {
             return;
