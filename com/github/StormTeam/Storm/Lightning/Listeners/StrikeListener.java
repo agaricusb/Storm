@@ -1,7 +1,5 @@
 package com.github.StormTeam.Storm.Lightning.Listeners;
 
-import java.util.Random;
-
 import org.bukkit.Location;
 
 import org.bukkit.event.EventHandler;

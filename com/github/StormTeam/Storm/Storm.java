@@ -22,7 +22,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.StormTeam.Storm.Acid_Rain.AcidRain;
 import com.github.StormTeam.Storm.Blizzard.Blizzard;
-import com.github.StormTeam.Storm.Database.Database;
 import com.github.StormTeam.Storm.Lightning.Lightning;
 import com.github.StormTeam.Storm.Meteors.Meteor;
 import com.github.StormTeam.Storm.Thunder_Storm.ThunderStorm;
@@ -38,18 +37,16 @@ public class Storm extends JavaPlugin {
 
     /**
      * Dear BukkitDev administrator(s):
-     * 
-     *      Thank you for your time in reviewing this project! If you find anything in it that makes you cry inside, will you
-     *      please let us know so we can fix/improve it?      
-     * 
-     *              Thanks in advance, 
-     *                      The-people-who-made-this-plugin
+     *
+     * Thank you for your time in reviewing this project! If you find anything
+     * in it that makes you cry inside, will you please let us know so we can
+     * fix/improve it? Aside from horrible formatting, we're working on that :)
+     *
+     * Thanks in advance, The-people-who-made-this-plugin
      */
-    
-    public static HashMap<String, GlobalVariables> wConfigs = new HashMap<String, GlobalVariables>();   
+    public static HashMap<String, GlobalVariables> wConfigs = new HashMap<String, GlobalVariables>();
     public static StormUtil util;
     public static final Random random = new Random();
-    private Database db;
     public static PluginManager pm;
     public static double version;
     public static WeatherManager manager;
@@ -57,24 +54,16 @@ public class Storm extends JavaPlugin {
     @Override
     public void onEnable() {
         try {
-
             pm = getServer().getPluginManager();
 
             configureVersion();
             initConfiguration();
-            
-            manager = new WeatherManager(this);
-            pm.registerEvents(manager, this); //Register texture events
 
-            util = new StormUtil(this);            
-            db = Database.Obtain(this, null);
+            pm.registerEvents((manager = new WeatherManager(this)), this); //Register texture events
+            util = new StormUtil(this);
 
-            // Stats
-            try {
-                new MetricsLite(this).start();
-            } catch (Exception e) {
-            }
-          
+            new MetricsLite(this).start();
+
             AcidRain.load(this);
             Lightning.load(this);
             Wildfire.load(this);
@@ -84,44 +73,37 @@ public class Storm extends JavaPlugin {
 
         } catch (Exception e) {
             e.printStackTrace();
+            util.log(Level.SEVERE, "Failed to initialize! Storm disabled. Please contact the authors of this plugin "
+                    + getDescription().getAuthors() + "!");
+            setEnabled(false);
         }
     }
 
-    @Override
-    public void onDisable() {
-        this.db.getEngine().close();
-    }
-
-    public final void crashDisable(String crash) {
-        util.log(Level.SEVERE, crash + " Storm disabled.");
-        this.setEnabled(false);
-    }
-    
     private void configureVersion() {
-          String v = getServer().getVersion();
-            if (v.contains("1.2.")) {
-                version = 1.2;
-                getLogger().log(Level.INFO, "Loading with MC 1.2.X compatibility.");
+        String vers = getServer().getVersion();
+        if (vers.contains("1.2.")) {
+            version = 1.2;           
+        } else {
+            if (vers.contains("1.3.")) {
+                version = 1.3;
             } else {
-                if (v.contains("1.3.")) {
-                    version = 1.3;
-                    getLogger().log(Level.INFO, "Loading with MC 1.3.X compatibility.");
-                } else {
-                    getLogger().log(Level.SEVERE, "Unsupported MC version detected!");
-                }
+                getLogger().log(Level.SEVERE, "Unsupported MC version detected! Bad things may happen!");
+                return;
             }
+        }                     
+        getLogger().log(Level.INFO, "Loading with MC {0}.X compatibility.", version);
     }
-    
-    private void initConfiguration() {
-        
-            // Make per-world configuration files           
-            for (World w : Bukkit.getWorlds()) {
-                String world = w.getName();
-                GlobalVariables config = new GlobalVariables(this, world);
-                config.load();
-                wConfigs.put(world, config);
-            }
 
-            pm.registerEvents(new WorldConfigLoader(this), this); //For late loading worlds
+    private void initConfiguration() {
+
+        // Make per-world configuration files           
+        for (World w : Bukkit.getWorlds()) {
+            String world = w.getName();
+            GlobalVariables config = new GlobalVariables(this, world);
+            config.load();
+            wConfigs.put(world, config);
+        }
+
+        pm.registerEvents(new WorldConfigLoader(this), this); //For late loading worlds loaded by world plugins al a MultiVerse
     }
 }

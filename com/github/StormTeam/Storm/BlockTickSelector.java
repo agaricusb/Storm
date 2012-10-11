@@ -20,7 +20,7 @@ public class BlockTickSelector {
     private WorldServer world;
     private Method a, recheckGaps;
     private int chan;
- 
+
     public BlockTickSelector(World world, int selChance)
             throws NoSuchMethodException,
             SecurityException, NoSuchFieldException, InstantiationException, IllegalAccessException {
@@ -73,8 +73,9 @@ public class BlockTickSelector {
 
         for (ChunkCoordIntPair pair : ticked) {
             int xOffset = pair.x << 4, zOffset = pair.z << 4;
-            Chunk chunk = world.getChunkAt(pair.x, pair.z);            
-            a.invoke(world, xOffset, zOffset, chunk); //Make sure chunk is loaded (?)
+            Chunk chunk = world.getChunkAt(pair.x, pair.z);
+            //I am not sure what the a method does, but it seems to be needed for this to return anything.
+            a.invoke(world, xOffset, zOffset, chunk);
             recheckGaps.invoke(chunk);
             if (Storm.random.nextInt(100) <= chan) {
                 int x = Storm.random.nextInt(15), z = Storm.random.nextInt(15);
