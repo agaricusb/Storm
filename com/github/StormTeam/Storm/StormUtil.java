@@ -43,7 +43,7 @@ public class StormUtil {
 
         final Plugin wgp = plugin.getServer().getPluginManager().getPlugin(
                 "WorldGuard");
-        hasWG = wgp == null ? false : true; // Short and sweet
+        hasWG = wgp != null; // Short and sweet
         if (hasWG) {
             wg = (WorldGuardPlugin) wgp;
         }
@@ -360,7 +360,7 @@ public class StormUtil {
      * @param location the location
      * @param blocks the collection of blocks to search
      * @param radius the radius to search
-     * @return
+     * @return boolean
      */
     public boolean isLocationNearBlock(Location location, Collection<Integer> blocks, int radius) {
         World world = location.getWorld();
@@ -377,13 +377,12 @@ public class StormUtil {
      * Returns a HashSet containing all the arguments passed in.
      *
      * @param objects All the objects to include.
-     * @param <T> The tye of all the objects.
-     * @return
+     * @param <T> The type of all the objects.
+     * @return a Set of all the elements
      */
     public static <T> Set<T> asSet(T... objects) {
         Set<T> set = new HashSet<T>();
-        for (T o : objects)
-            set.add(o);
+        Collections.addAll(set, objects);
         return set;
     }
 

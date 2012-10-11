@@ -63,6 +63,7 @@ public class MeteorWeather extends StormWeather {
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Set<String> getConflicts() {
         return Collections.EMPTY_SET;
