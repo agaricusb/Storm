@@ -4,11 +4,11 @@ import com.github.StormTeam.Storm.Blizzard.Tasks.DamagerTask;
 import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.Storm;
 import com.github.StormTeam.Storm.Weather.StormWeather;
-import java.util.HashSet;
-
-import java.util.Set;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class BlizzardWeather extends StormWeather {
 
@@ -18,7 +18,7 @@ public class BlizzardWeather extends StormWeather {
 
     public BlizzardWeather(Storm storm, String world) {
         super(storm, world);
-        this.glob = Storm.wConfigs.get(world);
+        glob = Storm.wConfigs.get(world);
     }
 
     @Override
@@ -36,7 +36,7 @@ public class BlizzardWeather extends StormWeather {
         World temp = Bukkit.getWorld(world);
 
         Storm.util.broadcast(glob.Blizzard_Messages_On__Blizzard__Start, temp);
-        
+
         if (glob.Features_Blizzards_Slowing__Snow) {
             Blizzard.modder.modBestFit();
         }
@@ -54,9 +54,9 @@ public class BlizzardWeather extends StormWeather {
     public void end() {
         if (glob.Features_Blizzards_Slowing__Snow) {
             Blizzard.modder.reset();
-        }       
+        }
         Storm.util.broadcast(glob.Blizzard_Messages_On__Blizzard__Stop, world);
-        
+
         Storm.util.setRainNoEvent(Bukkit.getWorld(world), false);
         damager.stop();
         damager = null; //Remove references        

@@ -33,12 +33,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
@@ -46,7 +41,7 @@ import java.net.URLEncoder;
 import java.util.UUID;
 import java.util.logging.Level;
 
-public class MetricsLite {
+class MetricsLite {
 
     private final static int REVISION = 5;
     private static final String BASE_URL = "http://mcstats.org";
@@ -118,7 +113,7 @@ public class MetricsLite {
         }
     }
 
-    public boolean isOptOut() {
+    boolean isOptOut() {
         synchronized (optOutLock) {
             try {
                 // Reload the metrics file
@@ -163,7 +158,7 @@ public class MetricsLite {
         }
     }
 
-    public File getConfigFile() {
+    File getConfigFile() {
         return new File(new File(plugin.getDataFolder().getParentFile(), "PluginMetrics"), "config.yml");
     }
 

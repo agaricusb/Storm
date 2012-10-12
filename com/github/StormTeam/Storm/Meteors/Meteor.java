@@ -1,25 +1,22 @@
 package com.github.StormTeam.Storm.Meteors;
 
 import com.github.StormTeam.Storm.GlobalVariables;
-import java.lang.reflect.Method;
-import java.util.logging.Level;
-
-import org.bukkit.entity.Fireball;
+import com.github.StormTeam.Storm.Meteors.Entities.EntityMeteor;
+import com.github.StormTeam.Storm.Storm;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 
-import com.github.StormTeam.Storm.Storm;
-import com.github.StormTeam.Storm.Meteors.Entities.EntityMeteor;
-import org.bukkit.Bukkit;
-import org.bukkit.World;
+import java.lang.reflect.Method;
+import java.util.logging.Level;
 
 public class Meteor {
-
-    private static CommandExecutor exec;
 
     public static void load(Storm ztorm) {
 
@@ -40,7 +37,7 @@ public class Meteor {
             e.printStackTrace();
         }
 
-        exec = new CommandExecutor() {
+        CommandExecutor exec = new CommandExecutor() {
             @Override
             public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
                 if ((sender instanceof Player)) {
@@ -89,13 +86,13 @@ public class Meteor {
         }
     }
 
-    public static void trajectoryMeteor(Location targetLoc, Location spawnLoc) {
+    private static void trajectoryMeteor(Location targetLoc, Location spawnLoc) {
         net.minecraft.server.WorldServer mcWorld = ((CraftWorld) (spawnLoc.getWorld())).getHandle();
 
         GlobalVariables glob = Storm.wConfigs.get(mcWorld.getWorld().getName());
         EntityMeteor mm = new EntityMeteor(
                 mcWorld, 15, 15, 15, 60, 100,
-                glob.Natural__Disasters_Meteor_Messages_On__Meteor__Crash, 9, 
+                glob.Natural__Disasters_Meteor_Messages_On__Meteor__Crash, 9,
                 glob.Natural__Disasters_Meteor_Shockwave_Damage__Radius,
                 glob.Natural__Disasters_Meteor_Messages_On__Damaged__By__Shockwave, 0, false, 0);
 

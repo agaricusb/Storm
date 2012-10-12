@@ -6,10 +6,9 @@ import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.event.world.WorldUnloadEvent;
 
 /**
- *
  * @author Tudor
  */
-public class WorldConfigLoader implements Listener {
+class WorldConfigLoader implements Listener {
 
     private final Storm storm;
 

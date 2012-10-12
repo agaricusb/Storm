@@ -1,19 +1,16 @@
 package com.github.StormTeam.Storm.Blizzard;
 
-import org.bukkit.World;
-import org.bukkit.command.CommandExecutor;
-
+import com.github.StormTeam.Storm.GlobalVariables;
+import com.github.StormTeam.Storm.Storm;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.github.StormTeam.Storm.Storm;
-import com.github.StormTeam.Storm.GlobalVariables;
-
 public class Blizzard {
 
-    private static CommandExecutor exec;
     public static SnowModder modder;
 
     public static void load(Storm ztorm) {
@@ -34,17 +31,17 @@ public class Blizzard {
             e.printStackTrace();
         }
 
-        exec = new CommandExecutor() {
+        CommandExecutor exec = new CommandExecutor() {
             @Override
             public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
                 if ((sender instanceof Player)) {
-                    if (!blizzard(((Player) sender).getWorld().getName())) {
+                    if (blizzard(((Player) sender).getWorld().getName())) {
                         sender.sendMessage("Blizzards not enabled in specified world or are conflicting with another weather!");
                     }
                     return true;
                 } else {
                     if (args[0] != null) {
-                        if (!blizzard(args[0])) {
+                        if (blizzard(args[0])) {
                             sender.sendMessage("Blizzards not enabled in specified world or are conflicting with another weather!");
                         }
                         return true;
@@ -57,16 +54,16 @@ public class Blizzard {
 
     }
 
-    public static boolean blizzard(String world) {
+    private static boolean blizzard(String world) {
         try {
             if (Storm.manager.getActiveWeathers(world).contains("storm_blizzard")) {
                 Storm.manager.stopWeather("storm_blizzard", world);
-                return true;
+                return false;
             } else {
-                return !Storm.manager.startWeather("storm_blizzard", world);
+                return Storm.manager.startWeather("storm_blizzard", world);
             }
         } catch (Exception ex) {
-            return false;
+            return true;
         }
     }
 }

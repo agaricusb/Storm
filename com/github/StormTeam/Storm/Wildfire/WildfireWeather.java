@@ -3,13 +3,14 @@ package com.github.StormTeam.Storm.Wildfire;
 import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.Storm;
 import com.github.StormTeam.Storm.Weather.StormWeather;
-import java.util.Collections;
-import java.util.Set;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+
+import java.util.Collections;
+import java.util.Set;
 
 /**
  * @author Tudor
@@ -22,7 +23,8 @@ public class WildfireWeather extends StormWeather { //TODO: Make use of getTicke
 
     public WildfireWeather(Storm storm, String world) {
         super(storm, world);
-        this.affectedWorld = Bukkit.getWorld(world);
+        affectedWorld = Bukkit.getWorld(world);
+        glob = Storm.wConfigs.get(world);
     }
 
     @Override

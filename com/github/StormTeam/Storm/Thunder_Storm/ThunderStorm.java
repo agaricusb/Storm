@@ -1,16 +1,15 @@
 package com.github.StormTeam.Storm.Thunder_Storm;
 
-import java.util.ArrayList;
-
+import com.github.StormTeam.Storm.GlobalVariables;
+import com.github.StormTeam.Storm.Storm;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.World;
 
-import com.github.StormTeam.Storm.Storm;
-import com.github.StormTeam.Storm.GlobalVariables;
+import java.util.ArrayList;
 
 /**
  * @author Tudor
@@ -18,8 +17,8 @@ import com.github.StormTeam.Storm.GlobalVariables;
 public class ThunderStorm {
 
     public static ArrayList<World> thunderingWorlds = new ArrayList<World>();
+    @SuppressWarnings("FieldCanBeLocal")
     private static Storm storm;
-    private static CommandExecutor exec;
 
     public static void load(Storm ztorm) {
         storm = ztorm;
@@ -40,17 +39,17 @@ public class ThunderStorm {
             e.printStackTrace();
         }
 
-        exec = new CommandExecutor() {
+        CommandExecutor exec = new CommandExecutor() {
             @Override
             public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
                 if ((sender instanceof Player)) {
-                    if (!thunderstorm(((Player) sender).getWorld().getName())) {
+                    if (thunderstorm(((Player) sender).getWorld().getName())) {
                         sender.sendMessage("Thunderstorms not enabled in specified world or are conflicting with another weather!");
                     }
                     return true;
                 } else {
                     if (args[0] != null) {
-                        if (!thunderstorm(args[0])) {
+                        if (thunderstorm(args[0])) {
                             sender.sendMessage("Thunderstorms not enabled in specified world or are conflicting with another weather!");
                         }
                         return true;
@@ -62,16 +61,16 @@ public class ThunderStorm {
         storm.getCommand("thunderstorm").setExecutor(exec);
     }
 
-    public static boolean thunderstorm(String world) {
+    private static boolean thunderstorm(String world) {
         try {
             if (Storm.manager.getActiveWeathers(world).contains("storm_thunderstorm")) {
                 Storm.manager.stopWeather("storm_thunderstorm", world);
-                return true;
-            } else {                
-                return !Storm.manager.startWeather("storm_thunderstorm", world);
+                return false;
+            } else {
+                return Storm.manager.startWeather("storm_thunderstorm", world);
             }
         } catch (Exception ex) {
-            return false;
+            return true;
         }
     }
 }

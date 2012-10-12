@@ -1,21 +1,21 @@
 package com.github.StormTeam.Storm.Blizzard.Blocks;
 
+import com.github.StormTeam.Storm.Storm;
+import net.minecraft.server.BlockSnow;
+import net.minecraft.server.Entity;
+import net.minecraft.server.World;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
-import com.github.StormTeam.Storm.Storm;
-
-import net.minecraft.server.*;
-
 public class SnowLayer extends BlockSnow {
 
-    public SnowLayer(int i, int j) {
-        super(i, j);
+    public SnowLayer() {
+        super(78, 66);
     }
 
     @Override
     public void a(final World w, final int x, final int y,
-            final int z, final Entity e) {
+                  final int z, final Entity e) {
 
         String name = w.getWorld().getName();
 

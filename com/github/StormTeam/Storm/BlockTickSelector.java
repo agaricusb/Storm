@@ -1,19 +1,18 @@
 package com.github.StormTeam.Storm;
 
+import net.minecraft.server.Chunk;
+import net.minecraft.server.ChunkCoordIntPair;
+import net.minecraft.server.EntityHuman;
+import net.minecraft.server.WorldServer;
+import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.CraftWorld;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import org.bukkit.World;
-import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.CraftWorld;
-
-import net.minecraft.server.ChunkCoordIntPair;
-import net.minecraft.server.EntityHuman;
-import net.minecraft.server.WorldServer;
-import net.minecraft.server.Chunk;
 
 public class BlockTickSelector {
 
@@ -31,10 +30,11 @@ public class BlockTickSelector {
         this.recheckGaps.setAccessible(true); //Is private by default
         this.a = net.minecraft.server.World.class.getDeclaredMethod("a", int.class, int.class, Chunk.class);
         this.a.setAccessible(true);
+        this.chan = selChance;
 
     }
 
-    public ArrayList<ChunkCoordIntPair> getRandomTickedChunks() throws InvocationTargetException, IllegalAccessException {
+    ArrayList<ChunkCoordIntPair> getRandomTickedChunks() throws InvocationTargetException, IllegalAccessException {
 
         ArrayList<ChunkCoordIntPair> doTick = new ArrayList<ChunkCoordIntPair>();
 

@@ -1,10 +1,10 @@
 package com.github.StormTeam.Storm;
 
-public class Triplet<X, Y, Z> {
+class Triplet<X, Y, Z> {
 
-    public X x;
-    public Y y;
-    public Z z;
+    private X x;
+    private Y y;
+    private Z z;
 
     public Triplet(X x, Y y, Z z) {
         this.x = x;

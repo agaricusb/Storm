@@ -1,10 +1,7 @@
 package com.github.StormTeam.Storm.Lightning;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-
+import com.github.StormTeam.Storm.GlobalVariables;
+import com.github.StormTeam.Storm.Storm;
 import org.bukkit.Chunk;
 import org.bukkit.ChunkSnapshot;
 import org.bukkit.Location;
@@ -15,15 +12,16 @@ import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import com.github.StormTeam.Storm.GlobalVariables;
-import com.github.StormTeam.Storm.Storm;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author hammale
  */
 public class LightningUtils {
 
-    Storm storm;
+    private Storm storm;
 
     public LightningUtils(Storm storm) {
         this.storm = storm;
@@ -66,8 +64,7 @@ public class LightningUtils {
         ChunkSnapshot snapshot = chunk.getChunkSnapshot(true, false, false);
         List<Location> list = findLightningRods(chunk);
         if ((list != null) && (!list.isEmpty())) {
-            Location tmp = list.get(Storm.random.nextInt(list.size()));
-            return tmp;
+            return list.get(Storm.random.nextInt(list.size()));
         }
         Entity[] entities = chunk.getEntities();
         if (entities != null) {

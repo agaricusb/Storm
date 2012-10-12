@@ -1,19 +1,19 @@
 package com.github.StormTeam.Storm;
 
+import net.minecraft.server.Block;
+import net.minecraft.server.Item;
+import org.bukkit.plugin.Plugin;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import org.bukkit.plugin.Plugin;
-
-import net.minecraft.server.Block;
-import net.minecraft.server.Item;
 
 public class GlobalVariables extends ReflectConfiguration {
 
     public GlobalVariables(Plugin storm, String world) {
         super(storm, world);
     }
+
     //Acid Rain
     public int Acid__Rain_Acid__Rain__Chance = 5;
     public int Acid__Rain_Acid__Rain__Base__Interval = 72000;
@@ -67,18 +67,18 @@ public class GlobalVariables extends ReflectConfiguration {
     public int Lightning_Attraction_Blocks_AttractionChance = 80;
     public List<Integer> Lightning_Attraction_Blocks_Attractors = Arrays
             .asList(Block.IRON_BLOCK.id, Block.DIAMOND_BLOCK.id, Block.GOLD_BLOCK.id,
-            Block.RAILS.id, Block.CAULDRON.id, Block.DETECTOR_RAIL.id, Block.GOLDEN_RAIL.id,
-            Block.IRON_DOOR_BLOCK.id, Block.IRON_FENCE.id);
+                    Block.RAILS.id, Block.CAULDRON.id, Block.DETECTOR_RAIL.id, Block.GOLDEN_RAIL.id,
+                    Block.IRON_DOOR_BLOCK.id, Block.IRON_FENCE.id);
     public int Lightning_Attraction_Players_AttractionChance = 80;
     public List<Integer> Lightning_Attraction_Players_Attractors = Arrays
             .asList(Item.IRON_AXE.id, Item.BUCKET.id, Item.CHAINMAIL_BOOTS.id, Item.CHAINMAIL_CHESTPLATE.id, Item.CHAINMAIL_HELMET.id,
-            Item.CHAINMAIL_LEGGINGS.id, Item.IRON_BOOTS.id, Item.IRON_CHESTPLATE.id, Item.IRON_HELMET.id, Item.IRON_LEGGINGS.id,
-            Item.DIAMOND_BOOTS.id, Item.DIAMOND_CHESTPLATE.id, Item.DIAMOND_HELMET.id, Item.DIAMOND_LEGGINGS.id,
-            Item.GOLD_BOOTS.id, Item.GOLD_CHESTPLATE.id, Item.GOLD_HELMET.id, Item.GOLD_LEGGINGS.id,
-            Item.IRON_AXE.id, Item.IRON_HOE.id, Item.IRON_PICKAXE.id, Item.IRON_SPADE.id, Item.IRON_SWORD.id,
-            Item.DIAMOND_AXE.id, Item.DIAMOND_HOE.id, Item.DIAMOND_PICKAXE.id, Item.DIAMOND_SPADE.id, Item.DIAMOND_SWORD.id,
-            Item.GOLD_AXE.id, Item.GOLD_HOE.id, Item.GOLD_PICKAXE.id, Item.GOLD_SPADE.id, Item.GOLD_SWORD.id,
-            Item.MINECART.id);
+                    Item.CHAINMAIL_LEGGINGS.id, Item.IRON_BOOTS.id, Item.IRON_CHESTPLATE.id, Item.IRON_HELMET.id, Item.IRON_LEGGINGS.id,
+                    Item.DIAMOND_BOOTS.id, Item.DIAMOND_CHESTPLATE.id, Item.DIAMOND_HELMET.id, Item.DIAMOND_LEGGINGS.id,
+                    Item.GOLD_BOOTS.id, Item.GOLD_CHESTPLATE.id, Item.GOLD_HELMET.id, Item.GOLD_LEGGINGS.id,
+                    Item.IRON_AXE.id, Item.IRON_HOE.id, Item.IRON_PICKAXE.id, Item.IRON_SPADE.id, Item.IRON_SWORD.id,
+                    Item.DIAMOND_AXE.id, Item.DIAMOND_HOE.id, Item.DIAMOND_PICKAXE.id, Item.DIAMOND_SPADE.id, Item.DIAMOND_SWORD.id,
+                    Item.GOLD_AXE.id, Item.GOLD_HOE.id, Item.GOLD_PICKAXE.id, Item.GOLD_SPADE.id, Item.GOLD_SWORD.id,
+                    Item.MINECART.id);
     public List<List<String>> Lightning_Melter_Block__Transformations = new ArrayList<List<String>>() {
         {
             add(Arrays.asList("12", "20"));
@@ -101,7 +101,7 @@ public class GlobalVariables extends ReflectConfiguration {
     public int Natural__Disasters_Wildfires_Scan__Radius = 2;
     public String Natural__Disasters_Wildfires_Messages_On__Start = "A wildfire has been spotted around %x, %y, %z!";
     public int Natural__Disasters_Maximum__Fires = 100;
-//   public int Natural__Disasters_Earthquakes_Chance__To__Spawn = 1;
+    //   public int Natural__Disasters_Earthquakes_Chance__To__Spawn = 1;
 //   public String Natural__Disasters_Earthquakes_Message__On__Earthquake__Start = "The ground beneath you begins quaking! Run mortal, run!";
 //   public List<Integer> Natural__Disasters_Earthquakes_Blocks__Can__Fall = Arrays.asList(Block.STONE.id, Block.COBBLESTONE.id);
 //   public long Natural__Disasters_Earthquake_Scheduler_Recalculation__Intervals__In__Ticks = 72000;
@@ -124,4 +124,4 @@ public class GlobalVariables extends ReflectConfiguration {
     public boolean Features_Meteor = true;
     public boolean Features_Wildfires = true;
     public boolean Features_Force__Weather__Textures = true;
-};
+}

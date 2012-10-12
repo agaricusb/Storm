@@ -1,19 +1,17 @@
 package com.github.StormTeam.Storm.Meteors.Entities;
 
 import com.github.StormTeam.Storm.Storm;
-import java.util.ArrayList;
-
 import net.minecraft.server.EntityFireball;
 import net.minecraft.server.EntityLiving;
 import net.minecraft.server.MovingObjectPosition;
 import net.minecraft.server.World;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.craftbukkit.CraftWorld;
-import org.bukkit.entity.Player;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
+
+import java.util.ArrayList;
 
 public class EntityMeteor extends EntityFireball {
 
@@ -36,10 +34,10 @@ public class EntityMeteor extends EntityFireball {
     }
 
     public EntityMeteor(World world, int burrowCount, int burrowPower,
-            float trailPower, float explosionRadius, float brightness,
-            String crashMessage, int shockwaveDamage,
-            int shockwaveDamageRadius, String damageMessage, int snowRadius,
-            boolean spawnOnImpact, int radius) {
+                        float trailPower, float explosionRadius, float brightness,
+                        String crashMessage, int shockwaveDamage,
+                        int shockwaveDamageRadius, String damageMessage, int snowRadius,
+                        boolean spawnOnImpact, int radius) {
         super(world);
 
         // Massive objects require massive initializations...
@@ -105,7 +103,7 @@ public class EntityMeteor extends EntityFireball {
 
                 return;
             }
-            if (!Storm.util.isBlockProtected(world.getWorld().getBlockAt((int) locX, (int) locY, (int) locZ))) {
+            if (!Storm.util.isBlockProtected(world.getWorld().getBlockAt((int) locX, locY, (int) locZ))) {
                 world.createExplosion(this, locX, this.locY, locZ, trailPower, true);
             }
         } while (false);
@@ -170,8 +168,8 @@ public class EntityMeteor extends EntityFireball {
         this.makeSphere(expl, Material.OBSIDIAN, radius, false, false, null);
     }
 
-    public void makeSphere(Location pos, Material block, double radius,
-            boolean filled, boolean random, ArrayList<Material> m) {
+    void makeSphere(Location pos, Material block, double radius,
+                    boolean filled, boolean random, ArrayList<Material> m) {
         double radius_ = radius + 0.5;
         final int ceilRadiusX, ceilRadiusY, ceilRadiusZ;
         final double invRadiusX, invRadiusY, invRadiusZ;
@@ -203,7 +201,7 @@ public class EntityMeteor extends EntityFireball {
                             }
                             break forY;
                         }
-                        break forZ;
+                        break;
                     }
 
                     if (!filled && lengthSq(nextXn, yn, zn) <= 1
@@ -233,7 +231,7 @@ public class EntityMeteor extends EntityFireball {
         return (x * x) + (y * y) + (z * z);
     }
 
-    public void makeWinter() {
+    void makeWinter() {
         CraftWorld craftworld = world.getWorld();
         int radiusSquared = snowRadius * snowRadius;
 
@@ -251,5 +249,6 @@ public class EntityMeteor extends EntityFireball {
     public float c(float f) {
         return this.brightness;
     }
+
     public EntityLiving shooter;
 }

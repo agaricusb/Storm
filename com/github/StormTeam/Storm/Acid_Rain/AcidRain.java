@@ -1,18 +1,15 @@
 package com.github.StormTeam.Storm.Acid_Rain;
 
-import org.bukkit.World;
+import com.github.StormTeam.Storm.GlobalVariables;
+import com.github.StormTeam.Storm.Storm;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.github.StormTeam.Storm.Storm;
-import com.github.StormTeam.Storm.GlobalVariables;
-
 public class AcidRain {
-
-    private static CommandExecutor exec;
 
     public static void load(Storm ztorm) {
         try {
@@ -30,17 +27,17 @@ public class AcidRain {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        exec = new CommandExecutor() {
+        CommandExecutor exec = new CommandExecutor() {
             @Override
             public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
                 if ((sender instanceof Player)) {
-                    if (!acidrain(((Player) sender).getWorld().getName())) {
+                    if (acidrain(((Player) sender).getWorld().getName())) {
                         sender.sendMessage("Acid rain not enabled in specified world or are conflicting with another weather!");
                     }
                     return true;
                 } else {
                     if (args[0] != null) {
-                        if (!acidrain(args[0])) {
+                        if (acidrain(args[0])) {
                             sender.sendMessage("Wildfires not enabled in specified world or are conflicting with another weather!");
                         }
                         return true;
@@ -53,16 +50,16 @@ public class AcidRain {
         ztorm.getCommand("acidrain").setExecutor(exec);
     }
 
-    public static boolean acidrain(String world) {
+    private static boolean acidrain(String world) {
         try {
             if (Storm.manager.getActiveWeathers(world).contains("storm_acidrain")) {
                 Storm.manager.stopWeather("storm_acidrain", world);
-                return true;
+                return false;
             } else {
-                return !Storm.manager.startWeather("storm_acidrain", world);
+                return Storm.manager.startWeather("storm_acidrain", world);
             }
         } catch (Exception ex) {
-            return false;
+            return true;
         }
     }
 }

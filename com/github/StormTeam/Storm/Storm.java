@@ -16,10 +16,6 @@
  */
 package com.github.StormTeam.Storm;
 
-import org.bukkit.Bukkit;
-import org.bukkit.World;
-import org.bukkit.plugin.java.JavaPlugin;
-
 import com.github.StormTeam.Storm.Acid_Rain.AcidRain;
 import com.github.StormTeam.Storm.Blizzard.Blizzard;
 import com.github.StormTeam.Storm.Lightning.Lightning;
@@ -27,21 +23,24 @@ import com.github.StormTeam.Storm.Meteors.Meteor;
 import com.github.StormTeam.Storm.Thunder_Storm.ThunderStorm;
 import com.github.StormTeam.Storm.Weather.WeatherManager;
 import com.github.StormTeam.Storm.Wildfire.Wildfire;
+import org.bukkit.Bukkit;
+import org.bukkit.World;
+import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
 import java.util.Random;
 import java.util.logging.Level;
-import org.bukkit.plugin.PluginManager;
 
 public class Storm extends JavaPlugin {
 
     /**
      * Dear BukkitDev administrator(s):
-     *
+     * <p/>
      * Thank you for your time in reviewing this project! If you find anything
      * in it that makes you cry inside, will you please let us know so we can
      * fix/improve it? Aside from horrible formatting, we're working on that :)
-     *
+     * <p/>
      * Thanks in advance, The-people-who-made-this-plugin
      */
     public static HashMap<String, GlobalVariables> wConfigs = new HashMap<String, GlobalVariables>();
@@ -55,12 +54,12 @@ public class Storm extends JavaPlugin {
     public void onEnable() {
         try {
             pm = getServer().getPluginManager();
+            util = new StormUtil(this);
 
             configureVersion();
             initConfiguration();
 
             pm.registerEvents((manager = new WeatherManager(this)), this); //Register texture events
-            util = new StormUtil(this);
 
             new MetricsLite(this).start();
 
@@ -82,7 +81,7 @@ public class Storm extends JavaPlugin {
     private void configureVersion() {
         String vers = getServer().getVersion();
         if (vers.contains("1.2.")) {
-            version = 1.2;           
+            version = 1.2;
         } else {
             if (vers.contains("1.3.")) {
                 version = 1.3;
@@ -90,7 +89,7 @@ public class Storm extends JavaPlugin {
                 getLogger().log(Level.SEVERE, "Unsupported MC version detected! Bad things may happen!");
                 return;
             }
-        }                     
+        }
         getLogger().log(Level.INFO, "Loading with MC {0}.X compatibility.", version);
     }
 

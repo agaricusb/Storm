@@ -2,13 +2,13 @@ package com.github.StormTeam.Storm.Acid_Rain;
 
 import com.github.StormTeam.Storm.Acid_Rain.Tasks.DamagerTask;
 import com.github.StormTeam.Storm.Acid_Rain.Tasks.DissolverTask;
-import java.util.*;
-
-import org.bukkit.*;
-
 import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.Storm;
 import com.github.StormTeam.Storm.Weather.StormWeather;
+import org.bukkit.Bukkit;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class AcidRainWeather extends StormWeather {
 
@@ -19,8 +19,8 @@ public class AcidRainWeather extends StormWeather {
 
     public AcidRainWeather(Storm storm, String world) {
         super(storm, world);
-        this.glob = Storm.wConfigs.get(world);
-        this.needRainFlag = true;
+        glob = Storm.wConfigs.get(world);
+        needRainFlag = true;
     }
 
     @Override

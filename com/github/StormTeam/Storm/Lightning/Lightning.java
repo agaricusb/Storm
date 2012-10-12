@@ -1,7 +1,7 @@
 package com.github.StormTeam.Storm.Lightning;
 
-import com.github.StormTeam.Storm.Storm;
 import com.github.StormTeam.Storm.Lightning.Listeners.StrikeListener;
+import com.github.StormTeam.Storm.Storm;
 
 /**
  * @author hammale

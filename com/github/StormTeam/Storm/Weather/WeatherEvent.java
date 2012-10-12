@@ -9,7 +9,7 @@ import org.bukkit.event.HandlerList;
  * @author Tudor
  */
 
-public class WeatherEvent extends Event implements Cancellable {
+class WeatherEvent extends Event implements Cancellable {
 
     private static final HandlerList handlers = new HandlerList();
 
@@ -21,39 +21,39 @@ public class WeatherEvent extends Event implements Cancellable {
 
     public WeatherEvent(World world, boolean state, String weather) {
         this.affectedWorld = world;
-	this.weatherState = state;
+        this.weatherState = state;
         this.weatherName = weather;
     }
 
     public HandlerList getHandlers() {
-	return handlers;
+        return handlers;
     }
 
     public static HandlerList getHandlerList() {
-	return handlers;
+        return handlers;
     }
 
     @Override
     public boolean isCancelled() {
-	return isCancelled;
+        return isCancelled;
     }
 
     @Override
     public void setCancelled(boolean flag) {
-	this.isCancelled = flag;
-	
+        this.isCancelled = flag;
+
     }
-    
+
     public World getAffectedWorld() {
-	return this.affectedWorld;
+        return this.affectedWorld;
     }
-    
+
     public String getWeather() {
         return this.weatherName;
     }
 
     public boolean getWeatherState() {
-	return this.weatherState;
+        return this.weatherState;
     }
 
 }

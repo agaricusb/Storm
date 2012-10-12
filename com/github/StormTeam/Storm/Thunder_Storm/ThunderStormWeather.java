@@ -4,12 +4,11 @@ import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.Storm;
 import com.github.StormTeam.Storm.Thunder_Storm.Tasks.StrikerTask;
 import com.github.StormTeam.Storm.Weather.StormWeather;
-import java.util.Collections;
-
-import java.util.Set;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.entity.Player;
+
+import java.util.Collections;
+import java.util.Set;
 
 public class ThunderStormWeather extends StormWeather {
 

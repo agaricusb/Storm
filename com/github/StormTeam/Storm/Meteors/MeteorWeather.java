@@ -4,8 +4,6 @@ import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.Meteors.Entities.EntityMeteor;
 import com.github.StormTeam.Storm.Storm;
 import com.github.StormTeam.Storm.Weather.StormWeather;
-import java.util.Collections;
-import java.util.Set;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.World;
@@ -14,8 +12,10 @@ import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.entity.Fireball;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 
+import java.util.Collections;
+import java.util.Set;
+
 /**
- *
  * @author Tudor
  */
 public class MeteorWeather extends StormWeather {
@@ -25,6 +25,7 @@ public class MeteorWeather extends StormWeather {
 
     public MeteorWeather(Storm storm, String world) {
         super(storm, world);
+        glob = Storm.wConfigs.get(world);
     }
 
     @Override
@@ -43,10 +44,10 @@ public class MeteorWeather extends StormWeather {
         int x = Storm.random.nextInt(16);
         int z = Storm.random.nextInt(16);
         Block b = chunk.getBlock(x, 4, z);
-        
-            spawnMeteorNaturallyAndRandomly(chunk.getWorld(),
-                    b.getX(),
-                    b.getZ());  
+
+        spawnMeteorNaturallyAndRandomly(chunk.getWorld(),
+                b.getX(),
+                b.getZ());
 
         //Abusing the API. Who cares?
         killID = Storm.manager.createAutoKillWeatherTask("storm_meteor", world, 1);
@@ -62,6 +63,7 @@ public class MeteorWeather extends StormWeather {
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Set<String> getConflicts() {
         return Collections.EMPTY_SET;

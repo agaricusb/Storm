@@ -5,7 +5,6 @@
 package com.github.StormTeam.Storm.Weather.Exceptions;
 
 /**
- *
  * @author xiaomao
  */
 public class WeatherAlreadyRegisteredException extends Exception {

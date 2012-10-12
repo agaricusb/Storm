@@ -1,17 +1,14 @@
 package com.github.StormTeam.Storm;
 
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.Plugin;
+
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.concurrent.Semaphore;
 
-import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.Plugin;
-
-public class ReflectConfiguration {
+class ReflectConfiguration {
 
     /*
      * Based on codename_B's non static config 'offering' :-)
@@ -20,13 +17,13 @@ public class ReflectConfiguration {
     private String name;
     private Semaphore mutex = new Semaphore(1);
 
-    public ReflectConfiguration(Plugin storm, String name) {
+    ReflectConfiguration(Plugin storm, String name) {
         this.plugin = storm;
         this.name = name;
     }
 
     public void load() {
- 
+
         try {
             mutex.acquire();
             Storm.util.log("Loading configuration file: " + name);
@@ -58,7 +55,7 @@ public class ReflectConfiguration {
         }
 
 
-        worlds.save(worldFile);      
+        worlds.save(worldFile);
     }
 
     private boolean doSkip(Field field) {
