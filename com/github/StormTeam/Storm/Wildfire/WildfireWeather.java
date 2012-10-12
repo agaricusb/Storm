@@ -75,6 +75,7 @@ public class WildfireWeather extends StormWeather { //TODO: Make use of getTicke
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Set<String> getConflicts() {
         return Collections.EMPTY_SET;

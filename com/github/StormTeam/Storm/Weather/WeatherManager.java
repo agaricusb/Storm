@@ -167,6 +167,7 @@ public class WeatherManager implements Listener {
         Set<String> conflicts;
         try {
             getConflicts = sampleInstance.getClass().getDeclaredMethod("getConflicts");
+            //noinspection unchecked
             conflicts = (Set<String>) getConflicts.invoke(sampleInstance);
         } catch (IllegalAccessException e) {
             return false;
