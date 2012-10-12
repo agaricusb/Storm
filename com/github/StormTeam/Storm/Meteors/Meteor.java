@@ -16,7 +16,17 @@ import org.bukkit.entity.Player;
 import java.lang.reflect.Method;
 import java.util.logging.Level;
 
+/**
+ * A class for loading meteors.
+ */
+
 public class Meteor {
+
+    /**
+     * Enables meteors.
+     *
+     * @param storm The Storm plugin, used for CommandExecutor registration
+     */
 
     public static void load(Storm storm) {
 
@@ -73,7 +83,7 @@ public class Meteor {
         storm.getCommand("meteor").setExecutor(exec);
     }
 
-    public static void patchMeteor() {
+    private static void patchMeteor() {
         try {
             Method a = net.minecraft.server.EntityTypes.class
                     .getDeclaredMethod("a", Class.class, String.class, int.class);

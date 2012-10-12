@@ -18,12 +18,33 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * An object that provides a plethora of utility functions used in Storm.
+ *
+ * @author Tudor, xiaomao
+ */
+
 public class StormUtil {
 
+    /**
+     * A WorldGuard plugin instance for block protection checking.
+     */
     private WorldGuardPlugin wg;
+    /**
+     * Denotes whether the server has WorldGuard.
+     */
     private boolean hasWG = false;
+    /**
+     * A HashMap with BlockTickSelectors for each loaded world.
+     */
     private HashMap<String, BlockTickSelector> blockTickers = new HashMap<String, BlockTickSelector>();
+    /**
+     * Fields for weather control from net.minecraft.server.WorldData.
+     */
     private Field isRaining, isThundering, rainTicks, thunderTicks;
+    /**
+     * The Storm Logger object.
+     */
     private Logger log;
 
     /**
@@ -378,7 +399,9 @@ public class StormUtil {
         return set;
     }
 
-    //Biome stuff
+    /**
+     * All biomes that rain can fall in.
+     */
     private final Set<Biome> rainBiomes = asSet(Biome.EXTREME_HILLS,
             Biome.FOREST, Biome.FOREST_HILLS,
             Biome.JUNGLE,
@@ -387,9 +410,21 @@ public class StormUtil {
             Biome.PLAINS, Biome.OCEAN, Biome.RIVER,
             Biome.SWAMPLAND, Biome.SKY,
             Biome.SMALL_MOUNTAINS);
+    /**
+     * All desert biomes.
+     */
     private final Set<Biome> desertBiomes = asSet(Biome.DESERT, Biome.DESERT_HILLS);
+    /**
+     * All forest biomes.
+     */
     private final Set<Biome> forestBiomes = asSet(Biome.FOREST, Biome.FOREST_HILLS);
+    /**
+     * All jungle biomes.
+     */
     private final Set<Biome> jungleBiomes = asSet(Biome.JUNGLE_HILLS, Biome.MUSHROOM_ISLAND);
+    /**
+     * All snow biomes.
+     */
     private final Set<Biome> snowyBiomes = asSet(Biome.FROZEN_OCEAN, Biome.FROZEN_RIVER,
             Biome.ICE_MOUNTAINS,
             Biome.ICE_PLAINS, Biome.TAIGA,

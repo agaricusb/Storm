@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * @author hammale
+ * An object for utility methods used by better lightning.
  */
 public class LightningUtils {
 

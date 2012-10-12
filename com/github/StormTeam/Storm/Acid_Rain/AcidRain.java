@@ -9,7 +9,17 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+/**
+ * A class for loading acid rain.
+ */
+
 public class AcidRain {
+
+    /**
+     * Enables acid rain.
+     *
+     * @param storm The Storm plugin, used for CommandExecutor registration
+     */
 
     public static void load(Storm storm) {
         try {

@@ -8,6 +8,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Container class for all configurable Storm variables.
+ */
+
 public class GlobalVariables extends ReflectConfiguration {
 
     /**

@@ -16,8 +16,9 @@ import java.util.Collections;
 import java.util.Set;
 
 /**
- * @author Tudor
+ * An meteor weather object.
  */
+
 public class MeteorWeather extends StormWeather {
 
     private GlobalVariables glob;

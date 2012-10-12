@@ -8,13 +8,24 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.concurrent.Semaphore;
 
+/**
+ * A class for saving/loading lazy configuration classes/files.
+ * Based on codename_B's non static config 'offering' :-)
+ */
+
 class ReflectConfiguration {
 
-    /*
-     * Based on codename_B's non static config 'offering' :-)
+    /**
+     * The plugin object to be used in config saving.
      */
     private Plugin plugin;
+    /**
+     * The name of the configuration file.
+     */
     private String name;
+    /**
+     * A mutex to avoid file corruption when saving.
+     */
     private Semaphore mutex = new Semaphore(1);
 
     /**

@@ -7,10 +7,13 @@ import net.minecraft.server.StepSound;
 
 import java.lang.reflect.Method;
 
+/**
+ * An object for easily modding MC snow to SnowLayer.
+ */
+
 public class SnowModder {
 
     private Class<?> bc = Block.class;
-    @SuppressWarnings("FieldCanBeLocal")
     private Method v, p, c, a, h, a_st;
 
     void mod13X() throws Exception {
@@ -19,11 +22,13 @@ public class SnowModder {
         c = bc.getDeclaredMethod("c", float.class);
         a = bc.getDeclaredMethod("a", StepSound.class);
         h = bc.getDeclaredMethod("h", int.class);
+
         v.setAccessible(true);
         p.setAccessible(true);
         c.setAccessible(true);
         a.setAccessible(true);
         h.setAccessible(true);
+
         Block.byId[Block.SNOW.id] = null;
         Block.byId[Block.SNOW.id] = (Block) h.invoke(a.invoke(c.invoke(p.invoke(v.invoke((new SnowLayer()).b("snow"))), 0.1F), Block.k), 0); //Ugly, but relatively necessary to be compact
     }
@@ -33,11 +38,12 @@ public class SnowModder {
         a = bc.getDeclaredMethod("a", StepSound.class);
         h = bc.getDeclaredMethod("f", int.class);
         a_st = bc.getDeclaredMethod("a", String.class);
-        a_st.setAccessible(true);
 
+        a_st.setAccessible(true);
         c.setAccessible(true);
         a.setAccessible(true);
         h.setAccessible(true);
+
         Block.byId[Block.SNOW.id] = null;
         Block.byId[Block.SNOW.id] = (Block) h.invoke(a.invoke(c.invoke(a_st.invoke(new SnowLayer(), "snow"), 0.1F), Block.k), 0);
     }

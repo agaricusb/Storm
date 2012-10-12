@@ -7,6 +7,10 @@ import net.minecraft.server.World;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
+/**
+ * A snow layer block that slows down players.
+ */
+
 public class SnowLayer extends BlockSnow {
 
     /**

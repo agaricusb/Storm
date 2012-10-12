@@ -1,6 +1,12 @@
 package com.github.StormTeam.Storm;
 
-@SuppressWarnings("FieldCanBeLocal")
+/**
+ * An object for the Triplet data type.
+ *
+ * @param <X> The X value of the Triplet
+ * @param <Y> The Y value of the Triplet
+ * @param <Z> The Z value of the Triplet
+ */
 class Triplet<X, Y, Z> {
     private X x;
     private Y y;

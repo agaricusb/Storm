@@ -4,8 +4,9 @@ import com.github.StormTeam.Storm.Lightning.Listeners.StrikeListener;
 import com.github.StormTeam.Storm.Storm;
 
 /**
- * @author hammale
+ * A class for loading better lightning.
  */
+
 public class Lightning {
 
     /**

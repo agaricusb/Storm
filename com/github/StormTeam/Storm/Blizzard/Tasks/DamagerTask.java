@@ -9,12 +9,33 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+/**
+ * An object for damaging players during blizzards.
+ *
+ * @author Tudor
+ */
+
 public class DamagerTask {
 
+    /**
+     * The scheduler ID for this task.
+     */
     private int id;
+    /**
+     * The World object that this task handles.
+     */
     private World affectedWorld;
+    /**
+     * The Storm plugin object.
+     */
     private Storm storm;
+    /**
+     * The GlobalVariables object of the handled world.
+     */
     private GlobalVariables glob;
+    /**
+     * The blindness PotionEffect.
+     */
     private PotionEffect blindness;
 
     /**

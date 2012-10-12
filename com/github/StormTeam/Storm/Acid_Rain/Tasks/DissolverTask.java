@@ -7,6 +7,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
+/**
+ * An object for dissolving blocks during acid rain.
+ *
+ * @author Tudor
+ */
+
 public class DissolverTask {
 
     private int id;

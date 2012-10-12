@@ -1,4 +1,4 @@
-/**
+/*
  * Storm Copyright (C) 2012 Icyene, Thidox
  *
  * This program is free software: you can redistribute it and/or modify it under
@@ -32,23 +32,50 @@ import java.util.HashMap;
 import java.util.Random;
 import java.util.logging.Level;
 
+/*
+ * Dear BukkitDev administrator(s):
+ *
+ * Thank you for your time in reviewing this project! If you find anything
+ * in it that makes you cry inside, will you please let us know so we can
+ * fix/improve it? Aside from horrible formatting, we're working on that :)
+ *
+ * Thanks in advance, The-people-who-made-this-plugin
+ */
+
+/**
+ * The main Storm class.
+ */
+
 public class Storm extends JavaPlugin {
 
     /**
-     * Dear BukkitDev administrator(s):
-     * <p/>
-     * Thank you for your time in reviewing this project! If you find anything
-     * in it that makes you cry inside, will you please let us know so we can
-     * fix/improve it? Aside from horrible formatting, we're working on that :)
-     * <p/>
-     * Thanks in advance, The-people-who-made-this-plugin
+     * A HashMap containing world name and configuration object.
      */
     public static HashMap<String, GlobalVariables> wConfigs = new HashMap<String, GlobalVariables>();
+    /**
+     * A StormUtil object.
+     */
     public static StormUtil util;
+    /**
+     * A global Random object, to avoid needless construction.
+     */
     public static final Random random = new Random();
+    /**
+     * The server's plugin manager, to avoid fetching each use.
+     */
     public static PluginManager pm;
+    /**
+     * The MC version.
+     */
     public static double version;
+    /**
+     * The Storm WeatherManager.
+     */
     public static WeatherManager manager;
+
+    /**
+     * Called to enable Storm.
+     */
 
     @Override
     public void onEnable() {

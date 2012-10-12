@@ -17,7 +17,7 @@ public class BlizzardWeather extends StormWeather {
     private int killID;
 
     /**
-     * Creates a blizzard weather object for given world
+     * Creates a blizzard weather object for given world.
      *
      * @param storm The Storm plugin, for sending to StormWeather
      * @param world The world this object will be handling

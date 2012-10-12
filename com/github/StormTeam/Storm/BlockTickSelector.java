@@ -14,11 +14,38 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * An object for returning large lists of pseudorandom blocks at high speeds.
+ *
+ * @author Tudor
+ */
+
 public class BlockTickSelector {
 
+    /**
+     * The WorldServer object gotten from passed World.
+     */
     private WorldServer world;
+    /**
+     * net.minecraft.server.World methods.
+     */
     private Method a, recheckGaps;
+    /**
+     * The chance for a block to be returned.
+     */
     private int chan;
+
+    /**
+     * Creates a BlockTickSelector for given world with given chance.
+     *
+     * @param world     The world to create this tick selector for
+     * @param selChance The chance for a block from the ticked list to be returned
+     * @throws NoSuchMethodException
+     * @throws SecurityException
+     * @throws NoSuchFieldException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     */
 
     public BlockTickSelector(World world, int selChance)
             throws NoSuchMethodException,
@@ -59,6 +86,15 @@ public class BlockTickSelector {
         }
         return doTick;
     }
+
+    /**
+     * Fetches a random list of ticked blocks.
+     *
+     * @return A random list of ticked blocks
+     * @throws IllegalArgumentException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     */
 
     public ArrayList<Block> getRandomTickedBlocks()
             throws IllegalArgumentException,

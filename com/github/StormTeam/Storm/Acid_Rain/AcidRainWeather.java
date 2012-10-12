@@ -10,6 +10,10 @@ import org.bukkit.Bukkit;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * An acidic weather object.
+ */
+
 public class AcidRainWeather extends StormWeather {
 
     private GlobalVariables glob;

@@ -9,19 +9,31 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.weather.LightningStrikeEvent;
 
 /**
- * @author hammale
+ * Handles lightning strikes to enchance them.
  */
 
 public class StrikeListener implements Listener {
 
+    /**
+     * A LightningUtil method for... utility...
+     */
     private LightningUtils util;
 
+    /**
+     * Constructs a StrikeListener object.
+     */
     public StrikeListener() {
         this.util = new LightningUtils();
     }
 
+    /**
+     * Handles LightningStrike events.
+     *
+     * @param strike
+     */
+
     @EventHandler
-    public void strikeLightningListener(final LightningStrikeEvent strike) {
+    public void strikeLightningListener(LightningStrikeEvent strike) {
 
         if (strike.isCancelled()) {
             return;

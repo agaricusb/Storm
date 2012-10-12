@@ -6,6 +6,8 @@ import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.event.world.WorldUnloadEvent;
 
 /**
+ * Handles memory leaks caused by World unloading and loads/unloads config files.
+ *
  * @author Tudor
  */
 class WorldConfigLoader implements Listener {

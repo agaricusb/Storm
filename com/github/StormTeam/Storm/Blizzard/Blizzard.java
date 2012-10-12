@@ -9,9 +9,22 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+/**
+ * A class for loading blizzard.
+ */
+
 public class Blizzard {
 
+    /**
+     * The SnowModder object used for modding snow to SnowLayer.
+     */
     public static SnowModder modder;
+
+    /**
+     * Enables blizzard.
+     *
+     * @param storm The Storm plugin, used for CommandExecutor registration
+     */
 
     public static void load(Storm storm) {
         modder = new SnowModder();
