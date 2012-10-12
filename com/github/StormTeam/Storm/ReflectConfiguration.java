@@ -17,10 +17,21 @@ class ReflectConfiguration {
     private String name;
     private Semaphore mutex = new Semaphore(1);
 
-    ReflectConfiguration(Plugin storm, String name) {
-        this.plugin = storm;
+    /**
+     * Creates a ReflectConfiguration file based on given name
+     *
+     * @param plugin The plugin
+     * @param name   The name of the file to write to
+     */
+
+    ReflectConfiguration(Plugin plugin, String name) {
+        this.plugin = plugin;
         this.name = name;
     }
+
+    /**
+     * Loads the object.
+     */
 
     public void load() {
 

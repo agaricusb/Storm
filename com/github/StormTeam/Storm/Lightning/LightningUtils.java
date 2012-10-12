@@ -2,10 +2,7 @@ package com.github.StormTeam.Storm.Lightning;
 
 import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.Storm;
-import org.bukkit.Chunk;
-import org.bukkit.ChunkSnapshot;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Minecart;
@@ -21,11 +18,20 @@ import java.util.List;
  */
 public class LightningUtils {
 
-    private Storm storm;
+    /**
+     * Creates a lightning utility object.
+     */
 
-    public LightningUtils(Storm storm) {
-        this.storm = storm;
+    public LightningUtils() {
+
     }
+
+    /**
+     * Finds a metal block near given location.
+     *
+     * @param oldLoc The given location
+     * @return A location of a metallic block
+     */
 
     public Location hitMetal(Location oldLoc) {
         Chunk chunk = pickChunk(oldLoc.getWorld());
@@ -38,12 +44,19 @@ public class LightningUtils {
         return oldLoc;
     }
 
+    /**
+     * Finds a player near given location.
+     *
+     * @param oldLoc The given location
+     * @return A location of a player
+     */
+
     public Location hitPlayers(Location oldLoc) {
-        final Location chunk = pickChunk(oldLoc.getWorld()).getBlock(8, 255, 8)
+        Location chunk = pickChunk(oldLoc.getWorld()).getBlock(8, 255, 8)
                 .getLocation();
         GlobalVariables glob = Storm.wConfigs.get(oldLoc.getWorld().getName());
 
-        for (Player p : storm.getServer().getOnlinePlayers()) {
+        for (Player p : Bukkit.getServer().getOnlinePlayers()) {
             Location ploc = new Location(p.getWorld(), p.getLocation().getX(),
                     255, p.getLocation().getZ());
             if (chunk.distance(ploc) <= 40 && !p.hasPermission("storm.lightning.immune")) {

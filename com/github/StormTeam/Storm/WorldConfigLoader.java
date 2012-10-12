@@ -12,9 +12,21 @@ class WorldConfigLoader implements Listener {
 
     private final Storm storm;
 
+    /**
+     * Creates a WorldConfigLoader object to handle config for worlds (un)loaded by plugins a la MultiVerse.
+     *
+     * @param storm The storm plugin: used for GlobalVariables loading
+     */
+
     public WorldConfigLoader(Storm storm) {
         this.storm = storm;
     }
+
+    /**
+     * Loads a config file for world when it is loaded
+     *
+     * @param e The WorldLoadEvent
+     */
 
     @EventHandler
     public void onWorldLoad(WorldLoadEvent e) {
@@ -23,6 +35,12 @@ class WorldConfigLoader implements Listener {
         config.load();
         Storm.wConfigs.put(world, config);
     }
+
+    /**
+     * Removes the config object on unload; prevents world leaks
+     *
+     * @param e The WorldUnloadEvent
+     */
 
     @EventHandler
     public void onWorldUnload(WorldUnloadEvent e) {

@@ -16,6 +16,13 @@ public class DissolverTask {
     private GlobalVariables glob;
     private BlockTickSelector ticker;
 
+    /**
+     * Creates a dissolver object for given world.
+     *
+     * @param storm         The Storm plugin used for config retrieving
+     * @param affectedWorld The world to handle
+     */
+
     public DissolverTask(Storm storm, String affectedWorld) {
         this.storm = storm;
         glob = Storm.wConfigs.get(affectedWorld);
@@ -27,8 +34,11 @@ public class DissolverTask {
         }
     }
 
-    public void run() {
+    /**
+     * Starts the task.
+     */
 
+    public void run() {
         id = Bukkit.getScheduler()
                 .scheduleSyncRepeatingTask(
                         storm,
@@ -65,6 +75,10 @@ public class DissolverTask {
                         glob.Acid__Rain_Scheduler_Dissolver__Calculation__Intervals__In__Ticks);
 
     }
+
+    /**
+     * Ends the task.
+     */
 
     public void stop() {
         Bukkit.getScheduler().cancelTask(id);

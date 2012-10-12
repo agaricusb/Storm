@@ -16,15 +16,21 @@ public class BlizzardWeather extends StormWeather {
     private DamagerTask damager;
     private int killID;
 
+    /**
+     * Creates a blizzard weather object for given world
+     *
+     * @param storm The Storm plugin, for sending to StormWeather
+     * @param world The world this object will be handling
+     */
+
     public BlizzardWeather(Storm storm, String world) {
         super(storm, world);
         glob = Storm.wConfigs.get(world);
     }
 
-    @Override
-    public String getTexture() {
-        return glob.Textures_Blizzard__Texture__Path;
-    }
+    /**
+     * Called when acid rain starts for the handled world.
+     */
 
     @Override
     public void start() {
@@ -50,6 +56,10 @@ public class BlizzardWeather extends StormWeather {
         killID = Storm.manager.createAutoKillWeatherTask("storm_blizzard", world, 7500 + Storm.random.nextInt(1024));
     }
 
+    /**
+     * Called when acid rain ends for the handled world.
+     */
+
     @Override
     public void end() {
         if (glob.Features_Blizzards_Slowing__Snow) {
@@ -62,6 +72,24 @@ public class BlizzardWeather extends StormWeather {
         damager = null; //Remove references        
         Bukkit.getScheduler().cancelTask(killID);
     }
+
+
+    /**
+     * Returns the texture to be used during this event.
+     *
+     * @return The path to the texture
+     */
+
+    @Override
+    public String getTexture() {
+        return glob.Textures_Blizzard__Texture__Path;
+    }
+
+    /**
+     * Blizzards conflicts with acid rain because of textures: don't allow to run at same time.
+     *
+     * @return A set containing the String "storm_acidrain"
+     */
 
     @Override
     public Set<String> getConflicts() {

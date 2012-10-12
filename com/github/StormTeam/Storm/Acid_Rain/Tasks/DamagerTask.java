@@ -17,6 +17,13 @@ public class DamagerTask {
     private GlobalVariables glob;
     private PotionEffect hunger;
 
+    /**
+     * Creates a damager object for given world.
+     *
+     * @param storm         The Storm plugin used for config retrieving
+     * @param affectedWorld The world to handle
+     */
+
     public DamagerTask(Storm storm, String affectedWorld) {
         this.storm = storm;
         this.affectedWorld = Bukkit.getWorld(affectedWorld);
@@ -27,8 +34,11 @@ public class DamagerTask {
                 1);
     }
 
-    public void run() {
+    /**
+     * Starts the task.
+     */
 
+    public void run() {
         id = Bukkit.getScheduler()
                 .scheduleSyncRepeatingTask(
                         storm,
@@ -57,6 +67,10 @@ public class DamagerTask {
                         glob.Acid__Rain_Scheduler_Damager__Calculation__Intervals__In__Ticks);
 
     }
+
+    /**
+     * Ends the task.
+     */
 
     public void stop() {
         Bukkit.getScheduler().cancelTask(id);

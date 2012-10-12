@@ -42,10 +42,18 @@ public class SnowModder {
         Block.byId[Block.SNOW.id] = (Block) h.invoke(a.invoke(c.invoke(a_st.invoke(new SnowLayer(), "snow"), 0.1F), Block.k), 0);
     }
 
+    /**
+     * Removes the modded aspect of snow layer.
+     */
+
     public void reset() {
         Block.byId[Block.SNOW.id] = null;
         Block.byId[Block.SNOW.id] = Block.SNOW; //Resets to default snow
     }
+
+    /**
+     * Mods the snow based on current MC version. 1.2.X & 1.3.X compatible.
+     */
 
     public void modBestFit() {
         try {

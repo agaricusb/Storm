@@ -8,7 +8,13 @@ import com.github.StormTeam.Storm.Storm;
  */
 public class Lightning {
 
+    /**
+     * Enables better lightning.
+     *
+     * @param storm The Storm plugin, used for listener registration
+     */
+
     public static void load(Storm storm) {
-        Storm.pm.registerEvents(new StrikeListener(storm), storm);
+        Storm.pm.registerEvents(new StrikeListener(), storm);
     }
 }

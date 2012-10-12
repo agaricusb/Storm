@@ -17,6 +17,13 @@ public class DamagerTask {
     private GlobalVariables glob;
     private PotionEffect blindness;
 
+    /**
+     * Creates a damager object for given world.
+     *
+     * @param storm      The Storm plugin used for config retrieving
+     * @param spawnWorld The world to handle
+     */
+
     public DamagerTask(Storm storm, String spawnWorld) {
         this.storm = storm;
         this.affectedWorld = Bukkit.getWorld(spawnWorld);
@@ -28,8 +35,11 @@ public class DamagerTask {
 
     }
 
-    public void run() {
+    /**
+     * Starts the task.
+     */
 
+    public void run() {
         id = Bukkit.getScheduler()
                 .scheduleSyncRepeatingTask(
                         storm,
@@ -59,6 +69,10 @@ public class DamagerTask {
                         glob.Blizzard_Scheduler_Player__Damager__Calculation__Intervals__In__Ticks);
 
     }
+
+    /**
+     * Ends the task.
+     */
 
     public void stop() {
         Bukkit.getScheduler().cancelTask(id);

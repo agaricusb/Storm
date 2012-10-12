@@ -10,8 +10,15 @@ import java.util.List;
 
 public class GlobalVariables extends ReflectConfiguration {
 
-    public GlobalVariables(Plugin storm, String world) {
-        super(storm, world);
+    /**
+     * Creates a GlobalVariable object with the given name.
+     *
+     * @param plugin Plugin: used to know which folder to save to
+     * @param name   The name of the file
+     */
+
+    public GlobalVariables(Plugin plugin, String name) {
+        super(plugin, name);
     }
 
     //Acid Rain

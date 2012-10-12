@@ -9,9 +9,23 @@ import org.bukkit.entity.Player;
 
 public class SnowLayer extends BlockSnow {
 
+    /**
+     * Constructs the snow layer.
+     */
+
     public SnowLayer() {
         super(78, 66);
     }
+
+    /**
+     * Called when an entity collides with this block: slow them down.
+     *
+     * @param w The net.minecraft.server.World this happened in
+     * @param x The x coordinate
+     * @param y The y coordinate
+     * @param z The z coordinate
+     * @param e The net.minecraft.server.Entity this collision occured with
+     */
 
     @Override
     public void a(final World w, final int x, final int y,
