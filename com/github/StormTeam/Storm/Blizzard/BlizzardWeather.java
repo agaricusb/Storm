@@ -65,7 +65,7 @@ public class BlizzardWeather extends StormWeather {
 
     @Override
     public Set<String> getConflicts() {
-        HashSet<String> set = new HashSet();
+        HashSet<String> set = new HashSet<String>();
         set.add("storm_acidrain");
         return set; //Yay.
     }

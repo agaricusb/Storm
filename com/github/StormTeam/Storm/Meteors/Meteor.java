@@ -44,9 +44,9 @@ public class Meteor {
                     Player snd = (Player) sender;
                     GlobalVariables glob = Storm.wConfigs.get(snd.getWorld().getName());
                     if (glob.Features_Meteor) {
-                        Location ploc = snd.getLocation();
+                        Location senderLocation = snd.getLocation();
                         trajectoryMeteor(snd.getTargetBlock(null, 0).getLocation(),
-                                ploc.toVector().add(ploc.getDirection().normalize()).toLocation(ploc.getWorld()));
+                                senderLocation.toVector().add(senderLocation.getDirection().normalize()).toLocation(senderLocation.getWorld()));
                     } else {
                         sender.sendMessage("Meteors not enabled in specified world or are conflicting with another weather!");
                     }
