@@ -22,7 +22,7 @@ public class BlockTickSelector {
 
     public BlockTickSelector(World world, int selChance)
             throws NoSuchMethodException,
-            SecurityException, NoSuchFieldException, InstantiationException, IllegalAccessException {
+            SecurityException {
 
         this.world = ((CraftWorld) world).getHandle();
 
@@ -34,7 +34,7 @@ public class BlockTickSelector {
 
     }
 
-    ArrayList<ChunkCoordIntPair> getRandomTickedChunks() throws InvocationTargetException, IllegalAccessException {
+    ArrayList<ChunkCoordIntPair> getRandomTickedChunks() {
 
         ArrayList<ChunkCoordIntPair> doTick = new ArrayList<ChunkCoordIntPair>();
 
