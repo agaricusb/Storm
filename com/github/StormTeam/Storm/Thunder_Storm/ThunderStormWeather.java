@@ -52,6 +52,7 @@ public class ThunderStormWeather extends StormWeather {
         Bukkit.getScheduler().cancelTask(killID);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Set<String> getConflicts() {
         return Collections.EMPTY_SET;

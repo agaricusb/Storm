@@ -11,12 +11,6 @@ import org.bukkit.entity.Player;
 
 public class AcidRain {
 
-    /**
-     * Enables acid rain.
-     *
-     * @param storm The Storm plugin, used for CommandExecutor setting
-     */
-
     public static void load(Storm storm) {
         try {
             Storm.manager.registerWeather(AcidRainWeather.class, "storm_acidrain");
@@ -53,7 +47,7 @@ public class AcidRain {
             }
         };
 
-        storm.getCommand("acidrain").setExecutor(exec);
+        ztorm.getCommand("acidrain").setExecutor(exec);
     }
 
     private static boolean acidrain(String world) {

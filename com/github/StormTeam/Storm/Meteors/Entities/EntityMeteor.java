@@ -98,9 +98,11 @@ public class EntityMeteor extends EntityFireball {
             if ((locY & 0xFFFFFFE0) == 0) { // locy < 32
                 try {
                     explode();
+                } catch (NullPointerException ignored) {
+                    //Throws an NPE if explodes in unloaded chunk (locs are null). Can be ignored without consequence.
                 } catch (Exception e) {
-                } //Throws an NPE if explodes in unloaded chunk (locs are null). Can be ignored without consequence.
-
+                    e.printStackTrace();
+                }
                 return;
             }
             if (!Storm.util.isBlockProtected(world.getWorld().getBlockAt((int) locX, locY, (int) locZ))) {
@@ -126,10 +128,12 @@ public class EntityMeteor extends EntityFireball {
             makeWinter();
             try {
                 explode();
+            } catch (NullPointerException ignored) {
+                //Throws an NPE if explodes in unloaded chunk (locs are null). Can be ignored without consequence.
             } catch (Exception e) {
-            } //Throws an NPE if explodes in unloaded chunk (locs are null). Can be ignored without consequence.
+                e.printStackTrace();
+            }
         }
-
     }
 
     private void explode() {
@@ -149,7 +153,7 @@ public class EntityMeteor extends EntityFireball {
         die();
     }
 
-    private void spawnMeteor(Location expl) {
+    private void spawnMeteor(Location explosion) {
         ArrayList<Material> m = new ArrayList<Material>();
         m.add(Material.COAL_ORE);
         m.add(Material.IRON_ORE);
@@ -160,12 +164,12 @@ public class EntityMeteor extends EntityFireball {
         }
         m.add(Material.DIAMOND_ORE);
         m.add(Material.LAPIS_ORE);
-        while (expl.getBlock().getType().equals(Material.AIR)) {
-            expl.add(0, -1, 0);
+        while (explosion.getBlock().getType().equals(Material.AIR)) {
+            explosion.add(0, -1, 0);
         }
-        expl.add(0, radius + 1, 0);
-        this.makeSphere(expl, null, radius, true, true, m);
-        this.makeSphere(expl, Material.OBSIDIAN, radius, false, false, null);
+        explosion.add(0, radius + 1, 0);
+        this.makeSphere(explosion, null, radius, true, true, m);
+        this.makeSphere(explosion, Material.OBSIDIAN, radius, false, false, null);
     }
 
     void makeSphere(Location pos, Material block, double radius,
@@ -201,7 +205,7 @@ public class EntityMeteor extends EntityFireball {
                             }
                             break forY;
                         }
-                        break;
+                        break forZ;
                     }
 
                     if (!filled && lengthSq(nextXn, yn, zn) <= 1

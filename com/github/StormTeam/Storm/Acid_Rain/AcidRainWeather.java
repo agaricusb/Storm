@@ -92,7 +92,7 @@ public class AcidRainWeather extends StormWeather {
 
     @Override
     public Set<String> getConflicts() {
-        HashSet<String> temp = new HashSet();
+        HashSet<String> temp = new HashSet<String>();
         temp.add("storm_blizzard");
         return temp;
     }

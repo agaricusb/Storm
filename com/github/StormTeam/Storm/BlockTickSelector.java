@@ -20,18 +20,6 @@ public class BlockTickSelector {
     private Method a, recheckGaps;
     private int chan;
 
-    /**
-     * Constructs a BlockTickSelector utility object.
-     *
-     * @param world     The world to construct it for
-     * @param selChance The chance of a block being returned from list of ticked blocks
-     * @throws NoSuchMethodException
-     * @throws SecurityException
-     * @throws NoSuchFieldException
-     * @throws InstantiationException
-     * @throws IllegalAccessException
-     */
-
     public BlockTickSelector(World world, int selChance)
             throws NoSuchMethodException,
             SecurityException, NoSuchFieldException, InstantiationException, IllegalAccessException {
@@ -45,14 +33,6 @@ public class BlockTickSelector {
         this.chan = selChance;
 
     }
-
-    /**
-     * Gets a ArrayList of chunks coerced with player locations.
-     *
-     * @return A list of ticked chunks
-     * @throws InvocationTargetException
-     * @throws IllegalAccessException
-     */
 
     ArrayList<ChunkCoordIntPair> getRandomTickedChunks() throws InvocationTargetException, IllegalAccessException {
 
@@ -80,14 +60,6 @@ public class BlockTickSelector {
         return doTick;
     }
 
-    /**
-     * Gets an ArrayList of ticked blocks. Very fast.
-     *
-     * @return An ArrayList of ticked blocks
-     * @throws IllegalArgumentException
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     */
     public ArrayList<Block> getRandomTickedBlocks()
             throws IllegalArgumentException,
             IllegalAccessException, InvocationTargetException {

@@ -7,8 +7,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
-import java.util.ArrayList;
-
 public class DissolverTask {
 
     private int id;
@@ -47,10 +45,7 @@ public class DissolverTask {
                             public void run() {
 
                                 try {
-                                    ArrayList<Block> bloks = ticker
-                                            .getRandomTickedBlocks();
-
-                                    for (Block b : bloks) {
+                                    for (Block b : ticker.getRandomTickedBlocks()) {
 
                                         Block tran = b.getRelative(BlockFace.DOWN);
 

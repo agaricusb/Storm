@@ -13,12 +13,6 @@ public class Blizzard {
 
     public static SnowModder modder;
 
-    /**
-     * Enables blizzards.
-     *
-     * @param storm The Storm plugin, used for CommandExecutor setting
-     */
-
     public static void load(Storm storm) {
         modder = new SnowModder();
         try {
