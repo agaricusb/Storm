@@ -13,7 +13,7 @@ public class Blizzard {
 
     public static SnowModder modder;
 
-    public static void load(Storm ztorm) {
+    public static void load(Storm storm) {
         modder = new SnowModder();
         try {
             Storm.manager.registerWeather(BlizzardWeather.class, "storm_blizzard");
@@ -50,7 +50,7 @@ public class Blizzard {
                 return false;
             }
         };
-        ztorm.getCommand("blizzard").setExecutor(exec);
+        storm.getCommand("blizzard").setExecutor(exec);
 
     }
 

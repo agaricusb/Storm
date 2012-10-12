@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 
 public class AcidRain {
 
-    public static void load(Storm ztorm) {
+    public static void load(Storm storm) {
         try {
             Storm.manager.registerWeather(AcidRainWeather.class, "storm_acidrain");
 
@@ -47,7 +47,7 @@ public class AcidRain {
             }
         };
 
-        ztorm.getCommand("acidrain").setExecutor(exec);
+        storm.getCommand("acidrain").setExecutor(exec);
     }
 
     private static boolean acidrain(String world) {

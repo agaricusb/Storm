@@ -18,7 +18,7 @@ import java.util.logging.Level;
 
 public class Meteor {
 
-    public static void load(Storm ztorm) {
+    public static void load(Storm storm) {
 
         try {
             Storm.manager.registerWeather(MeteorWeather.class, "storm_meteor");
@@ -70,7 +70,7 @@ public class Meteor {
         };
 
 
-        ztorm.getCommand("meteor").setExecutor(exec);
+        storm.getCommand("meteor").setExecutor(exec);
     }
 
     public static void patchMeteor() {

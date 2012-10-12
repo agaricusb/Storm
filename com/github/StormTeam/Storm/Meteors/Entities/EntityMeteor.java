@@ -153,7 +153,7 @@ public class EntityMeteor extends EntityFireball {
         die();
     }
 
-    private void spawnMeteor(Location expl) {
+    private void spawnMeteor(Location explosion) {
         ArrayList<Material> m = new ArrayList<Material>();
         m.add(Material.COAL_ORE);
         m.add(Material.IRON_ORE);
@@ -164,12 +164,12 @@ public class EntityMeteor extends EntityFireball {
         }
         m.add(Material.DIAMOND_ORE);
         m.add(Material.LAPIS_ORE);
-        while (expl.getBlock().getType().equals(Material.AIR)) {
-            expl.add(0, -1, 0);
+        while (explosion.getBlock().getType().equals(Material.AIR)) {
+            explosion.add(0, -1, 0);
         }
-        expl.add(0, radius + 1, 0);
-        this.makeSphere(expl, null, radius, true, true, m);
-        this.makeSphere(expl, Material.OBSIDIAN, radius, false, false, null);
+        explosion.add(0, radius + 1, 0);
+        this.makeSphere(explosion, null, radius, true, true, m);
+        this.makeSphere(explosion, Material.OBSIDIAN, radius, false, false, null);
     }
 
     void makeSphere(Location pos, Material block, double radius,
