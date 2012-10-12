@@ -98,9 +98,11 @@ public class EntityMeteor extends EntityFireball {
             if ((locY & 0xFFFFFFE0) == 0) { // locy < 32
                 try {
                     explode();
+                } catch (NullPointerException ignored) {
+                    //Throws an NPE if explodes in unloaded chunk (locs are null). Can be ignored without consequence.
                 } catch (Exception e) {
-                } //Throws an NPE if explodes in unloaded chunk (locs are null). Can be ignored without consequence.
-
+                    e.printStackTrace();
+                }
                 return;
             }
             if (!Storm.util.isBlockProtected(world.getWorld().getBlockAt((int) locX, locY, (int) locZ))) {
@@ -126,10 +128,12 @@ public class EntityMeteor extends EntityFireball {
             makeWinter();
             try {
                 explode();
+            } catch (NullPointerException ignored) {
+                //Throws an NPE if explodes in unloaded chunk (locs are null). Can be ignored without consequence.
             } catch (Exception e) {
-            } //Throws an NPE if explodes in unloaded chunk (locs are null). Can be ignored without consequence.
+                e.printStackTrace();
+            }
         }
-
     }
 
     private void explode() {

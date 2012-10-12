@@ -466,7 +466,7 @@ public class WeatherManager implements Listener {
                     stopWeatherReal(weather, worlds);
                 }
             }
-        } catch (WeatherNotFoundException e) {
+        } catch (WeatherNotFoundException ignored) {
         }
     }
 

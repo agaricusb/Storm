@@ -94,6 +94,7 @@ public class SQLite implements iDriver {
                     plugin.getLogger().log(Level.INFO, e.getMessage());
                     e.printStackTrace();
                 }
+                //noinspection ReturnInsideFinallyBlock
                 return false;
             }
         }
@@ -590,7 +591,7 @@ public class SQLite implements iDriver {
                     try {
                         length = Integer.parseInt(data.get("LENGTH"));
                         length = length < 0 ? 100 : length;
-                    } catch (NumberFormatException e) {
+                    } catch (NumberFormatException ignored) {
                     }
                 } else
                     length = null;
