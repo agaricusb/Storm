@@ -16,7 +16,7 @@ import java.util.Collections;
 import java.util.Set;
 
 /**
- * An meteor weather object.
+ * A meteor weather object.
  */
 
 public class MeteorWeather extends StormWeather {
@@ -24,10 +24,21 @@ public class MeteorWeather extends StormWeather {
     private GlobalVariables glob;
     private int killID;
 
+    /**
+     * Creates a meteor weather object for given world.
+     *
+     * @param storm The Storm plugin, for sending to StormWeather
+     * @param world The world this object will be handling
+     */
+
     public MeteorWeather(Storm storm, String world) {
         super(storm, world);
         glob = Storm.wConfigs.get(world);
     }
+
+    /**
+     * Called when a meteor is called in the handled world.
+     */
 
     @Override
     public void start() {
@@ -54,17 +65,32 @@ public class MeteorWeather extends StormWeather {
         killID = Storm.manager.createAutoKillWeatherTask("storm_meteor", world, 1);
     }
 
+    /**
+     * Called to kill the meteor weather.
+     */
+
     @Override
     public void end() {
         Bukkit.getScheduler().cancelTask(killID);
     }
+
+    /**
+     * Returns the texture to be used during this event.
+     *
+     * @return The path to the texture
+     */
 
     @Override
     public String getTexture() {
         return null;
     }
 
-    @SuppressWarnings("unchecked")
+    /**
+     * Meteors don't conflict anything.
+     *
+     * @return Collections.EMPTY_SET; an empty set
+     */
+
     @Override
     public Set<String> getConflicts() {
         return Collections.EMPTY_SET;

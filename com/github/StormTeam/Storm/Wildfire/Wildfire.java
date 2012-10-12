@@ -18,15 +18,30 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * A class for loading wildfires.
+ */
+
 public class Wildfire {
 
+    /**
+     * A HashMap containing world names and blocks that are part of a wildfire.
+     */
     public static HashMap<String, Set<org.bukkit.block.Block>> wildfireBlocks = new HashMap<String, Set<org.bukkit.block.Block>>();
+    /**
+     * A Set of all flammable blocks.
+     */
     public static Set<Integer> flammable = StormUtil.asSet(Block.FENCE.id, Block.WOOD.id, Block.WOOD_STAIRS.id,
             Block.WOODEN_DOOR.id, Block.LEAVES.id, Block.BOOKSHELF.id,
             Block.GRASS.id, Block.WOOL.id);
-    public static Storm storm;
 
-    public static void load(Storm ztorm) {
+    /**
+     * Enables wildfires.
+     *
+     * @param storm The Storm plugin, used for CommandExecutor registration
+     */
+
+    public static void load(Storm storm) {
         try {
             Storm.manager.registerWeather(WildfireWeather.class, "storm_wildfire");
 
@@ -74,7 +89,7 @@ public class Wildfire {
         };
 
 
-        ztorm.getCommand("wildfire").setExecutor(exec);
+        storm.getCommand("wildfire").setExecutor(exec);
 
     }
 
@@ -89,6 +104,12 @@ public class Wildfire {
         getWFBlocks(world).add(fire);
     }
 
+    /**
+     * Returns a Set of all fire blocks involved in a wildfire in given world.
+     *
+     * @param world The World name
+     * @return A set of wildfire blocks
+     */
     public static Set<org.bukkit.block.Block> getWFBlocks(String world) {
         Set<org.bukkit.block.Block> set = wildfireBlocks.get(world);
         if (set == null) {

@@ -14,7 +14,17 @@ import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 
 import static com.github.StormTeam.Storm.Wildfire.Wildfire.getWFBlocks;
 
+/**
+ * Handles fire events for wildfires.
+ */
+
 class WildfireListeners implements Listener {
+
+    /**
+     * Checks for other blocks to burn if event involves a block in Wildfire,getWFBlocks().
+     *
+     * @param event The BlockIgniteEvent being handled
+     */
 
     @EventHandler
     public void onBlockIgnite(BlockIgniteEvent event) {
@@ -52,8 +62,14 @@ class WildfireListeners implements Listener {
         }
     }
 
+    /**
+     * Removes blocks involved in a wildfire from Wildfire.getWFBlocks().
+     *
+     * @param event The BlockFadeEvent being listened to
+     */
+
     @EventHandler
-    public void onBlockEx(final BlockFadeEvent event) {
+    public void onBlockEx(BlockFadeEvent event) {
         Block faded = event.getBlock();
         getWFBlocks(faded.getWorld().getName()).remove(faded);
     }

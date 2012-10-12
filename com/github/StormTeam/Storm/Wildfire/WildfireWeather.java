@@ -13,19 +13,31 @@ import java.util.Collections;
 import java.util.Set;
 
 /**
- * @author Tudor
+ * A wildfire weather object.
  */
+
 public class WildfireWeather extends StormWeather { //TODO: Make use of getTickedBlock(Chunk) to get better ranges of wildfires 
 
     private GlobalVariables glob;
     private int killID;
     private World affectedWorld;
 
+    /**
+     * Creates a wildfire weather object for given world.
+     *
+     * @param storm The Storm plugin, for sending to StormWeather
+     * @param world The world this object will be handling
+     */
+
     public WildfireWeather(Storm storm, String world) {
         super(storm, world);
         affectedWorld = Bukkit.getWorld(world);
         glob = Storm.wConfigs.get(world);
     }
+
+    /**
+     * Called when wildfire starts for the handled world.
+     */
 
     @Override
     public void start() {
@@ -65,17 +77,32 @@ public class WildfireWeather extends StormWeather { //TODO: Make use of getTicke
         killID = Storm.manager.createAutoKillWeatherTask("storm_wildfire", world, 1);
     }
 
+    /**
+     * Called when wildfire ends for the handled world.
+     */
+
     @Override
     public void end() {
         Bukkit.getScheduler().cancelTask(killID);
     }
+
+    /**
+     * Returns the texture to be used during this event.
+     *
+     * @return The path to the texture
+     */
 
     @Override
     public String getTexture() {
         return null;
     }
 
-    @SuppressWarnings("unchecked")
+    /**
+     * Wildfires don't conflict anything.
+     *
+     * @return Collections.EMPTY_SET; an empty set
+     */
+
     @Override
     public Set<String> getConflicts() {
         return Collections.EMPTY_SET;

@@ -2,7 +2,6 @@ package com.github.StormTeam.Storm.Meteors.Entities;
 
 import com.github.StormTeam.Storm.Storm;
 import net.minecraft.server.EntityFireball;
-import net.minecraft.server.EntityLiving;
 import net.minecraft.server.MovingObjectPosition;
 import net.minecraft.server.World;
 import org.bukkit.Location;
@@ -13,6 +12,10 @@ import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 
 import java.util.ArrayList;
 
+/**
+ * A meteor entity.
+ */
+
 public class EntityMeteor extends EntityFireball {
 
     private float explosionRadius = 50F;
@@ -22,16 +25,40 @@ public class EntityMeteor extends EntityFireball {
     private int burrowCount = 5;
     private int burrowPower = 10;
     private boolean spawnMeteorOnImpact;
-    private int radius;
+    private int radius = 5;
     private String damageMessage;
     private int shockwaveDamage;
     private int shockwaveDamageRadius;
     private int snowRadius;
     private boolean h_lock, h_lock_2, h_lock_3;
 
+    /**
+     * Constructs a meteor for the given world.
+     *
+     * @param world The net.minecraft.server.World that this entity will be spawned in
+     */
+
     public EntityMeteor(World world) {
         super(world);
     }
+
+    /**
+     * Overload, constructs a meteor entity and modifies its properties.
+     *
+     * @param world                 The world to spawn in
+     * @param burrowCount           How many times the meteor can burrow
+     * @param burrowPower           With what explosion power to burrow
+     * @param trailPower            The power of the explosive trail
+     * @param explosionRadius       The power of the final, impact explosion
+     * @param brightness            The brightness of the meteor
+     * @param crashMessage          The message to broadcast on impact
+     * @param shockwaveDamage       How much to damage players
+     * @param shockwaveDamageRadius The radius to damage players within
+     * @param damageMessage         The message to send to damaged players
+     * @param snowRadius            The radius that will be plunged into meteoric winter
+     * @param spawnOnImpact         Whether to spawn a meteor blob on impact: true = yes, false = no
+     * @param radius                The radius of the blob
+     */
 
     public EntityMeteor(World world, int burrowCount, int burrowPower,
                         float trailPower, float explosionRadius, float brightness,
@@ -57,17 +84,26 @@ public class EntityMeteor extends EntityFireball {
 
     }
 
+    /**
+     * Spawns the meteor.
+     */
     public void spawn() {
         world.addEntity(this, SpawnReason.CUSTOM);
 
     }
 
+    /**
+     * Move method for 1.3.X.
+     */
     @Override
     public void h_() {
         move();
         super.h_();
     }
 
+    /**
+     * Move method for 1.2.X.
+     */
     @Override
     public void F_() {
         move();
@@ -113,6 +149,12 @@ public class EntityMeteor extends EntityFireball {
         motY *= 1.0F;
         motZ *= 1.0F;
     }
+
+    /**
+     * Called to burrow the meteor or explode
+     *
+     * @param movingobjectposition The position of the meteor
+     */
 
     @Override
     public void a(MovingObjectPosition movingobjectposition) {
@@ -249,10 +291,14 @@ public class EntityMeteor extends EntityFireball {
         }
     }
 
+    /**
+     * Returns the brightness of the meteor
+     *
+     * @param f Random value added by MC
+     * @return The brightness
+     */
     @Override
     public float c(float f) {
         return this.brightness;
     }
-
-    public EntityLiving shooter;
 }

@@ -151,13 +151,13 @@ public class WeatherManager implements Listener {
      * @param weather weather name
      * @return whether the weather is registered
      */
-    boolean isWeatherRegistered(String weather) {
+    public boolean isWeatherRegistered(String weather) {
         synchronized (this) {
             return !registeredWeathers.containsKey(weather);
         }
     }
 
-    StormWeather getSampleInstance(String weather) {
+    public StormWeather getSampleInstance(String weather) {
         return registeredWeathers.get(weather).RIGHT.entrySet().iterator().next().getValue();
     }
 
@@ -256,7 +256,7 @@ public class WeatherManager implements Listener {
      * @throws WeatherNotFoundException
      * @throws WeatherNotAllowedException
      */
-    Set<String> startWeather(String name, Collection<String> worlds_) throws WeatherNotFoundException, WeatherNotAllowedException {
+    public Set<String> startWeather(String name, Collection<String> worlds_) throws WeatherNotFoundException, WeatherNotAllowedException {
         synchronized (this) {
             Set<String> worlds = new HashSet<String>(worlds_);
             for (String world : worlds) {

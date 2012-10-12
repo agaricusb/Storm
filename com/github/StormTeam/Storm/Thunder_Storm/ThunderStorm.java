@@ -9,19 +9,22 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-
 /**
- * @author Tudor
+ * A class for loading thunder storms.
  */
+
 public class ThunderStorm {
 
-    public static ArrayList<World> thunderingWorlds = new ArrayList<World>();
-    @SuppressWarnings("FieldCanBeLocal")
     private static Storm storm;
 
-    public static void load(Storm ztorm) {
-        storm = ztorm;
+    /**
+     * Enables thunder storms.
+     *
+     * @param storm The Storm plugin, used for CommandExecutor registration
+     */
+
+    public static void load(Storm storm) {
+        ThunderStorm.storm = storm;
 
         try {
             Storm.manager.registerWeather(ThunderStormWeather.class, "storm_thunderstorm");
@@ -58,7 +61,7 @@ public class ThunderStorm {
                 return false;
             }
         };
-        storm.getCommand("thunderstorm").setExecutor(exec);
+        ThunderStorm.storm.getCommand("thunderstorm").setExecutor(exec);
     }
 
     private static boolean thunderstorm(String world) {

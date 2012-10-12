@@ -15,7 +15,7 @@ import org.bukkit.potion.PotionEffectType;
  * @author Tudor
  */
 
-public class DamagerTask {
+public class PlayerDamagerTask {
 
     private int id;
     private World affectedWorld;
@@ -30,7 +30,7 @@ public class DamagerTask {
      * @param affectedWorld The world to handle
      */
 
-    public DamagerTask(Storm storm, String affectedWorld) {
+    public PlayerDamagerTask(Storm storm, String affectedWorld) {
         this.storm = storm;
         this.affectedWorld = Bukkit.getWorld(affectedWorld);
         glob = Storm.wConfigs.get(affectedWorld);
@@ -59,8 +59,8 @@ public class DamagerTask {
                                             .isPlayerUnderSky(damagee) && Storm.util.isRainy(damagee.getLocation().getBlock().getBiome())
                                             && !damagee.hasPermission("storm.acidrain.immune")) {
 
-                                        if (glob.Acid__Rain_Player_Absorbing__Blocks.contains(damagee.getItemInHand().getTypeId()) || Storm.util.isLocationNearBlock(damagee.getLocation(),
-                                                glob.Acid__Rain_Player_Absorbing__Blocks, glob.Acid__Rain_Player_Absorbing__Radius)) {
+                                        if (glob.Acid__Rain_Absorbing__Blocks.contains(damagee.getItemInHand().getTypeId()) || Storm.util.isLocationNearBlock(damagee.getLocation(),
+                                                glob.Acid__Rain_Absorbing__Blocks, glob.Acid__Rain_Absorbing__Radius)) {
                                             return;
                                         }
                                         damagee.addPotionEffect(hunger, true);

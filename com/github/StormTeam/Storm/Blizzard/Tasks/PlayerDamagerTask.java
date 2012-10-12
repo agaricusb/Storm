@@ -15,7 +15,7 @@ import org.bukkit.potion.PotionEffectType;
  * @author Tudor
  */
 
-public class DamagerTask {
+public class PlayerDamagerTask {
 
     /**
      * The scheduler ID for this task.
@@ -45,13 +45,13 @@ public class DamagerTask {
      * @param spawnWorld The world to handle
      */
 
-    public DamagerTask(Storm storm, String spawnWorld) {
+    public PlayerDamagerTask(Storm storm, String spawnWorld) {
         this.storm = storm;
         this.affectedWorld = Bukkit.getWorld(spawnWorld);
         glob = Storm.wConfigs.get(spawnWorld);
         blindness = new PotionEffect(
                 PotionEffectType.BLINDNESS,
-                glob.Blizzard_Scheduler_Player__Damager__Calculation__Intervals__In__Ticks + 60,
+                glob.Blizzard_Scheduler_Damager__Calculation__Intervals__In__Ticks + 60,
                 glob.Blizzard_Player_Blindness__Amplitude);
 
     }
@@ -75,8 +75,8 @@ public class DamagerTask {
                                             .isPlayerUnderSky(damagee) && Storm.util.isSnowy(damagee.getLocation().getBlock().getBiome())
                                             && !damagee.hasPermission("storm.blizzard.immune")) {
 
-                                        if (glob.Blizzard_Player_Heating__Blocks.contains(damagee.getItemInHand().getTypeId()) || Storm.util.isLocationNearBlock(damagee.getLocation(),
-                                                glob.Blizzard_Player_Heating__Blocks, glob.Blizzard_Player_Heat__Radius)) {
+                                        if (glob.Blizzard_Heating__Blocks.contains(damagee.getItemInHand().getTypeId()) || Storm.util.isLocationNearBlock(damagee.getLocation(),
+                                                glob.Blizzard_Heating__Blocks, glob.Blizzard_Heat__Radius)) {
                                             return;
                                         }
 
@@ -86,8 +86,8 @@ public class DamagerTask {
                                 }
                             }
                         },
-                        glob.Blizzard_Scheduler_Player__Damager__Calculation__Intervals__In__Ticks,
-                        glob.Blizzard_Scheduler_Player__Damager__Calculation__Intervals__In__Ticks);
+                        glob.Blizzard_Scheduler_Damager__Calculation__Intervals__In__Ticks,
+                        glob.Blizzard_Scheduler_Damager__Calculation__Intervals__In__Ticks);
 
     }
 

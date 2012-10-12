@@ -9,6 +9,8 @@ import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -342,15 +344,37 @@ public class StormUtil {
     }
 
     /**
-     * Checks if a player is exposed to the sky, i.e. aboive ground.
+     * Checks if a player is exposed to the sky, i.e. above ground.
      *
      * @param player Bukkit player object
      * @return boolean
      */
     public boolean isPlayerUnderSky(Player player) {
         Location loc = player.getLocation();
-        return player.getWorld().getHighestBlockYAt(loc) <= loc.getBlockY();
+        return isLocationUnderSky(loc);
 
+    }
+
+    /**
+     * Checks if a entity is exposed to the sky, i.e. above ground.
+     *
+     * @param entity Bukkit entity object
+     * @return boolean
+     */
+    public boolean isEntityUnderSky(Entity entity) {
+        return isLocationUnderSky(((LivingEntity) (entity)).getLocation());
+
+    }
+
+    /**
+     * Checks if a location is exposed to sky, i.e. above ground.
+     *
+     * @param loc Bukkit location object
+     * @return boolean
+     */
+
+    public boolean isLocationUnderSky(Location loc) {
+        return loc.getWorld().getHighestBlockYAt(loc) <= loc.getBlockY();
     }
 
     /**

@@ -29,7 +29,7 @@ public class StrikeListener implements Listener {
     /**
      * Handles LightningStrike events.
      *
-     * @param strike
+     * @param strike The LighningStrikeEvent to complement
      */
 
     @EventHandler

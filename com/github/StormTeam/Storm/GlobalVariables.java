@@ -32,6 +32,7 @@ public class GlobalVariables extends ReflectConfiguration {
     public String Acid__Rain_Messages_On__Acid__Rain__Stop = "Acid rain ceases to fall!";
     public String Acid__Rain_Messages_On__Player__Damaged__By__Acid__Rain = "You have been hurt by the acidic downfall!";
     public int Acid__Rain_Player_Damage__From__Exposure = 1;
+    public int Acid__Rain_Entity_Damage__From__Exposure = 1;
     public List<List<String>> Acid__Rain_Dissolver_Block__Transformations = new ArrayList<List<String>>() {
         {
             add(Arrays.asList("18", "0"));
@@ -41,12 +42,12 @@ public class GlobalVariables extends ReflectConfiguration {
 
         }
     };
-    public List<Integer> Acid__Rain_Player_Absorbing__Blocks = new ArrayList<Integer>() {
+    public List<Integer> Acid__Rain_Absorbing__Blocks = new ArrayList<Integer>() {
         {
             add(Block.GOLD_BLOCK.id);
         }
     };
-    public int Acid__Rain_Player_Absorbing__Radius = 2;
+    public int Acid__Rain_Absorbing__Radius = 2;
     public int Acid__Rain_Dissolver_Block__Deterioration__Chance = 60;
     public int Acid__Rain_Scheduler_Dissolver__Calculation__Intervals__In__Ticks = 10;
     public int Acid__Rain_Scheduler_Damager__Calculation__Intervals__In__Ticks = 40;
@@ -64,13 +65,14 @@ public class GlobalVariables extends ReflectConfiguration {
     public String Blizzard_Messages_On__Blizzard__Stop = "The blizzard has stopped!";
     public String Blizzard_Messages_On__Player__Damaged__Cold = "You are freezing!";
     public int Blizzard_Player_Blindness__Amplitude = 5;
-    public List<Integer> Blizzard_Player_Heating__Blocks = Arrays.asList(
+    public List<Integer> Blizzard_Heating__Blocks = Arrays.asList(
             Block.FIRE.id, Block.LAVA.id, Block.STATIONARY_LAVA.id,
             Block.BURNING_FURNACE.id);
-    public int Blizzard_Player_Heat__Radius = 2;
+    public int Blizzard_Heat__Radius = 2;
     public int Blizzard_Player_Damage__From__Exposure = 2;
+    public int Blizzard_Entity_Damage__From__Exposure = 2;
     public double Blizzard_Player_Speed__Loss__While__In__Snow = 0.4D;
-    public int Blizzard_Scheduler_Player__Damager__Calculation__Intervals__In__Ticks = 200;
+    public int Blizzard_Scheduler_Damager__Calculation__Intervals__In__Ticks = 200;
     //Better Lightning
     public int Lightning_Damage_Damage = 5;
     public int Lightning_Damage_Damage__Radius = 10;
@@ -105,7 +107,6 @@ public class GlobalVariables extends ReflectConfiguration {
     public int Natural__Disasters_Meteor_Shockwave_Damage = 10;
     public int Natural__Disasters_Meteor_Shockwave_Damage__Radius = 100;
     public boolean Natural__Disasters_Meteor_Meteor_Spawn = true;
-    //-Wildfires //TODO update to NAPI!
     public int Natural__Disasters_Wildfires_Chance__To__Start = 20;
     public int Natural__Disasters_Wildfires_Wildfire__Base__Interval = 72000;
     public int Natural__Disasters_Wildfires_Spread__Limit = 2;
@@ -123,15 +124,15 @@ public class GlobalVariables extends ReflectConfiguration {
     // Features
     public boolean Features_Acid__Rain_Dissolving__Blocks = true;
     public boolean Features_Acid__Rain_Player__Damaging = true;
+    public boolean Features_Acid__Rain_Entity__Damaging = true;
     public boolean Features_Thunder__Storms = true;
     public boolean Features_Lightning_Greater__Range__And__Damage = true;
     public boolean Features_Lightning_Player__Attraction = true;
     public boolean Features_Lightning_Block__Attraction = true;
     public boolean Features_Lightning_Block__Transformations = true;
-    public boolean Features_Snow_Slow__Players__Down = true;
     public boolean Features_Blizzards_Player__Damaging = true;
+    public boolean Features_Blizzards_Entity__Damaging = true;
     public boolean Features_Blizzards_Slowing__Snow = true;
-    public boolean Features_Blizzards_Piling__Snow = true;
     public boolean Features_Meteor = true;
     public boolean Features_Wildfires = true;
     public boolean Features_Force__Weather__Textures = true;

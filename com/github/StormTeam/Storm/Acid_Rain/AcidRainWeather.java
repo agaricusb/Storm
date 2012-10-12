@@ -1,7 +1,8 @@
 package com.github.StormTeam.Storm.Acid_Rain;
 
-import com.github.StormTeam.Storm.Acid_Rain.Tasks.DamagerTask;
 import com.github.StormTeam.Storm.Acid_Rain.Tasks.DissolverTask;
+import com.github.StormTeam.Storm.Acid_Rain.Tasks.EntityDamagerTask;
+import com.github.StormTeam.Storm.Acid_Rain.Tasks.PlayerDamagerTask;
 import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.Storm;
 import com.github.StormTeam.Storm.Weather.StormWeather;
@@ -18,11 +19,12 @@ public class AcidRainWeather extends StormWeather {
 
     private GlobalVariables glob;
     private DissolverTask dissolver;
-    private DamagerTask damager;
+    private PlayerDamagerTask pDamager;
+    private EntityDamagerTask enDamager;
     private int killID;
 
     /**
-     * Creates a acid rain weather object for given world
+     * Creates a acid rain weather object for given world.
      *
      * @param storm The Storm plugin, for sending to StormWeather
      * @param world The world this object will be handling
@@ -40,7 +42,7 @@ public class AcidRainWeather extends StormWeather {
 
     @Override
     public void start() {
-        if (!glob.Features_Acid__Rain_Dissolving__Blocks && !glob.Features_Acid__Rain_Player__Damaging) {
+        if (!glob.Features_Acid__Rain_Dissolving__Blocks && !glob.Features_Acid__Rain_Player__Damaging && !glob.Features_Acid__Rain_Entity__Damaging) {
             return;
         }
 
@@ -52,8 +54,13 @@ public class AcidRainWeather extends StormWeather {
         }
 
         if (glob.Features_Acid__Rain_Player__Damaging) {
-            damager = new DamagerTask(storm, world);
-            damager.run();
+            pDamager = new PlayerDamagerTask(storm, world);
+            pDamager.run();
+        }
+
+        if (glob.Features_Acid__Rain_Entity__Damaging) {
+            enDamager = new EntityDamagerTask(storm, world);
+            enDamager.run();
         }
 
         killID = Storm.manager.createAutoKillWeatherTask("storm_acidrain", world, 7500 + Storm.random.nextInt(1024));
@@ -68,12 +75,13 @@ public class AcidRainWeather extends StormWeather {
         try {
             Storm.util.broadcast(glob.Acid__Rain_Messages_On__Acid__Rain__Stop, world);
             dissolver.stop();
-            damager.stop();
             dissolver = null;
-            damager = null;
+            pDamager.stop();
+            pDamager = null;
+            enDamager.stop();
+            enDamager = null;
             Bukkit.getScheduler().cancelTask(killID);
         } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 

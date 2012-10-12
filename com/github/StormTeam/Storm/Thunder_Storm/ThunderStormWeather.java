@@ -10,11 +10,22 @@ import org.bukkit.World;
 import java.util.Collections;
 import java.util.Set;
 
+/**
+ * A thunder storm weather object.
+ */
+
 public class ThunderStormWeather extends StormWeather {
 
     private GlobalVariables glob;
     private StrikerTask striker;
     private int killID;
+
+    /**
+     * Creates a thunder storm weather object for given world.
+     *
+     * @param storm The Storm plugin, for sending to StormWeather
+     * @param world The world this object will be handling
+     */
 
     public ThunderStormWeather(Storm storm, String world) {
         super(storm, world);
@@ -22,10 +33,9 @@ public class ThunderStormWeather extends StormWeather {
         this.needRainFlag = true;
     }
 
-    @Override
-    public String getTexture() {
-        return null;
-    }
+    /**
+     * Called when thunder storm starts for the handled world.
+     */
 
     @Override
     public void start() {
@@ -44,6 +54,10 @@ public class ThunderStormWeather extends StormWeather {
         killID = Storm.manager.createAutoKillWeatherTask("storm_thunderstorm", world, 7500 + Storm.random.nextInt(1024));
     }
 
+    /**
+     * Called when thunder storm ends for the handled world.
+     */
+
     @Override
     public void end() {
         Storm.util.broadcast(glob.Thunder__Storm_Messages_On__Thunder__Storm__Stop, world);
@@ -52,7 +66,23 @@ public class ThunderStormWeather extends StormWeather {
         Bukkit.getScheduler().cancelTask(killID);
     }
 
-    @SuppressWarnings("unchecked")
+    /**
+     * Returns the texture to be used during this event.
+     *
+     * @return The path to the texture
+     */
+
+    @Override
+    public String getTexture() {
+        return null;
+    }
+
+    /**
+     * Thunder storms don't conflict anything.
+     *
+     * @return Collections.EMPTY_SET; an empty set
+     */
+
     @Override
     public Set<String> getConflicts() {
         return Collections.EMPTY_SET;
