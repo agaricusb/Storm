@@ -223,8 +223,9 @@ public class WeatherManager implements Listener {
             try {
                 if (isWeatherRegistered(w1) || isWeatherRegistered(w2)) {
                     return false;
+                } else {
+                    return isConflictingWeatherOneWay(w1, w2) || isConflictingWeatherOneWay(w2, w1);
                 }
-                return isConflictingWeatherOneWay(w1, w2) || isConflictingWeatherOneWay(w2, w1);
             } catch (Exception e) {
                 e.printStackTrace();
                 return false;

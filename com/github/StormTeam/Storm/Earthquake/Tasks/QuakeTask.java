@@ -42,6 +42,7 @@ public class QuakeTask implements Runnable {
 
             int a = 5 / ((x + z) / 2);
 
+            // TODO: try to clean this up, as the else block is never executed
             int i = 0;
             if (i == 0) {
                 p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 2, a), true);
