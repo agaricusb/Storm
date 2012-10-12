@@ -15,6 +15,7 @@ import org.bukkit.event.weather.LightningStrikeEvent;
 public class StrikeListener implements Listener {
 
     private LightningUtils util;
+    @SuppressWarnings("FieldCanBeLocal")
     private Storm storm;
 
     public StrikeListener(Storm storm) {
