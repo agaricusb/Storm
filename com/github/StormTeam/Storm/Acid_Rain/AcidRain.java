@@ -47,7 +47,7 @@ public class AcidRain {
             }
         };
 
-        ztorm.getCommand("acidrain").setExecutor(exec);
+        storm.getCommand("acidrain").setExecutor(exec);
     }
 
     private static boolean acidrain(String world) {

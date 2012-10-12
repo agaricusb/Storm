@@ -14,11 +14,10 @@ import org.bukkit.event.weather.LightningStrikeEvent;
 
 public class StrikeListener implements Listener {
 
-    private LightningUtils util;   
+    private LightningUtils util;
 
-    public StrikeListener(Storm storm) {
-        this.util = new LightningUtils(storm);
-        this.storm = storm;
+    public StrikeListener() {
+        this.util = new LightningUtils();
     }
 
     @EventHandler
