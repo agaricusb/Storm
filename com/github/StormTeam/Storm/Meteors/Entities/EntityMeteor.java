@@ -201,7 +201,7 @@ public class EntityMeteor extends EntityFireball {
                             }
                             break forY;
                         }
-                        break;
+                        break forZ;
                     }
 
                     if (!filled && lengthSq(nextXn, yn, zn) <= 1
