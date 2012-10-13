@@ -20,12 +20,13 @@ import static java.lang.System.getProperty;
 /**
  * Custom logger to save errors.
  *
- * @author Tudor
+ * @author Icyene
  */
 
 public class ErrorLogger extends PluginLogger {
 
-    String PLUGIN_NAME = "Storm";
+    final String PLUGIN_NAME = "Storm";
+    final String TICKET_TRACKER = "http://github.com/StormTeam/Storm/issues";
     final String REGEX = "Task \\#\\d+ for " + PLUGIN_NAME + " v[\\d.\\w]+ generated an exception";
     final Pattern ERROR_REGEX = Pattern.compile(REGEX.toLowerCase());
     final Plugin PLUGIN;
@@ -51,16 +52,15 @@ public class ErrorLogger extends PluginLogger {
         StringBuilder err = new StringBuilder();
         boolean disable = false;
 
-        err.append("\n=============Storm has encountered an error!=============");
+        err.append("\n=============" + PLUGIN_NAME + " has encountered an error!=============");
         err.append("\nStacktrace:\n");
         err.append((error = getStackTrace(record.getThrown())));
-        err.append("\nStorm version: " + pdf.getVersion());
+        err.append("\n" + PLUGIN_NAME + " version: " + pdf.getVersion());
         err.append("\nPlugins loaded: " + Arrays.asList(server.getPluginManager().getPlugins()));
         err.append("\nCraftBukkit version: " + server.getBukkitVersion());
-        err.append("\nStorm detected MC version: " + Storm.version);
         err.append("\nJava version: " + getProperty("java.version"));
         err.append("\nOS info: " + getProperty("os.arch") + " " + getProperty("os.name") + ", " + getProperty("os.version"));
-        err.append("\nPlease report this error to the Storm ticket tracker (http://github.com/StormTeam/Storm/issues)!");
+        err.append("\nPlease report this error to the " + PLUGIN_NAME + " ticket tracker (" + TICKET_TRACKER + ")!");
         error = error.toLowerCase();
         if (error.contains("nullpointerexception") || error.contains("stackoverflowexception")) {
             err.append("\nA critical error has been thrown. " + PLUGIN_NAME + " has been disabled to prevent further damage.");
@@ -109,16 +109,13 @@ public class ErrorLogger extends PluginLogger {
             MessageDigest m = MessageDigest.getInstance("MD5");
             m.reset();
             m.update(builder.toString().getBytes());
-            byte[] digest = m.digest();
-            BigInteger bigInt = new BigInteger(1, digest);
-            hash = bigInt.toString(16);
+            hash = new BigInteger(1, m.digest()).toString(16);
             while (hash.length() < 32) {
                 hash = 0 + hash;
             }
         } catch (NoSuchAlgorithmException e) {
 
         }
-
         return hash;
     }
 }

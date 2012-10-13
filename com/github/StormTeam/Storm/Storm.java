@@ -107,7 +107,6 @@ public class Storm extends JavaPlugin {
         }
     }
 
-
     private void configureVersion() {
         String vers = getServer().getVersion();
         if (vers.contains("1.2.")) {
@@ -132,16 +131,15 @@ public class Storm extends JavaPlugin {
     private void initConfiguration() {
 
         // Make per-world configuration files           
-        for (World w : Bukkit.getWorlds()) {
-            String world = w.getName();
-            GlobalVariables config = new GlobalVariables(this, world);
+        for (World world : Bukkit.getWorlds()) {
+            String name = world.getName();
+            GlobalVariables config = new GlobalVariables(this, name);
             config.load();
-            wConfigs.put(world, config);
+            wConfigs.put(name, config);
         }
 
         pm.registerEvents(new WorldConfigLoader(this), this); //For late loading worlds loaded by world plugins al a MultiVerse
     }
-
 
     public void disable() {
         setEnabled(false);

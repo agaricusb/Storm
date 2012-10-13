@@ -15,7 +15,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -60,18 +59,6 @@ public class StormUtil {
             hasWG = wgp != null; // Short and sweet
             if (hasWG) {
                 wg = (WorldGuardPlugin) wgp;
-            }
-
-            for (World w : Bukkit.getWorlds()) {
-                String world = w.getName();
-                BlockTickSelector ticker;
-                try {
-                    ticker = new BlockTickSelector(w, 16);
-                    blockTickers.put(world, ticker);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
             }
 
             isRaining = WorldData.class.getDeclaredField("isRaining");
@@ -361,8 +348,7 @@ public class StormUtil {
      * @return boolean
      */
     public boolean isEntityUnderSky(Entity entity) {
-        return isLocationUnderSky(((LivingEntity) (entity)).getLocation());
-
+        return entity instanceof LivingEntity && isLocationUnderSky(((LivingEntity) (entity)).getLocation());
     }
 
     /**
@@ -374,20 +360,6 @@ public class StormUtil {
 
     public boolean isLocationUnderSky(Location loc) {
         return loc.getWorld().getHighestBlockYAt(loc) <= loc.getBlockY();
-    }
-
-    /**
-     * Gets a list of ticked blocks.
-     *
-     * @param world Bukkit world object
-     * @return a List of blocks
-     * @throws IllegalArgumentException
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     */
-    public List<Block> getRandomTickedBlocks(World world)
-            throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
-        return blockTickers.get(world.getName()).getRandomTickedBlocks();
     }
 
     /**
