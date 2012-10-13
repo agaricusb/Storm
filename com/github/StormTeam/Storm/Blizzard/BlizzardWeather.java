@@ -17,7 +17,7 @@ import java.util.Set;
 
 public class BlizzardWeather extends StormWeather {
 
-    private GlobalVariables glob;
+    private final GlobalVariables glob;
     private PlayerDamagerTask pDamager;
     private EntityDamagerTask enDamager;
     private int killID;

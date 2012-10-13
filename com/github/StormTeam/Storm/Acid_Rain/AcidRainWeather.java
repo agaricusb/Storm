@@ -17,7 +17,7 @@ import java.util.Set;
 
 public class AcidRainWeather extends StormWeather {
 
-    private GlobalVariables glob;
+    private final GlobalVariables glob;
     private DissolverTask dissolver;
     private PlayerDamagerTask pDamager;
     private EntityDamagerTask enDamager;

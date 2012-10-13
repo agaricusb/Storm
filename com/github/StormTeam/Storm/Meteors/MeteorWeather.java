@@ -21,7 +21,7 @@ import java.util.Set;
 
 public class MeteorWeather extends StormWeather {
 
-    private GlobalVariables glob;
+    private final GlobalVariables glob;
     private int killID;
 
     /**

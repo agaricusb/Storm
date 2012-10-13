@@ -17,8 +17,8 @@ import org.bukkit.util.Vector;
 
 public class BlockListener implements Listener {
 
-    private Quake q;
-    private Storm storm;
+    private final Quake q;
+    private final Storm storm;
 
     public BlockListener(Quake q, Storm storm) {
         this.q = q;

@@ -18,15 +18,15 @@ class ReflectConfiguration {
     /**
      * The plugin object to be used in config saving.
      */
-    private Plugin plugin;
+    private final Plugin plugin;
     /**
      * The name of the configuration file.
      */
-    private String name;
+    private final String name;
     /**
      * A mutex to avoid file corruption when saving.
      */
-    private Semaphore mutex = new Semaphore(1);
+    private final Semaphore mutex = new Semaphore(1);
 
     /**
      * Creates a ReflectConfiguration file based on given name

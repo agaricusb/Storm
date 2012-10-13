@@ -25,7 +25,7 @@ public class BlockTickSelector {
     /**
      * The WorldServer object gotten from passed World.
      */
-    private WorldServer world;
+    private final WorldServer world;
     /**
      * net.minecraft.server.World methods.
      */

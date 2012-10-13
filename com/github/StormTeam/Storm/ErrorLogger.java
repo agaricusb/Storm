@@ -7,6 +7,9 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginLogger;
 
 import java.io.*;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.concurrent.Semaphore;
 import java.util.logging.LogRecord;
@@ -14,17 +17,22 @@ import java.util.regex.Pattern;
 
 import static java.lang.System.getProperty;
 
+/**
+ * Custom logger to save errors.
+ *
+ * @author Tudor
+ */
+
 public class ErrorLogger extends PluginLogger {
 
-    String PLUGIN_NAME = "";
-    String REGEX = "Task \\#\\d+ for Storm v[\\d.\\w]+ generated an exception";
-    Pattern ERROR_REGEX = Pattern.compile(REGEX.toLowerCase());
-    Plugin PLUGIN;
+    String PLUGIN_NAME = "Storm";
+    final String REGEX = "Task \\#\\d+ for " + PLUGIN_NAME + " v[\\d.\\w]+ generated an exception";
+    final Pattern ERROR_REGEX = Pattern.compile(REGEX.toLowerCase());
+    final Plugin PLUGIN;
 
     public ErrorLogger(Plugin context) {
         super(context);
         this.PLUGIN = context;
-        this.PLUGIN_NAME = PLUGIN.getName();
     }
 
     @Override
@@ -39,14 +47,9 @@ public class ErrorLogger extends PluginLogger {
     private void generateErrorLog(LogRecord record) {
         PluginDescriptionFile pdf = PLUGIN.getDescription();
         Server server = Bukkit.getServer();
-        String error = "", name = PLUGIN_NAME + "_" + (record.hashCode() << 1024) + ".error.log";
+        String error = "";
         StringBuilder err = new StringBuilder();
         boolean disable = false;
-
-        File root = new File(PLUGIN.getDataFolder(), "errors");
-        if (!root.exists())
-            root.mkdir();
-        File dump = new File(root.getAbsoluteFile(), name);
 
         err.append("\n=============Storm has encountered an error!=============");
         err.append("\nStacktrace:\n");
@@ -65,10 +68,12 @@ public class ErrorLogger extends PluginLogger {
         } else {
             err.append("\nError was minor; " + PLUGIN_NAME + " will continue operating.");
         }
-        err.append("\nThis has been saved to the file ./" + PLUGIN.getName() + "/errors/" + name);
-        err.append("\n==========================================================");
 
-        System.err.println(err);
+        String name = PLUGIN_NAME + "_" + md5(err).substring(0, 6) + ".error.log";
+        File root = new File(PLUGIN.getDataFolder(), "errors");
+        if (!root.exists())
+            root.mkdir();
+        File dump = new File(root.getAbsoluteFile(), name);
 
         if (!dump.exists()) {
             try {
@@ -76,13 +81,16 @@ public class ErrorLogger extends PluginLogger {
                 mutex.acquire();
                 dump.createNewFile();
                 BufferedWriter writer = new BufferedWriter(new FileWriter(dump));
-                mutex.release();
-                writer.write(err.toString().substring(1));
+                writer.write((err.toString() + "\n=========================================================").substring(1)); //Remove the extra /n
                 writer.close();
+                mutex.release();
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+        err.append("\nThis has been saved to the file ./" + PLUGIN.getName() + "/errors/" + name);
+        err.append("\n==========================================================");
+        System.err.println(err);
 
         if (disable)
             ((Storm) PLUGIN).disable();
@@ -93,5 +101,24 @@ public class ErrorLogger extends PluginLogger {
         PrintWriter printWriter = new PrintWriter(result);
         aThrowable.printStackTrace(printWriter);
         return result.toString();
+    }
+
+    private String md5(StringBuilder builder) {
+        String hash = "";
+        try {
+            MessageDigest m = MessageDigest.getInstance("MD5");
+            m.reset();
+            m.update(builder.toString().getBytes());
+            byte[] digest = m.digest();
+            BigInteger bigInt = new BigInteger(1, digest);
+            hash = bigInt.toString(16);
+            while (hash.length() < 32) {
+                hash = 0 + hash;
+            }
+        } catch (NoSuchAlgorithmException e) {
+
+        }
+
+        return hash;
     }
 }
