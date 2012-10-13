@@ -34,9 +34,9 @@ public class ErrorLogger extends PluginLogger {
         Matcher MATCHER = ERROR_REGEX.matcher(logRecord.getMessage().toLowerCase());
         if (MATCHER.find()) {
             generateErrorLog(logRecord);
-        } else {
-            super.log(logRecord);
+            return;
         }
+        super.log(logRecord);
     }
 
     private void generateErrorLog(LogRecord record) {
