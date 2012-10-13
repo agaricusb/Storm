@@ -59,7 +59,11 @@ class ReflectConfiguration {
 
     private void onLoad(Plugin plugin) throws Exception {
 
-        File worldFile = new File(plugin.getDataFolder(), File.separator + name + ".yml");
+        File worldFolder = new File(plugin.getDataFolder() + File.separator + "worlds");
+        if (!worldFolder.exists()) {
+            worldFolder.mkdir();
+        }
+        File worldFile = new File(worldFolder.getAbsoluteFile(), File.separator + name + ".yml");
 
         YamlConfiguration worlds = YamlConfiguration
                 .loadConfiguration(worldFile);

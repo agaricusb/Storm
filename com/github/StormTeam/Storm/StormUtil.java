@@ -55,26 +55,25 @@ public class StormUtil {
      * @param plugin The plugin.
      */
     public StormUtil(Plugin plugin) {
-
-        final Plugin wgp = plugin.getServer().getPluginManager().getPlugin(
-                "WorldGuard");
-        hasWG = wgp != null; // Short and sweet
-        if (hasWG) {
-            wg = (WorldGuardPlugin) wgp;
-        }
-
-        for (World w : Bukkit.getWorlds()) {
-            String world = w.getName();
-            BlockTickSelector ticker;
-            try {
-                ticker = new BlockTickSelector(w, 16);
-                blockTickers.put(world, ticker);
-            } catch (Exception e) {
-                e.printStackTrace();
+        try {
+            Plugin wgp = plugin.getServer().getPluginManager().getPlugin("WorldGuard");
+            hasWG = wgp != null; // Short and sweet
+            if (hasWG) {
+                wg = (WorldGuardPlugin) wgp;
             }
 
-        }
-        try {
+            for (World w : Bukkit.getWorlds()) {
+                String world = w.getName();
+                BlockTickSelector ticker;
+                try {
+                    ticker = new BlockTickSelector(w, 16);
+                    blockTickers.put(world, ticker);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+
             isRaining = WorldData.class.getDeclaredField("isRaining");
             isRaining.setAccessible(true);
             isThundering = WorldData.class.getDeclaredField("isThundering");
@@ -83,12 +82,12 @@ public class StormUtil {
             rainTicks.setAccessible(true);
             thunderTicks = WorldData.class.getDeclaredField("rainTicks");
             thunderTicks.setAccessible(true);
+
+            log = plugin.getLogger();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        log = plugin.getLogger();
-
     }
 
     /**

@@ -28,6 +28,7 @@ import org.bukkit.World;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.logging.Level;
@@ -67,7 +68,7 @@ public class Storm extends JavaPlugin {
     /**
      * The MC version.
      */
-    public static double version;
+    public static double version = 0.0;
     /**
      * The Storm WeatherManager.
      */
@@ -85,6 +86,7 @@ public class Storm extends JavaPlugin {
 
             configureVersion();
             initConfiguration();
+            initErrorLogging();
 
             pm.registerEvents((manager = new WeatherManager(this)), this); //Register texture events
 
@@ -105,6 +107,7 @@ public class Storm extends JavaPlugin {
         }
     }
 
+
     private void configureVersion() {
         String vers = getServer().getVersion();
         if (vers.contains("1.2.")) {
@@ -120,6 +123,12 @@ public class Storm extends JavaPlugin {
         getLogger().log(Level.INFO, "Loading with MC {0}.X compatibility.", version);
     }
 
+    private void initErrorLogging() throws NoSuchFieldException, IllegalAccessException {
+        Field logger = JavaPlugin.class.getDeclaredField("logger");
+        logger.setAccessible(true);
+        logger.set(this, new ErrorLogger(this));
+    }
+
     private void initConfiguration() {
 
         // Make per-world configuration files           
@@ -131,5 +140,10 @@ public class Storm extends JavaPlugin {
         }
 
         pm.registerEvents(new WorldConfigLoader(this), this); //For late loading worlds loaded by world plugins al a MultiVerse
+    }
+
+
+    public void disable() {
+        setEnabled(false);
     }
 }
