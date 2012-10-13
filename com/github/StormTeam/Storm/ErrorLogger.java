@@ -10,7 +10,6 @@ import java.io.*;
 import java.util.Arrays;
 import java.util.concurrent.Semaphore;
 import java.util.logging.LogRecord;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static java.lang.System.getProperty;
@@ -30,9 +29,7 @@ public class ErrorLogger extends PluginLogger {
 
     @Override
     public void log(LogRecord logRecord) {
-        String generateErrorLog = "";
-        Matcher MATCHER = ERROR_REGEX.matcher(logRecord.getMessage().toLowerCase());
-        if (MATCHER.find()) {
+        if (ERROR_REGEX.matcher(logRecord.getMessage().toLowerCase()).find()) {
             generateErrorLog(logRecord);
             return;
         }
@@ -42,7 +39,7 @@ public class ErrorLogger extends PluginLogger {
     private void generateErrorLog(LogRecord record) {
         PluginDescriptionFile pdf = PLUGIN.getDescription();
         Server server = Bukkit.getServer();
-        String error = "", name = PLUGIN_NAME + "_" + System.nanoTime() / 100000000 + ".error.log";
+        String error = "", name = PLUGIN_NAME + "_" + (record.hashCode() << 1024) + ".error.log";
         StringBuilder err = new StringBuilder();
         boolean disable = false;
 
@@ -71,7 +68,7 @@ public class ErrorLogger extends PluginLogger {
         err.append("\nThis has been saved to the file ./" + PLUGIN.getName() + "/errors/" + name);
         err.append("\n==========================================================");
 
-        System.out.println(err);
+        System.err.println(err);
 
         if (!dump.exists()) {
             try {
@@ -84,7 +81,6 @@ public class ErrorLogger extends PluginLogger {
                 writer.close();
             } catch (Exception e) {
                 e.printStackTrace();
-                //Do nothing! If you do e.printStackTrace, StackOverflow will ensue!
             }
         }
 
