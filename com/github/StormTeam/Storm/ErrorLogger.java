@@ -77,7 +77,7 @@ public class ErrorLogger extends PluginLogger {
                 dump.createNewFile();
                 BufferedWriter writer = new BufferedWriter(new FileWriter(dump));
                 mutex.release();
-                writer.write(err.toString());
+                writer.write(err.toString().substring(1));
                 writer.close();
             } catch (Exception e) {
                 e.printStackTrace();
