@@ -3,6 +3,7 @@ package com.github.StormTeam.Storm.Meteors;
 import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.Meteors.Entities.EntityMeteor;
 import com.github.StormTeam.Storm.Storm;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -60,25 +61,23 @@ public class Meteor {
                     } else {
                         sender.sendMessage("Meteors not enabled in specified world or are conflicting with another weather!");
                     }
-                    return true;
                 } else {
 
-                    if (args[0] != null) {
+                    if (!StringUtils.isEmpty(args[0])) {
                         try {
                             if (!Storm.manager.startWeather("storm_meteor", args[0])) {
                                 sender.sendMessage("Meteors not enabled in specified world or are conflicting with another weather!");
                             }
-                            return true;
-
                         } catch (Exception e) {
                             sender.sendMessage("Meteors not enabled in specified world or are conflicting with another weather!");
                         }
+                    } else {
+                        sender.sendMessage("Must specify world when executing from console!");
                     }
                 }
-                return false;
+                return true;
             }
         };
-
 
         storm.getCommand("meteor").setExecutor(exec);
     }

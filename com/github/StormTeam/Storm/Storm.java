@@ -100,12 +100,8 @@ public class Storm extends JavaPlugin {
             ThunderStorm.load(this);
 
         } catch (Exception e) {
-            e.printStackTrace();
-            util.log(Level.SEVERE, "Failed to initialize! Storm disabled. Please contact the authors of this plugin "
-                    + getDescription().getAuthors() + "!");
-            setEnabled(false);
+            throw new RuntimeException("Failed to initialize!");
         }
-
     }
 
     private void configureVersion() {

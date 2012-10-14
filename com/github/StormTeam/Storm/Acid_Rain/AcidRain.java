@@ -2,6 +2,7 @@ package com.github.StormTeam.Storm.Acid_Rain;
 
 import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.Storm;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.command.Command;
@@ -44,16 +45,16 @@ public class AcidRain {
                     if (acidrain(((Player) sender).getWorld().getName())) {
                         sender.sendMessage("Acid rain not enabled in specified world or are conflicting with another weather!");
                     }
-                    return true;
                 } else {
-                    if (args[0] != null) {
+                    if (!StringUtils.isEmpty(args[0])) {
                         if (acidrain(args[0])) {
                             sender.sendMessage("Acid rain not enabled in specified world or are conflicting with another weather!");
                         }
-                        return true;
+                    } else {
+                        sender.sendMessage("Must specify world when executing from console!");
                     }
                 }
-                return false;
+                return true;
             }
         };
 

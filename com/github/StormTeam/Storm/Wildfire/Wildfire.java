@@ -4,6 +4,7 @@ import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.Storm;
 import com.github.StormTeam.Storm.StormUtil;
 import net.minecraft.server.Block;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -70,27 +71,25 @@ public class Wildfire {
                     } else {
                         sender.sendMessage("Wildfires not enabled in specified world or are conflicting with another weather!");
                     }
-                    return true;
                 } else {
 
-                    if (args[0] != null) {
+                    if (!StringUtils.isEmpty(args[0])) {
                         try {
                             if (!Storm.manager.startWeather("storm_wildfire", args[0])) {
                                 sender.sendMessage("Wildfires not enabled in specified world or are conflicting with another weather!");
                             }
-                            return true;
                         } catch (Exception e) {
                             sender.sendMessage("Wildfires not enabled in specified world or are conflicting with another weather!");
                         }
+                    } else {
+                        sender.sendMessage("Must specify world when executing from console!");
                     }
                 }
-                return false;
+                return true;
             }
         };
 
-
         storm.getCommand("wildfire").setExecutor(exec);
-
     }
 
     private static void wildfire(Location targetLoc) {

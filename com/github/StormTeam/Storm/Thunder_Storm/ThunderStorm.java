@@ -49,16 +49,17 @@ public class ThunderStorm {
                     if (thunderstorm(((Player) sender).getWorld().getName())) {
                         sender.sendMessage("Thunderstorms not enabled in specified world or are conflicting with another weather!");
                     }
-                    return true;
                 } else {
                     if (args[0] != null) {
                         if (thunderstorm(args[0])) {
                             sender.sendMessage("Thunderstorms not enabled in specified world or are conflicting with another weather!");
+                        } else {
+                            sender.sendMessage("Must specify world when executing from console!");
                         }
-                        return true;
+
                     }
                 }
-                return false;
+                return true;
             }
         };
         ThunderStorm.storm.getCommand("thunderstorm").setExecutor(exec);
