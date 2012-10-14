@@ -48,7 +48,7 @@ public class AcidRain {
                 } else {
                     if (args[0] != null) {
                         if (acidrain(args[0])) {
-                            sender.sendMessage("Wildfires not enabled in specified world or are conflicting with another weather!");
+                            sender.sendMessage("Acid rain not enabled in specified world or are conflicting with another weather!");
                         }
                         return true;
                     }
@@ -61,6 +61,7 @@ public class AcidRain {
     }
 
     private static boolean acidrain(String world) {
+
         try {
             if (Storm.manager.getActiveWeathers(world).contains("storm_acidrain")) {
                 Storm.manager.stopWeather("storm_acidrain", world);
@@ -71,5 +72,6 @@ public class AcidRain {
         } catch (Exception ex) {
             return true;
         }
+
     }
 }

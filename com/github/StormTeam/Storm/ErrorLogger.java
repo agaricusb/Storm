@@ -1,5 +1,6 @@
 package com.github.StormTeam.Storm;
 
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.plugin.Plugin;
@@ -11,7 +12,7 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
-import java.util.concurrent.Semaphore;
+import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.regex.Pattern;
 
@@ -25,11 +26,20 @@ import static java.lang.System.getProperty;
 
 public class ErrorLogger extends PluginLogger {
 
-    final String PLUGIN_NAME = "Storm";
-    final String TICKET_TRACKER = "http://github.com/StormTeam/Storm/issues";
-    final String REGEX = "Task \\#\\d+ for " + PLUGIN_NAME + " v[\\d.\\w]+ generated an exception";
-    final Pattern ERROR_REGEX = Pattern.compile(REGEX.toLowerCase());
-    final Plugin PLUGIN;
+    final static String PLUGIN_NAME = "Storm", TICKET_TRACKER = "http://github.com/StormTeam/Storm/issues";
+    static Plugin PLUGIN = null;
+
+    final static String TASK = "Task \\#\\d+ for " + PLUGIN_NAME + " v[\\d.\\w]+ generated an exception";
+    final static Pattern TASK_REGEX = Pattern.compile(TASK.toLowerCase());
+
+    final static String ENABLE = "Error occurred while enabling " + PLUGIN_NAME + " v[\\d\\w.]";
+    final static Pattern ENABLE_REGEX = Pattern.compile(ENABLE.toLowerCase());
+
+    final static String COMMAND = "Unhandled exception executing command '\\w+' in plugin " + PLUGIN_NAME + " v[\\d\\w.]";
+    final static Pattern COMMAND_REGEX = Pattern.compile(COMMAND.toLowerCase());
+
+    final static String EVENT = "Could not pass event [\\d\\w.] to " + PLUGIN_NAME;
+    final static Pattern EVENT_REGEX = Pattern.compile(EVENT.toLowerCase());
 
     public ErrorLogger(Plugin context) {
         super(context);
@@ -38,24 +48,36 @@ public class ErrorLogger extends PluginLogger {
 
     @Override
     public void log(LogRecord logRecord) {
-        if (ERROR_REGEX.matcher(logRecord.getMessage().toLowerCase()).find()) {
-            generateErrorLog(logRecord);
+        String message = logRecord.getMessage().toLowerCase(), location = "";
+
+        if (TASK_REGEX.matcher(message).find())
+            location = "Error occured in task.";
+        if (ENABLE_REGEX.matcher(message).find())
+            location = "Error while enabling/disabling.";
+        if (COMMAND_REGEX.matcher(message).find())
+            location = "Error while parsing command.";
+        if (EVENT_REGEX.matcher(message).find())
+            location = "Error while handling event.";
+
+        if (!StringUtils.isEmpty(location)) {
+            generateErrorLog(logRecord, location);
             return;
         }
         super.log(logRecord);
     }
 
-    private void generateErrorLog(LogRecord record) {
+    private static void generateErrorLog(LogRecord record, String location) {
         PluginDescriptionFile pdf = PLUGIN.getDescription();
         Server server = Bukkit.getServer();
-        String error = "";
+        String error = getStackTrace(record.getThrown());
+        if (!error.contains(PLUGIN_NAME))
+            return;
         StringBuilder err = new StringBuilder();
         boolean disable = false;
-
         err.append("\n=============" + PLUGIN_NAME + " has encountered an error!=============");
-        err.append("\nStacktrace:\n");
-        err.append((error = getStackTrace(record.getThrown())));
+        err.append("\nStacktrace:\n" + error);
         err.append("\n" + PLUGIN_NAME + " version: " + pdf.getVersion());
+        err.append("\nProblematic location: " + location);
         err.append("\nPlugins loaded: " + Arrays.asList(server.getPluginManager().getPlugins()));
         err.append("\nCraftBukkit version: " + server.getBukkitVersion());
         err.append("\nJava version: " + getProperty("java.version"));
@@ -68,7 +90,6 @@ public class ErrorLogger extends PluginLogger {
         } else {
             err.append("\nError was minor; " + PLUGIN_NAME + " will continue operating.");
         }
-
         String name = PLUGIN_NAME + "_" + md5(err).substring(0, 6) + ".error.log";
         File root = new File(PLUGIN.getDataFolder(), "errors");
         if (!root.exists())
@@ -77,14 +98,12 @@ public class ErrorLogger extends PluginLogger {
 
         if (!dump.exists()) {
             try {
-                Semaphore mutex = new Semaphore(1);
-                mutex.acquire();
                 dump.createNewFile();
                 BufferedWriter writer = new BufferedWriter(new FileWriter(dump));
                 writer.write((err.toString() + "\n=========================================================").substring(1)); //Remove the extra /n
                 writer.close();
-                mutex.release();
             } catch (Exception e) {
+                System.err.println("Ehm, errors occured while displaying an error >.< Stacktrace:\n");
                 e.printStackTrace();
             }
         }
@@ -96,14 +115,25 @@ public class ErrorLogger extends PluginLogger {
             ((Storm) PLUGIN).disable();
     }
 
-    private String getStackTrace(Throwable aThrowable) {
+    private static String getStackTrace(Throwable aThrowable) {
         Writer result = new StringWriter();
         PrintWriter printWriter = new PrintWriter(result);
         aThrowable.printStackTrace(printWriter);
         return result.toString();
     }
 
-    private String md5(StringBuilder builder) {
+    public static void initErrorHandler() {
+        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+            @Override
+            public void uncaughtException(Thread thread, Throwable throwable) {
+                LogRecord uhoh = new LogRecord(Level.SEVERE, "Uhoh");
+                uhoh.setThrown(throwable);
+                generateErrorLog(uhoh, "Error occured outside of Bukkit catchers.");
+            }
+        });
+    }
+
+    private static String md5(StringBuilder builder) {
         String hash = "";
         try {
             MessageDigest m = MessageDigest.getInstance("MD5");
@@ -114,7 +144,6 @@ public class ErrorLogger extends PluginLogger {
                 hash = 0 + hash;
             }
         } catch (NoSuchAlgorithmException e) {
-
         }
         return hash;
     }

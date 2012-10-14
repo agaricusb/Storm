@@ -105,6 +105,7 @@ public class Storm extends JavaPlugin {
                     + getDescription().getAuthors() + "!");
             setEnabled(false);
         }
+
     }
 
     private void configureVersion() {
