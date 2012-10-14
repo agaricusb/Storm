@@ -72,7 +72,6 @@ public class Wildfire {
                         sender.sendMessage("Wildfires not enabled in specified world or are conflicting with another weather!");
                     }
                 } else {
-
                     if (!StringUtils.isEmpty(args[0])) {
                         try {
                             if (!Storm.manager.startWeather("storm_wildfire", args[0])) {
