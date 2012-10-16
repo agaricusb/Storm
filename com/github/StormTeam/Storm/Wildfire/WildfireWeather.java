@@ -47,15 +47,13 @@ public class WildfireWeather extends StormWeather { //TODO: Make use of getTicke
         }
 
         Block toBurn;
+        int recurse = 0;
+        Chunk chunk;
         while (true) {
-            Chunk chunk = Storm.util.pickChunk(affectedWorld);
-
-            if (chunk == null) {
+            recurse++;
+            if (recurse >= 40 || (chunk = Storm.util.pickChunk(affectedWorld)) == null)
                 return;
-            }
-
             int x = Storm.random.nextInt(15), z = Storm.random.nextInt(15);
-
             toBurn = chunk.getWorld().getHighestBlockAt(chunk.getBlock(x, 4, z).getLocation()).getLocation().subtract(0, 1, 0).getBlock();
 
             if (!Storm.util.isBlockProtected(toBurn)

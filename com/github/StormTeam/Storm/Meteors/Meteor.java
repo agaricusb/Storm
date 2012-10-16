@@ -1,5 +1,6 @@
 package com.github.StormTeam.Storm.Meteors;
 
+import com.github.StormTeam.Storm.ErrorLogger;
 import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.Meteors.Entities.EntityMeteor;
 import com.github.StormTeam.Storm.Storm;
@@ -45,7 +46,7 @@ public class Meteor {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            ErrorLogger.generateErrorLog(e);
         }
 
         CommandExecutor exec = new CommandExecutor() {
@@ -63,7 +64,7 @@ public class Meteor {
                     }
                 } else {
 
-                    if (!StringUtils.isEmpty(args[0])) {
+                    if (args.length > 0 && !StringUtils.isEmpty(args[0])) {
                         try {
                             if (!Storm.manager.startWeather("storm_meteor", args[0])) {
                                 sender.sendMessage("Meteors not enabled in specified world or are conflicting with another weather!");
@@ -103,7 +104,7 @@ public class Meteor {
                 mcWorld, 15, 15, 15, 60, 100,
                 glob.Natural__Disasters_Meteor_Messages_On__Meteor__Crash, 9,
                 glob.Natural__Disasters_Meteor_Shockwave_Damage__Radius,
-                glob.Natural__Disasters_Meteor_Messages_On__Damaged__By__Shockwave, 0, false, 0);
+                glob.Natural__Disasters_Meteor_Messages_On__Damaged__By__Shockwave, 0, false, false, 0);
 
         mm.spawn();
 

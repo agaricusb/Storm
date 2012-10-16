@@ -1,5 +1,6 @@
 package com.github.StormTeam.Storm.Weather;
 
+import com.github.StormTeam.Storm.ErrorLogger;
 import com.github.StormTeam.Storm.Pair;
 import com.github.StormTeam.Storm.Storm;
 import com.github.StormTeam.Storm.Weather.Exceptions.WeatherAlreadyRegisteredException;
@@ -59,7 +60,7 @@ public class WeatherManager implements Listener {
                 weatherTriggers.put(name, triggers);
                 registeredWeathers.put(name, new Pair<Class<? extends StormWeather>, Map<String, StormWeather>>(weather, instances));
             } catch (Exception e) {
-                e.printStackTrace();
+                ErrorLogger.generateErrorLog(e);
             }
         }
     }
@@ -86,7 +87,7 @@ public class WeatherManager implements Listener {
                 int id = Bukkit.getScheduler().scheduleSyncRepeatingTask(storm, trigger, recalculation, recalculation);
                 triggers.put(world, new Pair<Integer, WeatherTrigger>(id, trigger));
             } catch (Exception e) {
-                e.printStackTrace();
+                ErrorLogger.generateErrorLog(e);
             }
         }
     }
@@ -205,7 +206,7 @@ public class WeatherManager implements Listener {
                 currentThunder = thunder;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            ErrorLogger.generateErrorLog(e);
         }
     }
 
@@ -227,7 +228,7 @@ public class WeatherManager implements Listener {
                     return isConflictingWeatherOneWay(w1, w2) || isConflictingWeatherOneWay(w2, w1);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                ErrorLogger.generateErrorLog(e);
                 return false;
             }
         }

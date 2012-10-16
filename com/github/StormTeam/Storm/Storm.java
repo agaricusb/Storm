@@ -99,7 +99,7 @@ public class Storm extends JavaPlugin {
             ThunderStorm.load(this);
 
         } catch (Exception e) {
-            throw new RuntimeException("Failed to initialize!");
+            ErrorLogger.generateErrorLog(e);
         }
     }
 
@@ -129,9 +129,5 @@ public class Storm extends JavaPlugin {
         }
 
         pm.registerEvents(new WorldConfigLoader(this), this); //For late loading worlds loaded by world plugins al a MultiVerse
-    }
-
-    public void disable() {
-        setEnabled(false);
     }
 }

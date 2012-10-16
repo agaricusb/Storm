@@ -52,7 +52,7 @@ class ReflectConfiguration {
             onLoad(plugin);
             mutex.release();
         } catch (Exception e) {
-            e.printStackTrace();
+            ErrorLogger.generateErrorLog(e);
         }
 
     }
@@ -80,8 +80,11 @@ class ReflectConfiguration {
             }
         }
 
-
         worlds.save(worldFile);
+    }
+
+    private void reload(Plugin plugin) {
+
     }
 
     private boolean doSkip(Field field) {

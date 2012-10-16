@@ -1,7 +1,9 @@
 package com.github.StormTeam.Storm.Thunder_Storm;
 
+import com.github.StormTeam.Storm.ErrorLogger;
 import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.Storm;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.command.Command;
@@ -39,7 +41,7 @@ public class ThunderStorm {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            ErrorLogger.generateErrorLog(e);
         }
 
         CommandExecutor exec = new CommandExecutor() {
@@ -50,7 +52,7 @@ public class ThunderStorm {
                         sender.sendMessage("Thunderstorms not enabled in specified world or are conflicting with another weather!");
                     }
                 } else {
-                    if (args[0] != null) {
+                    if (args.length > 0 && !StringUtils.isEmpty(args[0])) {
                         if (thunderstorm(args[0])) {
                             sender.sendMessage("Thunderstorms not enabled in specified world or are conflicting with another weather!");
                         } else {

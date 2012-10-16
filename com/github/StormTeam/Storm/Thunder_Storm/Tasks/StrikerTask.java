@@ -6,6 +6,7 @@ package com.github.StormTeam.Storm.Thunder_Storm.Tasks;
  */
 
 import com.github.StormTeam.Storm.BlockTickSelector;
+import com.github.StormTeam.Storm.ErrorLogger;
 import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.Storm;
 import org.bukkit.Bukkit;
@@ -31,7 +32,7 @@ public class StrikerTask {
             ticker = new BlockTickSelector(affectedWorld,
                     glob.Thunder__Storm_Strike__Chance);
         } catch (Exception e) {
-            e.printStackTrace();
+            ErrorLogger.generateErrorLog(e);
         }
     }
 
@@ -53,7 +54,7 @@ public class StrikerTask {
                                         }
                                     }
                                 } catch (Exception e) {
-                                    e.printStackTrace();
+                                    ErrorLogger.generateErrorLog(e);
                                 }
                             }
                         },

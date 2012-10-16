@@ -29,8 +29,10 @@ public class EntityMeteor extends EntityFireball {
     private String damageMessage;
     private int shockwaveDamage;
     private int shockwaveDamageRadius;
+    private boolean doSnow = false;
     private int snowRadius;
     private boolean h_lock, h_lock_2, h_lock_3;
+
 
     /**
      * Constructs a meteor for the given world.
@@ -58,13 +60,14 @@ public class EntityMeteor extends EntityFireball {
      * @param snowRadius            The radius that will be plunged into meteoric winter
      * @param spawnOnImpact         Whether to spawn a meteor blob on impact: true = yes, false = no
      * @param radius                The radius of the blob
+     * @param snow                  Whether or not to plunge area into meteoric winter
      */
 
     public EntityMeteor(World world, int burrowCount, int burrowPower,
                         float trailPower, float explosionRadius, float brightness,
                         String crashMessage, int shockwaveDamage,
                         int shockwaveDamageRadius, String damageMessage, int snowRadius,
-                        boolean spawnOnImpact, int radius) {
+                        boolean snow, boolean spawnOnImpact, int radius) {
         super(world);
 
         // Massive objects require massive initializations...
@@ -79,6 +82,7 @@ public class EntityMeteor extends EntityFireball {
         this.damageMessage = damageMessage;
         this.snowRadius = snowRadius;
         this.damageMessage = damageMessage;
+        this.doSnow = snow;
         this.spawnMeteorOnImpact = spawnOnImpact;
         this.radius = radius;
 
@@ -167,13 +171,12 @@ public class EntityMeteor extends EntityFireball {
             return;
         }
         if (!Storm.util.isBlockProtected(world.getWorld().getBlockAt((int) locX, (int) locY, (int) locZ))) {
-            makeWinter();
+            if (doSnow)
+                makeWinter();
             try {
                 explode();
             } catch (NullPointerException ignored) {
                 //Throws an NPE if explodes in unloaded chunk (locs are null). Can be ignored without consequence.
-            } catch (Exception e) {
-                e.printStackTrace();
             }
         }
     }

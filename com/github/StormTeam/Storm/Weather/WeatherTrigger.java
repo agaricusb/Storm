@@ -4,6 +4,7 @@
  */
 package com.github.StormTeam.Storm.Weather;
 
+import com.github.StormTeam.Storm.ErrorLogger;
 import com.github.StormTeam.Storm.Storm;
 
 /**
@@ -29,7 +30,7 @@ class WeatherTrigger implements Runnable {
                 manager.startWeather(weather, world);
             } catch (Exception e) {
                 // Should not happen, but still catching just in case
-                e.printStackTrace();
+                ErrorLogger.generateErrorLog(e);
             }
         }
     }

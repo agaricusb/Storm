@@ -73,7 +73,7 @@ public class StormUtil {
             log = plugin.getLogger();
 
         } catch (Exception e) {
-            throw new RuntimeException("Failed to construct StormUtil!");
+            ErrorLogger.generateErrorLog(e);
         }
     }
 

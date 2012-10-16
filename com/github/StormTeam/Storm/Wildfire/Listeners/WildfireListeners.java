@@ -18,7 +18,7 @@ import static com.github.StormTeam.Storm.Wildfire.Wildfire.getWFBlocks;
  * Handles fire events for wildfires.
  */
 
-class WildfireListeners implements Listener {
+public class WildfireListeners implements Listener {
 
     /**
      * Checks for other blocks to burn if event involves a block in Wildfire,getWFBlocks().
@@ -44,7 +44,7 @@ class WildfireListeners implements Listener {
         GlobalVariables glob = Storm.wConfigs.get(name);
 
         if (getWFBlocks(name).size() < glob.Natural__Disasters_Maximum__Fires) {
-            final int radiuski = glob.Natural__Disasters_Wildfires_Scan__Radius;
+            int radiuski = glob.Natural__Disasters_Wildfires_Scan__Radius;
             for (int x = -radiuski; x <= radiuski; ++x) {
                 for (int y = -radiuski; y <= radiuski; ++y) {
                     for (int z = -radiuski; z <= radiuski; ++z) {

@@ -1,6 +1,7 @@
 package com.github.StormTeam.Storm.Blizzard;
 
 import com.github.StormTeam.Storm.Blizzard.Blocks.SnowLayer;
+import com.github.StormTeam.Storm.ErrorLogger;
 import com.github.StormTeam.Storm.Storm;
 import net.minecraft.server.Block;
 import net.minecraft.server.StepSound;
@@ -72,7 +73,7 @@ public class SnowModder {
         } catch (Exception e) {
             //1. Doesn't matter if I catch ComputerIsOnFireException, and  
             //2. Even though it failed, blizzards will still run.
-            e.printStackTrace(); //Let them know regardless.
+            ErrorLogger.generateErrorLog(e); //Let them know regardless.
         }
     }
 }

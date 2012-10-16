@@ -1,6 +1,7 @@
 package com.github.StormTeam.Storm.Acid_Rain.Tasks;
 
 import com.github.StormTeam.Storm.BlockTickSelector;
+import com.github.StormTeam.Storm.ErrorLogger;
 import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.Storm;
 import org.bukkit.Bukkit;
@@ -34,7 +35,7 @@ public class DissolverTask {
             ticker = new BlockTickSelector(Bukkit.getWorld(affectedWorld),
                     glob.Acid__Rain_Dissolver_Block__Deterioration__Chance);
         } catch (Exception e) {
-            e.printStackTrace();
+            ErrorLogger.generateErrorLog(e);
         }
     }
 
@@ -67,7 +68,7 @@ public class DissolverTask {
                                         }
                                     }
                                 } catch (Exception e) {
-                                    e.printStackTrace();
+                                    ErrorLogger.generateErrorLog(e);
                                 }
 
                             }

@@ -1,8 +1,10 @@
 package com.github.StormTeam.Storm.Wildfire;
 
+import com.github.StormTeam.Storm.ErrorLogger;
 import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.Storm;
 import com.github.StormTeam.Storm.StormUtil;
+import com.github.StormTeam.Storm.Wildfire.Listeners.WildfireListeners;
 import net.minecraft.server.Block;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
@@ -44,8 +46,8 @@ public class Wildfire {
 
     public static void load(Storm storm) {
         try {
+            Storm.pm.registerEvents(new WildfireListeners(), storm);
             Storm.manager.registerWeather(WildfireWeather.class, "storm_wildfire");
-
             for (World w : Bukkit.getWorlds()) {
                 String name = w.getName();
                 GlobalVariables temp = Storm.wConfigs.get(name);
@@ -55,9 +57,8 @@ public class Wildfire {
                             temp.Natural__Disasters_Wildfires_Wildfire__Base__Interval);
                 }
             }
-
         } catch (Exception e) {
-            e.printStackTrace();
+            ErrorLogger.generateErrorLog(e);
         }
 
         CommandExecutor exec = new CommandExecutor() {
@@ -72,7 +73,7 @@ public class Wildfire {
                         sender.sendMessage("Wildfires not enabled in specified world or are conflicting with another weather!");
                     }
                 } else {
-                    if (!StringUtils.isEmpty(args[0])) {
+                    if (args.length > 0 && !StringUtils.isEmpty(args[0])) {
                         try {
                             if (!Storm.manager.startWeather("storm_wildfire", args[0])) {
                                 sender.sendMessage("Wildfires not enabled in specified world or are conflicting with another weather!");
