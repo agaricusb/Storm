@@ -30,7 +30,7 @@ public class EntityShelteringTask {
                 }
             }
         }
-                , 60, 60);
+                , 0, 60);
     }
 
 }
