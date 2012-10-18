@@ -18,15 +18,6 @@
       </plugin>
     </plugins>
   </build>
-	
-	<repositories>
-		<repository>
-			<id>worldguard</id>
-			<name>worldguard</name>
-			<url>http://maven.sk89q.com/artifactory/repo/com/sk89q/worldguard/</url>
-		</repository>
-	</repositories>
-	
   <dependencies>
 	<dependency>
 	    <groupId>org.craftbukkit</groupId>
