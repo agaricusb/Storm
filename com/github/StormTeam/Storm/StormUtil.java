@@ -8,6 +8,7 @@ import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -315,7 +316,7 @@ public class StormUtil {
      * @param texture URI to texture
      */
     public void setTexture(Player player, String texture) {
-        if (Storm.version >= 1.3) {
+        if (Storm.version >= 1.3 && Storm.wConfigs.get(player.getWorld().getName()).Features_Force__Weather__Textures) {
             ((CraftPlayer) player).getHandle().netServerHandler.sendPacket(new Packet250CustomPayload("MC|TPack", (texture + "\0" + 16).getBytes()));
         }
     }
@@ -379,6 +380,39 @@ public class StormUtil {
                 if (blocks.contains(world.getBlockAt(x + ox, y, z + oz).getTypeId()))
                     return true;
         return false;
+    }
+
+    /**
+     * Gets a location that is safe for the entity.
+     *
+     * @param entity The entity
+     * @param radius The radius to search in
+     * @return
+     */
+    public Location getSafeLocation(Entity entity, int radius) {
+        Location location = entity.getLocation();
+        World world = location.getWorld();
+
+        net.minecraft.server.Entity notchEntity = ((CraftEntity) entity).getHandle();
+        int height = (int) (notchEntity.boundingBox.e - notchEntity.boundingBox.b);
+
+        int x = (int) location.getX(), y = (int) location.getY(), z = (int) location.getZ();
+
+        for (int ox = radius; ox > -radius; ox--)
+            loopZ:
+                    for (int oz = radius; oz > -radius; oz--) {
+                        int oy;
+                        if (isLocationUnderSky(new Location(world, x + ox, y, z + oz)))
+                            continue;
+                        for (oy = 0; oy < height; ++oy) {
+                            if (world.getBlockAt(x + ox, y + oy, z + oz).getTypeId() != 0)
+                                continue loopZ;
+                            else
+                                break;
+                        }
+                        return new Location(world, x + ox, y + oy, z + oz);
+                    }
+        return location;
     }
 
     /**

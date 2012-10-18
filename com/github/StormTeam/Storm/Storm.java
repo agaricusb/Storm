@@ -1,5 +1,5 @@
 /*
- * Storm Copyright (C) 2012 Icyene, Thidox
+ * Storm Copyright (C) 2012 Icyene, Xiaomao, Thidox
  *
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
