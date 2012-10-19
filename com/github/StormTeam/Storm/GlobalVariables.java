@@ -126,6 +126,7 @@ public class GlobalVariables extends ReflectConfiguration {
     public boolean Features_Acid__Rain_Dissolving__Blocks = true;
     public boolean Features_Acid__Rain_Player__Damaging = true;
     public boolean Features_Acid__Rain_Entity__Damaging = true;
+    public boolean Features_Acid__Rain_Entity__Shelter__Pathfinding = true;
     public boolean Features_Thunder__Storms = true;
     public boolean Features_Lightning_Greater__Range__And__Damage = true;
     public boolean Features_Lightning_Player__Attraction = true;
