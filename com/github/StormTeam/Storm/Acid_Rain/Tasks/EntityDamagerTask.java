@@ -47,7 +47,8 @@ public class EntityDamagerTask {
                                 for (Entity damagee : affectedWorld.getEntities()) {
                                     if (Storm.util.isEntityUnderSky(damagee) && Storm.util.isRainy(damagee.getLocation().getBlock().getBiome())) {
                                         if (!Storm.util.isLocationNearBlock(damagee.getLocation(), glob.Acid__Rain_Absorbing__Blocks, glob.Acid__Rain_Absorbing__Radius)) {
-                                            ((LivingEntity) (damagee)).damage(glob.Acid__Rain_Entity_Damage__From__Exposure);
+                                            if (damagee instanceof LivingEntity)
+                                                ((LivingEntity) (damagee)).damage(glob.Acid__Rain_Entity_Damage__From__Exposure);
                                         }
                                     }
                                 }

@@ -158,6 +158,7 @@ public class StormUtil {
      * @param world   world name
      */
     public void broadcast(String message, String world) {
+        log("(" + world + ")" + message);
         broadcast(message, Bukkit.getWorld(world));
     }
 

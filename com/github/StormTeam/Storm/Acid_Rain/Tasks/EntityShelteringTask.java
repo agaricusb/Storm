@@ -1,16 +1,13 @@
 package com.github.StormTeam.Storm.Acid_Rain.Tasks;
 
 import com.github.StormTeam.Storm.ErrorLogger;
-import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.PathfinderGoalFleeSky;
 import com.github.StormTeam.Storm.Storm;
-import net.minecraft.server.EntityCreature;
-import net.minecraft.server.EntityLiving;
-import net.minecraft.server.PathfinderGoal;
-import net.minecraft.server.PathfinderGoalSelector;
+import net.minecraft.server.*;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.Entity;
 
 import java.lang.reflect.Field;
@@ -23,7 +20,6 @@ public class EntityShelteringTask {
     private World affectedWorld;
     private net.minecraft.server.World mcWorld;
     private Storm storm;
-    private GlobalVariables glob;
     private Field selector;
     private Method register;
     private ArrayList<Integer> registered = new ArrayList<Integer>();
@@ -32,10 +28,11 @@ public class EntityShelteringTask {
         this.storm = storm;
         this.affectedWorld = Bukkit.getWorld(affectedWorld);
         mcWorld = ((CraftWorld) this.affectedWorld).getHandle();
-        glob = Storm.wConfigs.get(affectedWorld);
         try {
             selector = EntityLiving.class.getDeclaredField("goalSelector");
             register = PathfinderGoalSelector.class.getDeclaredMethod("a", int.class, PathfinderGoal.class);
+            selector.setAccessible(true);
+            register.setAccessible(true);
         } catch (Exception e) {
             ErrorLogger.generateErrorLog(e);
         }
@@ -47,8 +44,16 @@ public class EntityShelteringTask {
             public void run() {
                 try {
                     for (Entity en : affectedWorld.getEntities()) {
-                        if (en instanceof EntityLiving) {
-                            register.invoke(selector, 1, new PathfinderGoalFleeSky((EntityCreature) en, 0.25F, "storm_acidrain"));
+                        net.minecraft.server.Entity notchMob = ((CraftEntity) en).getHandle();
+                        if (notchMob instanceof EntityLiving) {
+                            if (!(notchMob instanceof EntityItem) && !(notchMob instanceof EntityPlayer) && !(notchMob instanceof EntityFireball)) {
+                                int eid = en.getEntityId();
+                                if (!registered.contains(eid)) {
+                                    System.out.println("Registering " + notchMob);
+                                    register.invoke(selector.get(notchMob), 1, new PathfinderGoalFleeSky((EntityCreature) notchMob, 0.25F, "storm_acidrain"));
+                                    registered.add(eid);
+                                }
+                            }
                         }
                     }
                 } catch (Exception e) {
