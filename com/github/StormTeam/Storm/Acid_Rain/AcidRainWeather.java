@@ -1,5 +1,6 @@
 package com.github.StormTeam.Storm.Acid_Rain;
 
+import com.github.StormTeam.Storm.Acid_Rain.Tasks.BlockDissolverTask;
 import com.github.StormTeam.Storm.Acid_Rain.Tasks.EntityDamagerTask;
 import com.github.StormTeam.Storm.Acid_Rain.Tasks.EntityShelteringTask;
 import com.github.StormTeam.Storm.Acid_Rain.Tasks.PlayerDamagerTask;
@@ -21,6 +22,7 @@ public class AcidRainWeather extends StormWeather {
     private PlayerDamagerTask pDamager;
     private EntityDamagerTask enDamager;
     private EntityShelteringTask shelter;
+    private BlockDissolverTask dissolver;
     private int killID;
 
     /**
@@ -42,7 +44,7 @@ public class AcidRainWeather extends StormWeather {
 
     @Override
     public void start() {
-        if (!glob.Features_Acid__Rain_Dissolving__Blocks && !glob.Features_Acid__Rain_Player__Damaging && !glob.Features_Acid__Rain_Entity__Damaging) {
+        if (!glob.Features_Acid__Rain_Dissolving__Blocks && !glob.Features_Acid__Rain_Player__Damaging && !glob.Features_Acid__Rain_Entity__Damaging && !glob.Features_Acid__Rain_Entity__Shelter__Pathfinding) {
             return;
         }
 
@@ -58,8 +60,15 @@ public class AcidRainWeather extends StormWeather {
             enDamager.run();
         }
 
-        shelter = new EntityShelteringTask(storm, world);
-        shelter.run();
+        if (glob.Features_Acid__Rain_Dissolving__Blocks) {
+            dissolver = new BlockDissolverTask(storm, world);
+            dissolver.run();
+        }
+
+        if (glob.Features_Acid__Rain_Entity__Shelter__Pathfinding) {
+            shelter = new EntityShelteringTask(storm, world);
+            shelter.run();
+        }
 
         killID = Storm.manager.createAutoKillWeatherTask("storm_acidrain", world, 7500 + Storm.random.nextInt(1024));
     }
@@ -78,6 +87,8 @@ public class AcidRainWeather extends StormWeather {
             enDamager = null;
             shelter.stop();
             shelter = null;
+            dissolver.stop();
+            dissolver = null;
             Bukkit.getScheduler().cancelTask(killID);
         } catch (Exception e) {
         }
