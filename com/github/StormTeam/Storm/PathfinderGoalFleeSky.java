@@ -24,7 +24,8 @@ public class PathfinderGoalFleeSky extends PathfinderGoal {
     }
 
     public boolean a() {
-        System.out.println("Fleesky called!");
+        if (!entity.world.J())
+            return false;
         if (!Storm.manager.getActiveWeathers(world.getWorld().getName()).contains(name))
             return false;
         if (!world.j(MathHelper.floor(entity.locX), (int) entity.boundingBox.b, MathHelper.floor(entity.locZ)))
@@ -46,6 +47,13 @@ public class PathfinderGoalFleeSky extends PathfinderGoal {
 
     public void e() {
         entity.getNavigation().a(x, y, z, speed);
+        entity.getNavigation().d(true);
+    }
+
+    public void c() {
+        entity.getNavigation().d(false);
+        if (a())
+            e();
     }
 
     private Vec3D f() {
