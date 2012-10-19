@@ -1,6 +1,7 @@
 package com.github.StormTeam.Storm.Acid_Rain;
 
 import com.github.StormTeam.Storm.Acid_Rain.Tasks.EntityDamagerTask;
+import com.github.StormTeam.Storm.Acid_Rain.Tasks.EntityShelteringTask;
 import com.github.StormTeam.Storm.Acid_Rain.Tasks.PlayerDamagerTask;
 import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.Storm;
@@ -17,9 +18,9 @@ import java.util.Set;
 public class AcidRainWeather extends StormWeather {
 
     private final GlobalVariables glob;
-    private DissolverTask dissolver;
     private PlayerDamagerTask pDamager;
     private EntityDamagerTask enDamager;
+    private EntityShelteringTask shelter;
     private int killID;
 
     /**
@@ -47,11 +48,6 @@ public class AcidRainWeather extends StormWeather {
 
         Storm.util.broadcast(glob.Acid__Rain_Messages_On__Acid__Rain__Start, world);
 
-        if (glob.Features_Acid__Rain_Dissolving__Blocks) {
-            dissolver = new DissolverTask(storm, world);
-            dissolver.run();
-        }
-
         if (glob.Features_Acid__Rain_Player__Damaging) {
             pDamager = new PlayerDamagerTask(storm, world);
             pDamager.run();
@@ -61,6 +57,9 @@ public class AcidRainWeather extends StormWeather {
             enDamager = new EntityDamagerTask(storm, world);
             enDamager.run();
         }
+
+        shelter = new EntityShelteringTask(storm, world);
+        shelter.run();
 
         killID = Storm.manager.createAutoKillWeatherTask("storm_acidrain", world, 7500 + Storm.random.nextInt(1024));
     }
@@ -73,12 +72,12 @@ public class AcidRainWeather extends StormWeather {
     public void end() {
         try {
             Storm.util.broadcast(glob.Acid__Rain_Messages_On__Acid__Rain__Stop, world);
-            dissolver.stop();
-            dissolver = null;
             pDamager.stop();
             pDamager = null;
             enDamager.stop();
             enDamager = null;
+            shelter.stop();
+            shelter = null;
             Bukkit.getScheduler().cancelTask(killID);
         } catch (Exception e) {
         }

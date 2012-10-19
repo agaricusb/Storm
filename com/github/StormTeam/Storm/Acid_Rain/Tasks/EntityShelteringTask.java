@@ -1,36 +1,65 @@
 package com.github.StormTeam.Storm.Acid_Rain.Tasks;
 
+import com.github.StormTeam.Storm.ErrorLogger;
 import com.github.StormTeam.Storm.GlobalVariables;
-import com.github.StormTeam.Storm.MobPathfinder;
+import com.github.StormTeam.Storm.PathfinderGoalFleeSky;
 import com.github.StormTeam.Storm.Storm;
+import net.minecraft.server.EntityCreature;
+import net.minecraft.server.EntityLiving;
+import net.minecraft.server.PathfinderGoal;
+import net.minecraft.server.PathfinderGoalSelector;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.entity.Entity;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 
 public class EntityShelteringTask {
 
     private int id;
     private World affectedWorld;
+    private net.minecraft.server.World mcWorld;
     private Storm storm;
     private GlobalVariables glob;
+    private Field selector;
+    private Method register;
+    private ArrayList<Integer> registered = new ArrayList<Integer>();
 
     public EntityShelteringTask(Storm storm, String affectedWorld) {
         this.storm = storm;
         this.affectedWorld = Bukkit.getWorld(affectedWorld);
+        mcWorld = ((CraftWorld) this.affectedWorld).getHandle();
         glob = Storm.wConfigs.get(affectedWorld);
+        try {
+            selector = EntityLiving.class.getDeclaredField("goalSelector");
+            register = PathfinderGoalSelector.class.getDeclaredMethod("a", int.class, PathfinderGoal.class);
+        } catch (Exception e) {
+            ErrorLogger.generateErrorLog(e);
+        }
+
     }
 
     public void run() {
         id = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(storm, new Runnable() {
             public void run() {
-                for (Entity en : affectedWorld.getEntities()) {
-                    if (Storm.util.isEntityUnderSky(en)) {
-                        new MobPathfinder(en).setTarget(Storm.util.getSafeLocation(en, 32));
+                try {
+                    for (Entity en : affectedWorld.getEntities()) {
+                        if (en instanceof EntityLiving) {
+                            register.invoke(selector, 1, new PathfinderGoalFleeSky((EntityCreature) en, 0.25F, "storm_acidrain"));
+                        }
                     }
+                } catch (Exception e) {
+                    ErrorLogger.generateErrorLog(e);
                 }
             }
         }
-                , 0, 60);
+                , 0, 80);
     }
 
+    public void stop() {
+        Bukkit.getScheduler().cancelTask(id);
+    }
 }

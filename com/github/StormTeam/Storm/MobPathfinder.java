@@ -9,7 +9,7 @@ import org.bukkit.entity.Entity;
 public class MobPathfinder {
 
     private EntityCreature entity;
-    private float speed = 0.05F;
+    private float speed = 0.23F;
 
     public MobPathfinder(Entity e) {
         entity = (EntityCreature) ((CraftEntity) e).getHandle();
@@ -21,7 +21,8 @@ public class MobPathfinder {
     }
 
     private void moveMob(Location loc) {
-        PathEntity path = entity.world.a(entity, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), 32.0F, true, false, false, true);
+        System.out.println("Moving entity: " + entity + " to location " + loc);
+        PathEntity path = entity.world.a(entity, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), 16.0F, true, false, false, true);
         entity.setPathEntity(path);
         entity.getNavigation().a(path, speed);
     }

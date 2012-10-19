@@ -11,7 +11,6 @@ import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -337,9 +336,7 @@ public class StormUtil {
      * @return boolean
      */
     public boolean isPlayerUnderSky(Player player) {
-        Location loc = player.getLocation();
-        return isLocationUnderSky(loc);
-
+        return isLocationUnderSky(player.getLocation());
     }
 
     /**
@@ -349,7 +346,7 @@ public class StormUtil {
      * @return boolean
      */
     public boolean isEntityUnderSky(Entity entity) {
-        return entity instanceof LivingEntity && isLocationUnderSky(((LivingEntity) (entity)).getLocation());
+        return isLocationUnderSky(entity.getLocation());
     }
 
     /**
@@ -375,8 +372,8 @@ public class StormUtil {
         World world = location.getWorld();
         int x = (int) location.getX(), y = (int) location.getY(), z = (int) location.getZ();
 
-        for (int ox = 0; ox > -radius; ox--)
-            for (int oz = 0; oz > -radius; oz--)
+        for (int ox = radius; ox > -radius; ox--)
+            for (int oz = radius; oz > -radius; oz--)
                 if (blocks.contains(world.getBlockAt(x + ox, y, z + oz).getTypeId()))
                     return true;
         return false;
