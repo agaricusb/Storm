@@ -1,5 +1,6 @@
 package com.github.StormTeam.Storm;
 
+import com.bekvon.bukkit.residence.Residence;
 import com.sk89q.worldguard.bukkit.BukkitUtil;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import net.minecraft.server.Packet250CustomPayload;
@@ -27,25 +28,10 @@ import java.util.logging.Logger;
 
 public class StormUtil {
 
-    /**
-     * A WorldGuard plugin instance for block protection checking.
-     */
     private WorldGuardPlugin wg;
-    /**
-     * Denotes whether the server has WorldGuard.
-     */
     private boolean hasWG = false;
-    /**
-     * A HashMap with BlockTickSelectors for each loaded world.
-     */
-    private HashMap<String, BlockTickSelector> blockTickers = new HashMap<String, BlockTickSelector>();
-    /**
-     * Fields for weather control from net.minecraft.server.WorldData.
-     */
+    private boolean hasResidence = false;
     private Field isRaining, isThundering, rainTicks, thunderTicks;
-    /**
-     * The Storm Logger object.
-     */
     private Logger log;
 
     /**
@@ -57,9 +43,9 @@ public class StormUtil {
         try {
             Plugin wgp = plugin.getServer().getPluginManager().getPlugin("WorldGuard");
             hasWG = wgp != null; // Short and sweet
-            if (hasWG) {
+            if (hasWG)
                 wg = (WorldGuardPlugin) wgp;
-            }
+            hasResidence = plugin.getServer().getPluginManager().getPlugin("Residence") != null;
 
             isRaining = WorldData.class.getDeclaredField("isRaining");
             isRaining.setAccessible(true);
@@ -236,7 +222,8 @@ public class StormUtil {
      * @return boolean of wheather it's protected
      */
     public boolean isBlockProtected(Block block) {
-        return hasWG && wg.getGlobalRegionManager().get(block.getWorld()).getApplicableRegions(BukkitUtil.toVector(block.getLocation())).size() > 0;
+        return (hasWG && wg.getGlobalRegionManager().get(block.getWorld()).getApplicableRegions(BukkitUtil.toVector(block.getLocation())).size() > 0) ||
+                (hasResidence && Residence.getResidenceManager().getByLoc(block.getLocation()) != null);
     }
 
     /**
@@ -385,7 +372,7 @@ public class StormUtil {
      *
      * @param entity The entity
      * @param radius The radius to search in
-     * @return
+     * @return Returns a safe location.
      */
     public Location getSafeLocation(Entity entity, int radius) {
         Location location = entity.getLocation();

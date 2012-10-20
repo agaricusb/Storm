@@ -32,21 +32,18 @@ import java.util.HashMap;
 import java.util.Random;
 import java.util.logging.Level;
 
-/*
- * Dear BukkitDev administrator(s):
- *
- * Thank you for your time in reviewing this project! If you find anything
- * in it that makes you cry inside, will you please let us know so we can
- * fix/improve it? Aside from horrible formatting, we're working on that :)
- *
- * Thanks in advance, The-people-who-made-this-plugin
- */
-
 /**
  * The main Storm class.
  */
 
 public class Storm extends JavaPlugin {
+
+    private String _ =
+            "Dear BukkitDev administrator(s):" +
+                    "Thank you for your time in reviewing this project! If you find anything" +
+                    "in it that makes you cry inside, will you please let us know so we can" +
+                    "fix/improve it? Aside from horrible formatting, we're working on that :-)" +
+                    "Thanks in advance, The-people-who-made-this-plugin";
 
     /**
      * A HashMap containing world name and configuration object.

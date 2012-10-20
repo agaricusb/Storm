@@ -75,7 +75,7 @@ public class ErrorLogger extends PluginLogger {
         if ((thrown = record.getThrown()) == null)
             return false;
         String ERROR = ExceptionUtils.getStackTrace(thrown), NAME = "", TICKETS = "", ENDL = "";
-        for (Map.Entry<String, List<String>> entry : ((HashMap<String, List<String>>) loadMap()).entrySet()) {
+        for (Map.Entry<String, List<String>> entry : loadMap().entrySet()) {
             try {
                 List<String> data = entry.getValue();
                 if (ERROR.contains(data.get(0))) { //If the ERROR contains the package
@@ -94,15 +94,15 @@ public class ErrorLogger extends PluginLogger {
             return false;
         Plugin PLUGIN = Bukkit.getPluginManager().getPlugin(NAME);
         StringBuilder err = new StringBuilder();
-        err.append("\n=============" + NAME + " has encountered an error!=============")
-                .append("\nStacktrace:\n" + ERROR)
-                .append("\n" + NAME + " version: " + PLUGIN.getDescription().getVersion())
-                .append("\nBukkit message: " + record.getMessage())
-                .append("\nPlugins loaded: " + Arrays.asList(Bukkit.getPluginManager().getPlugins()))
-                .append("\nCraftBukkit version: " + Bukkit.getServer().getBukkitVersion())
-                .append("\nJava version: " + getProperty("java.version"))
-                .append("\nOS info: " + getProperty("os.arch") + " " + getProperty("os.name") + ", " + getProperty("os.version"))
-                .append("\nPlease report this error to the " + NAME + " ticket tracker (" + TICKETS + ")!");
+        err.append("\n=============").append(NAME).append(" has encountered an error!=============")
+                .append("\nStacktrace:\n").append(ERROR).append("\n")
+                .append(NAME).append(" version: ").append(PLUGIN.getDescription().getVersion())
+                .append("\nBukkit message: ").append(record.getMessage())
+                .append("\nPlugins loaded: ").append(Arrays.asList(Bukkit.getPluginManager().getPlugins()))
+                .append("\nCraftBukkit version: ").append(Bukkit.getServer().getBukkitVersion())
+                .append("\nJava version: ").append(getProperty("java.version"))
+                .append("\nOS info: ").append(getProperty("os.arch")).append(" ").append(getProperty("os.name")).append(", ").append(getProperty("os.version"))
+                .append("\nPlease report this error to the ").append(NAME).append(" ticket tracker (").append(TICKETS).append(")!");
         try {
             //One-liner beauty.
             String FILE_NAME = String.format("%s_%06x.error.log", NAME, new BigInteger(1, Arrays.copyOfRange(MessageDigest.getInstance("MD5").digest(err.toString().getBytes()), 0, 6)));
@@ -113,7 +113,7 @@ public class ErrorLogger extends PluginLogger {
                     BufferedWriter writer = new BufferedWriter(new FileWriter(dump));
                     writer.write((err.toString() + ENDL).substring(1)); //Remove the extra /n
                     writer.close();
-                    err.append("\nThis has been saved to the file ./" + PLUGIN.getName() + "/errors/" + FILE_NAME);
+                    err.append("\nThis has been saved to the file ./").append(PLUGIN.getName()).append("/errors/").append(FILE_NAME);
                 }
             }
         } catch (Exception e) {
@@ -127,7 +127,7 @@ public class ErrorLogger extends PluginLogger {
         System.setProperty("__ErrorLogger__", map.toString());
     }
 
-    private static HashMap loadMap() {
+    private static HashMap<String, List<String>> loadMap() {
         String pro = getProperty("__ErrorLogger__");
         if (StringUtils.isEmpty(pro))
             return new HashMap();

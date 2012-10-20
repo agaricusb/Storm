@@ -15,7 +15,6 @@ public class EntityShelteringTask {
 
     private int id;
     private World affectedWorld;
-    private net.minecraft.server.World mcWorld;
     private Storm storm;
     private Field selector;
     private Method register;
@@ -26,7 +25,7 @@ public class EntityShelteringTask {
         this.storm = storm;
         this.affectedWorld = Bukkit.getWorld(affectedWorld);
         this.name = name;
-        mcWorld = ((CraftWorld) this.affectedWorld).getHandle();
+        net.minecraft.server.World mcWorld = ((CraftWorld) this.affectedWorld).getHandle();
         try {
             selector = EntityLiving.class.getDeclaredField("goalSelector");
             register = PathfinderGoalSelector.class.getDeclaredMethod("a", int.class, PathfinderGoal.class);
@@ -45,8 +44,8 @@ public class EntityShelteringTask {
                     for (Entity en : affectedWorld.getEntities()) {
                         net.minecraft.server.Entity notchMob = ((CraftEntity) en).getHandle();
                         if (notchMob instanceof EntityLiving) {
-                            if (!(notchMob instanceof EntityItem) && !(notchMob instanceof EntityPlayer) &&
-                                    !(notchMob instanceof EntityFireball) && !(notchMob instanceof EntitySlime)) {
+                            if (!(notchMob instanceof EntityPlayer) &&
+                                    !(notchMob instanceof EntitySlime)) {
                                 int eid = en.getEntityId();
                                 if (!registered.contains(eid)) {
                                     register.invoke(selector.get(notchMob), 1, new PathfinderGoalFleeSky((EntityCreature) notchMob, 0.25F, name));

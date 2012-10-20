@@ -72,7 +72,6 @@ public class AcidRain {
                 return Storm.manager.startWeather("storm_acidrain", world);
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
             return true;
         }
 

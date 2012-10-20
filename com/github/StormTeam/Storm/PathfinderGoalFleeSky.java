@@ -11,6 +11,11 @@ public class PathfinderGoalFleeSky extends PathfinderGoal {
     private double x;
     private double y;
     private double z;
+
+    private double prx;
+    private double pry;
+    private double prz;
+
     private float speed;
     private World world;
     private String name;
@@ -71,10 +76,9 @@ public class PathfinderGoalFleeSky extends PathfinderGoal {
     }
 
     private void start() {
-        if ((Storm.version == 1.3 && entity.getNavigation().f()) || (Storm.version == 1.2 && entity.getNavigation().e())) {
+        if (isUnderSky() && ((Storm.version == 1.3 && entity.getNavigation().f()) || (Storm.version == 1.2 && entity.getNavigation().e()))) {
             entity.getNavigation().a(x, y, z, speed);
             entity.getNavigation().d(true);
-            return;
         }
     }
 
@@ -92,11 +96,15 @@ public class PathfinderGoalFleeSky extends PathfinderGoal {
         if (path == null) {
             return false;
         } else {
-            x = path.a;
-            y = path.b;
-            z = path.c;
+            setup(path);
             return true;
         }
+    }
+
+    private void setup(Vec3D path) {
+        x = path.a;
+        y = path.b;
+        z = path.c;
     }
 
     private Vec3D getPathToShelter() {
@@ -111,7 +119,7 @@ public class PathfinderGoalFleeSky extends PathfinderGoal {
     }
 
     private boolean isUnderSky() {
-        return isUnderSky(world, entity.locX, entity.boundingBox.b, entity.locZ);
+        return isUnderSky(world, entity.locX, entity.locY, entity.locZ);
     }
 
     public boolean isUnderSky(World world, double x, double y, double z) {
