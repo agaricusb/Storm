@@ -34,7 +34,7 @@ public class ThunderStorm {
             for (World w : Bukkit.getWorlds()) {
                 String name = w.getName();
                 GlobalVariables temp = Storm.wConfigs.get(name);
-                if (temp.Features_Thunder__Storms) {
+                if (temp.Features_Thunder__Storms_Thunder__Striking) {
                     Storm.manager.enableWeatherForWorld("storm_thunderstorm", name,
                             temp.Thunder__Storm_Thunder__Storm__Chance, temp.Thunder__Storm_Thunder__Storm__Base__Interval);
                 }

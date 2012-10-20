@@ -46,7 +46,6 @@ public class StrikerTask {
                             public void run() {
                                 try {
                                     ArrayList<Block> bloks = ticker.getRandomTickedBlocks();
-                                    System.out.println(bloks);
                                     for (Block b : bloks) {
                                         Block tran = b.getRelative(BlockFace.DOWN);
                                         if (Storm.util.isRainy(tran.getBiome())) {

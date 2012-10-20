@@ -63,14 +63,17 @@ public class PathfinderGoalFleeSky extends PathfinderGoal {
     }
 
     private void start() {
-        entity.getNavigation().a(x, y, z, speed);
-        entity.getNavigation().d(true);
+        if (entity.getNavigation().f()) {
+            entity.getNavigation().a(x, y, z, speed);
+            entity.getNavigation().d(true);
+        }
     }
 
     private void end() {
-        entity.getNavigation().d(false);
         if (setup())
             start();
+        else
+            entity.getNavigation().d(false);
     }
 
     private boolean setup() {

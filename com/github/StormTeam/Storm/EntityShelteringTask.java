@@ -1,8 +1,5 @@
-package com.github.StormTeam.Storm.Acid_Rain.Tasks;
+package com.github.StormTeam.Storm;
 
-import com.github.StormTeam.Storm.ErrorLogger;
-import com.github.StormTeam.Storm.PathfinderGoalFleeSky;
-import com.github.StormTeam.Storm.Storm;
 import net.minecraft.server.*;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -23,10 +20,12 @@ public class EntityShelteringTask {
     private Field selector;
     private Method register;
     private ArrayList<Integer> registered = new ArrayList<Integer>();
+    private String name;
 
-    public EntityShelteringTask(Storm storm, String affectedWorld) {
+    public EntityShelteringTask(Storm storm, String affectedWorld, String name) {
         this.storm = storm;
         this.affectedWorld = Bukkit.getWorld(affectedWorld);
+        this.name = name;
         mcWorld = ((CraftWorld) this.affectedWorld).getHandle();
         try {
             selector = EntityLiving.class.getDeclaredField("goalSelector");
@@ -46,11 +45,11 @@ public class EntityShelteringTask {
                     for (Entity en : affectedWorld.getEntities()) {
                         net.minecraft.server.Entity notchMob = ((CraftEntity) en).getHandle();
                         if (notchMob instanceof EntityLiving) {
-                            if (!(notchMob instanceof EntityItem) && !(notchMob instanceof EntityPlayer) && !(notchMob instanceof EntityFireball)) {
+                            if (!(notchMob instanceof EntityItem) && !(notchMob instanceof EntityPlayer) &&
+                                    !(notchMob instanceof EntityFireball) && !(notchMob instanceof EntitySlime)) {
                                 int eid = en.getEntityId();
                                 if (!registered.contains(eid)) {
-                                    System.out.println("Registering " + notchMob);
-                                    register.invoke(selector.get(notchMob), 1, new PathfinderGoalFleeSky((EntityCreature) notchMob, 0.25F, "storm_acidrain"));
+                                    register.invoke(selector.get(notchMob), 1, new PathfinderGoalFleeSky((EntityCreature) notchMob, 0.25F, name));
                                     registered.add(eid);
                                 }
                             }

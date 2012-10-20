@@ -1,5 +1,6 @@
 package com.github.StormTeam.Storm.Thunder_Storm;
 
+import com.github.StormTeam.Storm.EntityShelteringTask;
 import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.Storm;
 import com.github.StormTeam.Storm.Thunder_Storm.Tasks.StrikerTask;
@@ -18,6 +19,7 @@ public class ThunderStormWeather extends StormWeather {
 
     private GlobalVariables glob;
     private StrikerTask striker;
+    private EntityShelteringTask shelter;
     private int killID;
 
     /**
@@ -39,16 +41,22 @@ public class ThunderStormWeather extends StormWeather {
 
     @Override
     public void start() {
-        if (!glob.Features_Thunder__Storms) {
+        if (!glob.Features_Thunder__Storms_Thunder__Striking && !glob.Features_Thunder__Storms_Entity__Shelter__Pathfinding) {
             return;
         }
 
         World temp = Bukkit.getWorld(world);
-
         Storm.util.broadcast(glob.Thunder__Storm_Messages_On__Thunder__Storm__Start, world);
 
-        striker = new StrikerTask(storm, temp);
-        striker.run();
+        if (glob.Features_Thunder__Storms_Thunder__Striking) {
+            striker = new StrikerTask(storm, temp);
+            striker.run();
+        }
+
+        if (glob.Features_Thunder__Storms_Entity__Shelter__Pathfinding) {
+            shelter = new EntityShelteringTask(storm, world, "storm_thunderstorm");
+            shelter.run();
+        }
 
         //Set the timer to kill
         killID = Storm.manager.createAutoKillWeatherTask("storm_thunderstorm", world, 7500 + Storm.random.nextInt(1024));
@@ -62,7 +70,9 @@ public class ThunderStormWeather extends StormWeather {
     public void end() {
         Storm.util.broadcast(glob.Thunder__Storm_Messages_On__Thunder__Storm__Stop, world);
         striker.stop();
-        striker = null; //Remove references        
+        striker = null; //Remove references
+        shelter.stop();
+        shelter = null;
         Bukkit.getScheduler().cancelTask(killID);
     }
 

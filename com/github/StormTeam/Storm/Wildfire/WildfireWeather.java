@@ -69,6 +69,7 @@ public class WildfireWeather extends StormWeather { //TODO: Make use of getTicke
                 toBurn.setType(Material.FIRE);
                 Storm.util.broadcast(glob.Natural__Disasters_Wildfires_Messages_On__Start.replace("%x", toBurn.getX() + "")
                         .replace("%y", toBurn.getY() + "").replace("%z", toBurn.getZ() + ""), affectedWorld);
+                break;
             }
         }
         //Abusing the API once again. Once again, who cares?

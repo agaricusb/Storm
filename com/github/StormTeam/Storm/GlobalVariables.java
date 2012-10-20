@@ -39,7 +39,24 @@ public class GlobalVariables extends ReflectConfiguration {
             add(Arrays.asList("2", "3"));
             add(Arrays.asList("1", "4"));
             add(Arrays.asList("4", "48"));
-
+            add(Arrays.asList("13", "12"));
+            add(Arrays.asList("6", "31"));
+            add(Arrays.asList("31", "31"));
+            add(Arrays.asList("37", "31"));
+            add(Arrays.asList("38", "31"));
+            add(Arrays.asList("39", "31"));
+            add(Arrays.asList("40", "31"));
+            add(Arrays.asList("59", "31"));
+            add(Arrays.asList("60", "3"));
+            add(Arrays.asList("3", "13"));
+            add(Arrays.asList("102", "0"));
+            add(Arrays.asList("110", "3"));
+            add(Arrays.asList("111", "0"));
+            add(Arrays.asList("91", "86"));
+            add(Arrays.asList("48", "13"));
+            add(Arrays.asList("13", "12"));
+            add(Arrays.asList("12", "0"));
+            add(Arrays.asList("20", "0"));
         }
     };
     public List<Integer> Acid__Rain_Absorbing__Blocks = new ArrayList<Integer>() {
@@ -127,13 +144,15 @@ public class GlobalVariables extends ReflectConfiguration {
     public boolean Features_Acid__Rain_Player__Damaging = true;
     public boolean Features_Acid__Rain_Entity__Damaging = true;
     public boolean Features_Acid__Rain_Entity__Shelter__Pathfinding = true;
-    public boolean Features_Thunder__Storms = true;
+    public boolean Features_Thunder__Storms_Thunder__Striking = true;
+    public boolean Features_Thunder__Storms_Entity__Shelter__Pathfinding = true;
     public boolean Features_Lightning_Greater__Range__And__Damage = true;
     public boolean Features_Lightning_Player__Attraction = true;
     public boolean Features_Lightning_Block__Attraction = true;
     public boolean Features_Lightning_Block__Transformations = true;
     public boolean Features_Blizzards_Player__Damaging = true;
     public boolean Features_Blizzards_Entity__Damaging = true;
+    public boolean Features_Blizzards_Entity__Shelter__Pathfinding = true;
     public boolean Features_Blizzards_Slowing__Snow = true;
     public boolean Features_Meteor = true;
     public boolean Features_Wildfires = true;
