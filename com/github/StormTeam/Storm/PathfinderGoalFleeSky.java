@@ -1,7 +1,9 @@
 package com.github.StormTeam.Storm;
 
 import net.minecraft.server.*;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 
 public class PathfinderGoalFleeSky extends PathfinderGoal {
 
@@ -28,7 +30,7 @@ public class PathfinderGoalFleeSky extends PathfinderGoal {
 
     //1.3/1.2 checks if can continue
     public boolean b() {
-        return canContinue();
+        return canEnd();
     }
 
     //Check if can move or can start. MC 1.2 compatibility.
@@ -37,7 +39,7 @@ public class PathfinderGoalFleeSky extends PathfinderGoal {
     //Nasty workaround
     public boolean e() {
         if (Storm.version == 1.2)
-            return canContinue();
+            return canEnd();
         else if (Storm.version == 1.3) {
             start();
             return true;
@@ -58,14 +60,21 @@ public class PathfinderGoalFleeSky extends PathfinderGoal {
         a(1); //Sets the mutex bits in PathfinderGoal
     }
 
-    private boolean canContinue() {
+    private boolean canEnd() {
+        for (org.bukkit.entity.Entity en : entity.getBukkitEntity().getNearbyEntities(3, 3, 3)) {
+            if (en instanceof Player) {
+                if (((Player) en).getGameMode() != GameMode.CREATIVE)
+                    return true;
+            }
+        }
         return !Storm.manager.getActiveWeathers(world.getWorld().getName()).contains(name);
     }
 
     private void start() {
-        if (entity.getNavigation().f()) {
+        if ((Storm.version == 1.3 && entity.getNavigation().f()) || (Storm.version == 1.2 && entity.getNavigation().e())) {
             entity.getNavigation().a(x, y, z, speed);
             entity.getNavigation().d(true);
+            return;
         }
     }
 
