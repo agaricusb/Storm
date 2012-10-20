@@ -13,7 +13,7 @@ import java.util.concurrent.Semaphore;
  * Based on codename_B's non static config 'offering' :-)
  */
 
-class ReflectConfiguration {
+public class ReflectConfiguration {
 
     /**
      * The plugin object to be used in config saving.
@@ -35,7 +35,7 @@ class ReflectConfiguration {
      * @param name   The name of the file to write to
      */
 
-    ReflectConfiguration(Plugin plugin, String name) {
+    public ReflectConfiguration(Plugin plugin, String name) {
         this.plugin = plugin;
         this.name = name;
     }

@@ -36,10 +36,13 @@ public class GlobalVariables extends ReflectConfiguration {
     public List<List<String>> Acid__Rain_Dissolver_Block__Transformations = new ArrayList<List<String>>() {
         {
             add(Arrays.asList("18", "0"));
+            add(Arrays.asList("102", "0"));
+            add(Arrays.asList("111", "0"));
+            add(Arrays.asList("12", "0"));
+            add(Arrays.asList("20", "0"));
             add(Arrays.asList("2", "3"));
             add(Arrays.asList("1", "4"));
             add(Arrays.asList("4", "48"));
-            add(Arrays.asList("13", "12"));
             add(Arrays.asList("6", "31"));
             add(Arrays.asList("31", "31"));
             add(Arrays.asList("37", "31"));
@@ -48,15 +51,7 @@ public class GlobalVariables extends ReflectConfiguration {
             add(Arrays.asList("40", "31"));
             add(Arrays.asList("59", "31"));
             add(Arrays.asList("60", "3"));
-            add(Arrays.asList("3", "13"));
-            add(Arrays.asList("102", "0"));
-            add(Arrays.asList("110", "3"));
-            add(Arrays.asList("111", "0"));
-            add(Arrays.asList("91", "86"));
-            add(Arrays.asList("48", "13"));
-            add(Arrays.asList("13", "12"));
-            add(Arrays.asList("12", "0"));
-            add(Arrays.asList("20", "0"));
+
         }
     };
     public List<Integer> Acid__Rain_Absorbing__Blocks = new ArrayList<Integer>() {
@@ -125,6 +120,12 @@ public class GlobalVariables extends ReflectConfiguration {
     public int Natural__Disasters_Meteor_Shockwave_Damage__Radius = 100;
     public boolean Natural__Disasters_Meteor_Do__Winter = true;
     public boolean Natural__Disasters_Meteor_Meteor_Spawn = true;
+    public List<List<Integer>> Natural__Disasters_Meteor_Ore__Chance__Percentages = new ArrayList<List<Integer>>() {
+        {
+            //block ID, chance
+            add(Arrays.asList(5, 100));
+        }
+    };
     public int Natural__Disasters_Wildfires_Chance__To__Start = 20;
     public int Natural__Disasters_Wildfires_Wildfire__Base__Interval = 72000;
     public int Natural__Disasters_Wildfires_Spread__Limit = 2;
