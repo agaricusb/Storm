@@ -54,7 +54,7 @@ public class ThunderStormWeather extends StormWeather {
         }
 
         if (glob.Features_Thunder__Storms_Entity__Shelter__Pathfinding) {
-            shelter = new EntityShelteringTask(storm, world, "storm_thunderstorm");
+            shelter = new EntityShelteringTask(storm, world, "storm_thunderstorm", Storm.util.rainBiomes);
             shelter.run();
         }
 

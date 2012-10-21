@@ -14,6 +14,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
+import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.event.world.WorldUnloadEvent;
 
 import java.lang.reflect.Field;
@@ -35,6 +36,7 @@ public class WeatherManager implements Listener {
     private Storm storm;
     private boolean currentRain, currentThunder;
     private Map<String, String> worldTextures = new HashMap<String, String>();
+    private Set<Method> onloadMethods = new HashSet();
 
     public WeatherManager(Storm storm) {
         this.storm = storm;
@@ -160,6 +162,12 @@ public class WeatherManager implements Listener {
 
     public StormWeather getSampleInstance(String weather) {
         return registeredWeathers.get(weather).RIGHT.entrySet().iterator().next().getValue();
+    }
+
+    public void registerWorldLoadHandler(Method meth) {
+        if (!meth.isAccessible())
+            meth.setAccessible(true);
+        onloadMethods.add(meth);
     }
 
     private boolean isConflictingWeatherOneWay(String w1, String w2) {
@@ -407,10 +415,21 @@ public class WeatherManager implements Listener {
                         try {
                             stopWeather(name, world);
                         } catch (Exception ex) {
-                            ex.printStackTrace();
+                            ErrorLogger.generateErrorLog(ex);
                         }
                     }
                 }, time);
+    }
+
+    @EventHandler
+    public void worldLoad(WorldLoadEvent e) {
+        for (Method me : onloadMethods) {
+            try {
+                me.invoke(e.getWorld());
+            } catch (Exception ex) {
+                ErrorLogger.generateErrorLog(ex);
+            }
+        }
     }
 
     /**
@@ -421,9 +440,8 @@ public class WeatherManager implements Listener {
      */
     @EventHandler
     public void worldEvent(PlayerChangedWorldEvent e) {
-        final Player hopper = e.getPlayer();
-        final World target = hopper.getWorld();
-        final World source = e.getFrom();
+        Player hopper = e.getPlayer();
+        World target = hopper.getWorld(), source = e.getFrom();
 
         if (target.equals(source)) {
             return;
@@ -448,9 +466,10 @@ public class WeatherManager implements Listener {
      */
     @EventHandler
     public void loginEvent(PlayerJoinEvent e) {
-        final Player player = e.getPlayer();
-        final World world = player.getWorld();
-        final String texture;
+        Player player = e.getPlayer();
+        World world = player.getWorld();
+        String texture;
+
         synchronized (this) {
             texture = worldTextures.get(world.getName());
         }
@@ -483,7 +502,7 @@ public class WeatherManager implements Listener {
                     try {
                         stopWeatherReal(weather, worlds);
                     } catch (WeatherNotFoundException ex) {
-                        ex.printStackTrace();
+                        ErrorLogger.generateErrorLog(ex);
                     }
                 }
             }

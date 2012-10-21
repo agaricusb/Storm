@@ -84,7 +84,7 @@ public class Storm extends JavaPlugin {
             initConfiguration();
             ErrorLogger.register(this, "Storm", "com.github.StormTeam.Storm", "https://github.com/StormTeam/Storm/issues");
 
-            pm.registerEvents((manager = new WeatherManager(this)), this); //Register texture events
+            pm.registerEvents((manager = new WeatherManager(this)), this); //Register texture/world events
 
             new MetricsLite(this).start();
 

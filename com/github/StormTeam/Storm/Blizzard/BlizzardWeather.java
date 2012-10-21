@@ -62,7 +62,7 @@ public class BlizzardWeather extends StormWeather {
             enDamager.run();
         }
         if (glob.Features_Blizzards_Entity__Shelter__Pathfinding) {
-            shelter = new EntityShelteringTask(storm, world, "storm_blizzard");
+            shelter = new EntityShelteringTask(storm, world, "storm_blizzard", Storm.util.snowyBiomes);
             shelter.run();
         }
         Storm.util.setRainNoEvent(temp, true);

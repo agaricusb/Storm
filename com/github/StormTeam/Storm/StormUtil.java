@@ -416,7 +416,7 @@ public class StormUtil {
     /**
      * All biomes that rain can fall in.
      */
-    private final Set<Biome> rainBiomes = asSet(Biome.EXTREME_HILLS,
+    public final Set<Biome> rainBiomes = asSet(Biome.EXTREME_HILLS,
             Biome.FOREST, Biome.FOREST_HILLS,
             Biome.JUNGLE,
             Biome.JUNGLE_HILLS, Biome.MUSHROOM_ISLAND,
@@ -427,19 +427,19 @@ public class StormUtil {
     /**
      * All desert biomes.
      */
-    private final Set<Biome> desertBiomes = asSet(Biome.DESERT, Biome.DESERT_HILLS);
+    public final Set<Biome> desertBiomes = asSet(Biome.DESERT, Biome.DESERT_HILLS);
     /**
      * All forest biomes.
      */
-    private final Set<Biome> forestBiomes = asSet(Biome.FOREST, Biome.FOREST_HILLS);
+    public final Set<Biome> forestBiomes = asSet(Biome.FOREST, Biome.FOREST_HILLS);
     /**
      * All jungle biomes.
      */
-    private final Set<Biome> jungleBiomes = asSet(Biome.JUNGLE_HILLS, Biome.MUSHROOM_ISLAND);
+    public final Set<Biome> jungleBiomes = asSet(Biome.JUNGLE_HILLS, Biome.MUSHROOM_ISLAND);
     /**
      * All snow biomes.
      */
-    private final Set<Biome> snowyBiomes = asSet(Biome.FROZEN_OCEAN, Biome.FROZEN_RIVER,
+    public final Set<Biome> snowyBiomes = asSet(Biome.FROZEN_OCEAN, Biome.FROZEN_RIVER,
             Biome.ICE_MOUNTAINS,
             Biome.ICE_PLAINS, Biome.TAIGA,
             Biome.TAIGA_HILLS);

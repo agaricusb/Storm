@@ -4,13 +4,11 @@ import com.github.StormTeam.Storm.ErrorLogger;
 import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.Storm;
 import com.github.StormTeam.Storm.StormUtil;
+import com.github.StormTeam.Storm.Weather.Exceptions.WeatherNotFoundException;
 import com.github.StormTeam.Storm.Wildfire.Listeners.WildfireListeners;
 import net.minecraft.server.Block;
 import org.apache.commons.lang.StringUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.BlockFace;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -49,14 +47,10 @@ public class Wildfire {
             Storm.pm.registerEvents(new WildfireListeners(), storm);
             Storm.manager.registerWeather(WildfireWeather.class, "storm_wildfire");
             for (World w : Bukkit.getWorlds()) {
-                String name = w.getName();
-                GlobalVariables temp = Storm.wConfigs.get(name);
-                if (temp.Features_Meteor) {
-                    Storm.manager.enableWeatherForWorld("storm_wildfire", name,
-                            temp.Natural__Disasters_Wildfires_Chance__To__Start,
-                            temp.Natural__Disasters_Wildfires_Wildfire__Base__Interval);
-                }
+                loadWorld(w);
             }
+            Storm.manager.registerWorldLoadHandler(Wildfire.class.getDeclaredMethod("loadWorld", World.class));
+
         } catch (Exception e) {
             ErrorLogger.generateErrorLog(e);
         }
@@ -70,19 +64,15 @@ public class Wildfire {
                     if (glob.Features_Wildfires) {
                         wildfire(snd.getTargetBlock(null, 0).getLocation());
                     } else {
-                        sender.sendMessage("Wildfires not enabled in specified world or are conflicting with another weather!");
+                        sender.sendMessage(ChatColor.RED + "Wildfires not enabled in specified world or are conflicting with another weather!");
                     }
                 } else {
                     if (args.length > 0 && !StringUtils.isEmpty(args[0])) {
-                        try {
-                            if (!Storm.manager.startWeather("storm_wildfire", args[0])) {
-                                sender.sendMessage("Wildfires not enabled in specified world or are conflicting with another weather!");
-                            }
-                        } catch (Exception e) {
-                            sender.sendMessage("Wildfires not enabled in specified world or are conflicting with another weather!");
+                        if (consoleWildfire(args[0])) {
+                            sender.sendMessage(ChatColor.RED + "Wildfires not enabled in specified world or are conflicting with another weather!");
                         }
                     } else {
-                        sender.sendMessage("Must specify world when executing from console!");
+                        sender.sendMessage(ChatColor.RED + "Must specify world when executing from console!");
                     }
                 }
                 return true;
@@ -90,6 +80,29 @@ public class Wildfire {
         };
 
         storm.getCommand("wildfire").setExecutor(exec);
+    }
+
+    private static void loadWorld(World world) throws WeatherNotFoundException {
+        String name = world.getName();
+        GlobalVariables temp = Storm.wConfigs.get(name);
+        if (temp.Features_Meteor) {
+            Storm.manager.enableWeatherForWorld("storm_wildfire", name,
+                    temp.Natural__Disasters_Wildfires_Chance__To__Start,
+                    temp.Natural__Disasters_Wildfires_Wildfire__Base__Interval);
+        }
+    }
+
+    private static boolean consoleWildfire(String world) {
+        try {
+            if (Storm.manager.getActiveWeathers(world).contains("storm_wildfire")) {
+                Storm.manager.stopWeather("storm_wildfire", world);
+                return false;
+            } else {
+                return Storm.manager.startWeather("storm_wildfire", world);
+            }
+        } catch (Exception ex) {
+            return true;
+        }
     }
 
     private static void wildfire(Location targetLoc) {

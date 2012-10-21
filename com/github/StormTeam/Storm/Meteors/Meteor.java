@@ -4,8 +4,10 @@ import com.github.StormTeam.Storm.ErrorLogger;
 import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.Meteors.Entities.EntityMeteor;
 import com.github.StormTeam.Storm.Storm;
+import com.github.StormTeam.Storm.Weather.Exceptions.WeatherNotFoundException;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.Command;
@@ -16,7 +18,6 @@ import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Method;
-import java.util.logging.Level;
 
 /**
  * A class for loading meteors.
@@ -33,17 +34,13 @@ public class Meteor {
     public static void load(Storm storm) {
 
         try {
+            patchMeteor();
             Storm.manager.registerWeather(MeteorWeather.class, "storm_meteor");
 
             for (World w : Bukkit.getWorlds()) {
-                String name = w.getName();
-                GlobalVariables temp = Storm.wConfigs.get(name);
-                if (temp.Features_Meteor) {
-                    Storm.manager.enableWeatherForWorld("storm_meteor", name,
-                            temp.Natural__Disasters_Meteor_Chance__To__Spawn,
-                            temp.Natural__Disasters_Meteor_Meteor__Base__Interval);
-                }
+                loadWorld(w);
             }
+            Storm.manager.registerWorldLoadHandler(Meteor.class.getDeclaredMethod("loadWorld", World.class));
 
         } catch (Exception e) {
             ErrorLogger.generateErrorLog(e);
@@ -52,7 +49,7 @@ public class Meteor {
         CommandExecutor exec = new CommandExecutor() {
             @Override
             public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-                if ((sender instanceof Player)) {
+                if (sender instanceof Player) {
                     Player snd = (Player) sender;
                     GlobalVariables glob = Storm.wConfigs.get(snd.getWorld().getName());
                     if (glob.Features_Meteor) {
@@ -60,20 +57,16 @@ public class Meteor {
                         trajectoryMeteor(snd.getTargetBlock(null, 0).getLocation(),
                                 senderLocation.toVector().add(senderLocation.getDirection().normalize()).toLocation(senderLocation.getWorld()));
                     } else {
-                        sender.sendMessage("Meteors not enabled in specified world or are conflicting with another weather!");
+                        sender.sendMessage(ChatColor.RED + "Meteors not enabled in specified world or are conflicting with another weather!");
                     }
                 } else {
 
                     if (args.length > 0 && !StringUtils.isEmpty(args[0])) {
-                        try {
-                            if (!Storm.manager.startWeather("storm_meteor", args[0])) {
-                                sender.sendMessage("Meteors not enabled in specified world or are conflicting with another weather!");
-                            }
-                        } catch (Exception e) {
-                            sender.sendMessage("Meteors not enabled in specified world or are conflicting with another weather!");
+                        if (consoleMeteor(args[0])) {
+                            sender.sendMessage(ChatColor.RED + "Meteors not enabled in specified world or are conflicting with another weather!");
                         }
                     } else {
-                        sender.sendMessage("Must specify world when executing from console!");
+                        sender.sendMessage(ChatColor.RED + "Must specify world when executing from console!");
                     }
                 }
                 return true;
@@ -83,16 +76,39 @@ public class Meteor {
         storm.getCommand("meteor").setExecutor(exec);
     }
 
+    private static void loadWorld(World world) throws WeatherNotFoundException {
+        String name = world.getName();
+        GlobalVariables temp = Storm.wConfigs.get(name);
+        if (temp.Features_Meteor) {
+            Storm.manager.enableWeatherForWorld("storm_meteor", name,
+                    temp.Natural__Disasters_Meteor_Chance__To__Spawn,
+                    temp.Natural__Disasters_Meteor_Meteor__Base__Interval);
+        }
+    }
+
+    private static boolean consoleMeteor(String world) {
+        try {
+            if (Storm.manager.getActiveWeathers(world).contains("storm_meteor")) {
+                Storm.manager.stopWeather("storm_meteor", world);
+                return false;
+            } else {
+                return Storm.manager.startWeather("storm_meteor", world);
+            }
+        } catch (Exception ex) {
+            return true;
+        }
+    }
+
     private static void patchMeteor() {
         try {
             Method a = net.minecraft.server.EntityTypes.class
                     .getDeclaredMethod("a", Class.class, String.class, int.class);
             a.setAccessible(
                     true);
-            a.invoke(a, EntityMeteor.class, "Fireball", 12);
+            a.invoke(a, EntityMeteor.class, "StormMeteor", 12);
 
         } catch (Exception e) {
-            Storm.util.log(Level.SEVERE, "Failed to create meteor entity!");
+            ErrorLogger.generateErrorLog(e);
         }
     }
 

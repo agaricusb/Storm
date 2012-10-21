@@ -66,7 +66,7 @@ public class AcidRainWeather extends StormWeather {
         }
 
         if (glob.Features_Acid__Rain_Entity__Shelter__Pathfinding) {
-            shelter = new EntityShelteringTask(storm, world, "storm_acidrain");
+            shelter = new EntityShelteringTask(storm, world, "storm_acidrain", Storm.util.rainBiomes);
             shelter.run();
         }
 

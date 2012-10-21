@@ -3,8 +3,10 @@ package com.github.StormTeam.Storm.Blizzard;
 import com.github.StormTeam.Storm.ErrorLogger;
 import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.Storm;
+import com.github.StormTeam.Storm.Weather.Exceptions.WeatherNotFoundException;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -34,13 +36,9 @@ public class Blizzard {
             Storm.manager.registerWeather(BlizzardWeather.class, "storm_blizzard");
 
             for (World w : Bukkit.getWorlds()) {
-                String name = w.getName();
-                GlobalVariables temp = Storm.wConfigs.get(name);
-                if (temp.Features_Blizzards_Player__Damaging || temp.Features_Blizzards_Slowing__Snow) {
-                    Storm.manager.enableWeatherForWorld("storm_blizzard", name,
-                            temp.Blizzard_Blizzard__Chance, temp.Blizzard_Blizzard__Base__Interval);
-                }
+                loadWorld(w);
             }
+            Storm.manager.registerWorldLoadHandler(Blizzard.class.getDeclaredMethod("loadWorld", World.class));
 
         } catch (Exception e) {
             ErrorLogger.generateErrorLog(e);
@@ -51,15 +49,15 @@ public class Blizzard {
             public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
                 if ((sender instanceof Player)) {
                     if (blizzard(((Player) sender).getWorld().getName())) {
-                        sender.sendMessage("Blizzards not enabled in specified world or are conflicting with another weather!");
+                        sender.sendMessage(ChatColor.RED + "Blizzards not enabled in specified world or are conflicting with another weather!");
                     }
                 } else {
                     if (args.length > 0 && !StringUtils.isEmpty(args[0])) {
                         if (blizzard(args[0])) {
-                            sender.sendMessage("Blizzards not enabled in specified world or are conflicting with another weather!");
+                            sender.sendMessage(ChatColor.RED + "Blizzards not enabled in specified world or are conflicting with another weather!");
                         }
                     } else {
-                        sender.sendMessage("Must specify world when executing from console!");
+                        sender.sendMessage(ChatColor.RED + "Must specify world when executing from console!");
                     }
                 }
                 return true;
@@ -67,6 +65,15 @@ public class Blizzard {
         };
 
         storm.getCommand("blizzard").setExecutor(exec);
+    }
+
+    private static void loadWorld(World world) throws WeatherNotFoundException {
+        String name = world.getName();
+        GlobalVariables temp = Storm.wConfigs.get(name);
+        if (temp.Features_Blizzards_Player__Damaging || temp.Features_Blizzards_Slowing__Snow) {
+            Storm.manager.enableWeatherForWorld("storm_blizzard", name,
+                    temp.Blizzard_Blizzard__Chance, temp.Blizzard_Blizzard__Base__Interval);
+        }
     }
 
     private static boolean blizzard(String world) {
