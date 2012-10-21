@@ -76,7 +76,7 @@ public class GlobalVariables extends ReflectConfiguration {
     public String Blizzard_Messages_On__Blizzard__Start = "It has started to snow violently! Seek a warm biome for safety!";
     public String Blizzard_Messages_On__Blizzard__Stop = "The blizzard has stopped!";
     public String Blizzard_Messages_On__Player__Damaged__Cold = "You are freezing!";
-    public int Blizzard_Player_Blindness__Amplitude = 5;
+    public int Blizzard_Player_Blindness__Amplitude = 4;
     public List<Integer> Blizzard_Heating__Blocks = Arrays.asList(
             Block.FIRE.id, Block.LAVA.id, Block.STATIONARY_LAVA.id,
             Block.BURNING_FURNACE.id);

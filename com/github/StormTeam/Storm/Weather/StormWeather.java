@@ -42,7 +42,7 @@ public abstract class StormWeather {
      * @return A Set<String> of conflicting weathers.
      */
     @SuppressWarnings("UnusedDeclaration")
-    public abstract Set<String> getConflicts();
+    public abstract Set getConflicts();
 
     /**
      * Set to true to enable minecraft rain mode.

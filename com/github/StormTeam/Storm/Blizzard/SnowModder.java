@@ -15,11 +15,13 @@ import java.lang.reflect.Method;
 public class SnowModder {
 
     private Class<?> bc = Block.class;
-    private Method v, p, c, a, h, a_st;
+    private Method c;
+    private Method a;
+    private Method h;
 
     void mod13X() throws Exception {
-        v = Block.class.getDeclaredMethod("v");
-        p = bc.getDeclaredMethod("p");
+        Method v = Block.class.getDeclaredMethod("v");
+        Method p = bc.getDeclaredMethod("p");
         c = bc.getDeclaredMethod("c", float.class);
         a = bc.getDeclaredMethod("a", StepSound.class);
         h = bc.getDeclaredMethod("h", int.class);
@@ -38,7 +40,7 @@ public class SnowModder {
         c = bc.getDeclaredMethod("c", float.class);
         a = bc.getDeclaredMethod("a", StepSound.class);
         h = bc.getDeclaredMethod("f", int.class);
-        a_st = bc.getDeclaredMethod("a", String.class);
+        Method a_st = bc.getDeclaredMethod("a", String.class);
 
         a_st.setAccessible(true);
         c.setAccessible(true);

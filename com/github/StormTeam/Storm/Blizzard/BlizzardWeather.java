@@ -1,7 +1,6 @@
 package com.github.StormTeam.Storm.Blizzard;
 
 import com.github.StormTeam.Storm.Blizzard.Tasks.EntityDamagerTask;
-import com.github.StormTeam.Storm.Blizzard.Tasks.PlayerDamagerTask;
 import com.github.StormTeam.Storm.EntityShelteringTask;
 import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.Storm;
@@ -19,7 +18,6 @@ import java.util.Set;
 public class BlizzardWeather extends StormWeather {
 
     private final GlobalVariables glob;
-    private PlayerDamagerTask pDamager;
     private EntityDamagerTask enDamager;
     private EntityShelteringTask shelter;
     private int killID;
@@ -34,6 +32,7 @@ public class BlizzardWeather extends StormWeather {
     public BlizzardWeather(Storm storm, String world) {
         super(storm, world);
         glob = Storm.wConfigs.get(world);
+        this.needRainFlag = true;
     }
 
     /**
@@ -53,11 +52,8 @@ public class BlizzardWeather extends StormWeather {
         if (glob.Features_Blizzards_Slowing__Snow) {
             Blizzard.modder.modBestFit();
         }
-        if (glob.Features_Blizzards_Player__Damaging) {
-            pDamager = new PlayerDamagerTask(storm, world);
-            pDamager.run();
-        }
-        if (glob.Features_Blizzards_Entity__Damaging) {
+
+        if (glob.Features_Blizzards_Entity__Damaging || glob.Features_Blizzards_Player__Damaging) {
             enDamager = new EntityDamagerTask(storm, world);
             enDamager.run();
         }
@@ -65,7 +61,6 @@ public class BlizzardWeather extends StormWeather {
             shelter = new EntityShelteringTask(storm, world, "storm_blizzard", Storm.util.snowyBiomes);
             shelter.run();
         }
-        Storm.util.setRainNoEvent(temp, true);
         killID = Storm.manager.createAutoKillWeatherTask("storm_blizzard", world, 7500 + Storm.random.nextInt(1024));
     }
 
@@ -81,8 +76,6 @@ public class BlizzardWeather extends StormWeather {
             }
             Storm.util.broadcast(glob.Blizzard_Messages_On__Blizzard__Stop, world);
             Storm.util.setRainNoEvent(Bukkit.getWorld(world), false);
-            pDamager.stop();
-            pDamager = null;
             enDamager.stop();
             enDamager = null;
             shelter.stop();

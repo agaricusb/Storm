@@ -1,5 +1,6 @@
 package com.github.StormTeam.Storm.Meteors.Entities;
 
+import com.github.StormTeam.Storm.Meteors.Meteor;
 import com.github.StormTeam.Storm.Storm;
 import net.minecraft.server.EntityFireball;
 import net.minecraft.server.MovingObjectPosition;
@@ -92,6 +93,7 @@ public class EntityMeteor extends EntityFireball {
      * Spawns the meteor.
      */
     public void spawn() {
+        Meteor.meteors.add(this.getBukkitEntity().getEntityId());
         world.addEntity(this, SpawnReason.CUSTOM);
 
     }

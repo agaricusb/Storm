@@ -3,6 +3,7 @@ package com.github.StormTeam.Storm.Meteors;
 import com.github.StormTeam.Storm.ErrorLogger;
 import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.Meteors.Entities.EntityMeteor;
+import com.github.StormTeam.Storm.Meteors.Listener.SafeExplosion;
 import com.github.StormTeam.Storm.Storm;
 import com.github.StormTeam.Storm.Weather.Exceptions.WeatherNotFoundException;
 import org.apache.commons.lang.StringUtils;
@@ -18,12 +19,16 @@ import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Method;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * A class for loading meteors.
  */
 
 public class Meteor {
+
+    public static Set<Integer> meteors = new HashSet();
 
     /**
      * Enables meteors.
@@ -34,6 +39,7 @@ public class Meteor {
     public static void load(Storm storm) {
 
         try {
+            Storm.pm.registerEvents(new SafeExplosion(), storm);
             patchMeteor();
             Storm.manager.registerWeather(MeteorWeather.class, "storm_meteor");
 

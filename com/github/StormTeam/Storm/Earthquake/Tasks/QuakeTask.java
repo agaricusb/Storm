@@ -14,10 +14,9 @@ import java.util.List;
  */
 public class QuakeTask implements Runnable {
 
-    @SuppressWarnings("FieldCanBeLocal")
     private Storm s;
-    @SuppressWarnings("FieldCanBeLocal")
     private Quake q;
+    private boolean toggle;
 
     public QuakeTask(Quake q, Storm s) {
         this.q = q;
@@ -43,12 +42,13 @@ public class QuakeTask implements Runnable {
             int a = 5 / ((x + z) / 2);
 
             // TODO: try to clean this up, as the else block is never executed
-            int i = 0;
-            if (i == 0) {
+
+            if (toggle) {
                 p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 2, a), true);
             } else {
                 p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 2, a), true);
             }
+            toggle = !toggle;
         }
     }
 }

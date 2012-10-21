@@ -11,11 +11,6 @@ public class PathfinderGoalFleeSky extends PathfinderGoal {
     private double x;
     private double y;
     private double z;
-
-    private double prx;
-    private double pry;
-    private double prz;
-
     private float speed;
     private World world;
     private String name;
@@ -95,10 +90,9 @@ public class PathfinderGoalFleeSky extends PathfinderGoal {
         Vec3D path = getPathToShelter();
         if (path == null) {
             return false;
-        } else {
-            setup(path);
-            return true;
         }
+        setup(path);
+        return true;
     }
 
     private void setup(Vec3D path) {
@@ -108,11 +102,11 @@ public class PathfinderGoalFleeSky extends PathfinderGoal {
     }
 
     private Vec3D getPathToShelter() {
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 20; i++) {
             int px = MathHelper.floor((entity.locX + (double) Storm.random.nextInt(20)) - 10D),
-                    py = MathHelper.floor((entity.boundingBox.b + (double) Storm.random.nextInt(6)) - 3D),
+                    py = MathHelper.floor((entity.boundingBox.b + (double) Storm.random.nextInt(12)) - 6D),
                     pz = MathHelper.floor((entity.locZ + (double) Storm.random.nextInt(20)) - 10D);
-            if (!isUnderSky(world, px, py, pz)) //TODO If not work, invert
+            if (!isUnderSky(world, px, py, pz))
                 return Vec3D.a().create(px, py, pz);
         }
         return null;

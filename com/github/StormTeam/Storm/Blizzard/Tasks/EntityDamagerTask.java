@@ -3,12 +3,16 @@ package com.github.StormTeam.Storm.Blizzard.Tasks;
 import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.Storm;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 /**
- * An object for damaging entities during blizzards.
+ * An object for damaging entities during acid rain.
  *
  * @author Tudor
  */
@@ -19,6 +23,7 @@ public class EntityDamagerTask {
     private final World affectedWorld;
     private final Storm storm;
     private final GlobalVariables glob;
+    private PotionEffect blindness;
 
     /**
      * Creates a damager object for given world.
@@ -31,6 +36,10 @@ public class EntityDamagerTask {
         this.storm = storm;
         this.affectedWorld = Bukkit.getWorld(affectedWorld);
         glob = Storm.wConfigs.get(affectedWorld);
+        blindness = new PotionEffect(
+                PotionEffectType.BLINDNESS,
+                glob.Blizzard_Scheduler_Damager__Calculation__Intervals__In__Ticks + 60,
+                glob.Blizzard_Player_Blindness__Amplitude);
     }
 
     /**
@@ -47,8 +56,18 @@ public class EntityDamagerTask {
                                 for (Entity damagee : affectedWorld.getEntities()) {
                                     if (Storm.util.isEntityUnderSky(damagee) && Storm.util.isRainy(damagee.getLocation().getBlock().getBiome())) {
                                         if (!Storm.util.isLocationNearBlock(damagee.getLocation(), glob.Blizzard_Heating__Blocks, glob.Blizzard_Heat__Radius)) {
-                                            if (damagee instanceof LivingEntity)
-                                                ((LivingEntity) (damagee)).damage(glob.Blizzard_Entity_Damage__From__Exposure);
+                                            if (glob.Features_Blizzards_Entity__Damaging && damagee instanceof LivingEntity && !(damagee instanceof Player))
+                                                ((LivingEntity) (damagee)).damage(glob.Acid__Rain_Entity_Damage__From__Exposure);
+                                            else if (glob.Features_Blizzards_Player__Damaging && damagee instanceof Player) {
+                                                Player dam = (Player) damagee;
+                                                if (!dam.getGameMode().equals(GameMode.CREATIVE) && !dam.hasPermission("storm.blizzard.immune") && !glob.Blizzard_Heating__Blocks.contains(dam.getItemInHand().getTypeId())) {
+                                                    if (dam.getHealth() > 0) {
+                                                        dam.addPotionEffect(blindness, true);
+                                                        dam.damage(glob.Blizzard_Player_Damage__From__Exposure);
+                                                        dam.sendMessage(glob.Blizzard_Messages_On__Player__Damaged__Cold);
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
                                 }

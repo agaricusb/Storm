@@ -61,7 +61,9 @@ public class ReflectConfiguration {
 
         File worldFolder = new File(plugin.getDataFolder() + File.separator + "worlds");
         if (!worldFolder.exists()) {
-            worldFolder.mkdir();
+            if (!worldFolder.mkdir()) {
+                ErrorLogger.generateErrorLog(new RuntimeException("Failed to create configuration directory!"));
+            }
         }
         File worldFile = new File(worldFolder.getAbsoluteFile(), File.separator + name + ".yml");
 
@@ -81,10 +83,6 @@ public class ReflectConfiguration {
         }
 
         worlds.save(worldFile);
-    }
-
-    private void reload(Plugin plugin) {
-
     }
 
     private boolean doSkip(Field field) {

@@ -154,10 +154,8 @@ public class StormUtil {
      * @param player  player name
      * @param message message to send
      */
-    void message(Player player, String message) {
-        if (!message.isEmpty()) {
-            player.sendMessage(parseColors(message));
-        }
+    public void message(Player player, String message) {
+        player.sendMessage(parseColors(message));
     }
 
     /**
@@ -166,7 +164,7 @@ public class StormUtil {
      * @param msg the string to convert
      * @return the converted string
      */
-    String parseColors(String msg) {
+    public String parseColors(String msg) {
         return ChatColor.translateAlternateColorCodes('&', msg);
     }
 

@@ -7,10 +7,10 @@ package com.github.StormTeam.Storm;
  * @param <Y> The Y value of the Triplet
  * @param <Z> The Z value of the Triplet
  */
-class Triplet<X, Y, Z> {
-    private X x;
-    private Y y;
-    private Z z;
+public class Triplet<X, Y, Z> {
+    public X x;
+    public Y y;
+    public Z z;
 
     /**
      * Constructs a Triplet object based on given values

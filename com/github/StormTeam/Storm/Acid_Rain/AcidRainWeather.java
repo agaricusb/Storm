@@ -2,7 +2,6 @@ package com.github.StormTeam.Storm.Acid_Rain;
 
 import com.github.StormTeam.Storm.Acid_Rain.Tasks.BlockDissolverTask;
 import com.github.StormTeam.Storm.Acid_Rain.Tasks.EntityDamagerTask;
-import com.github.StormTeam.Storm.Acid_Rain.Tasks.PlayerDamagerTask;
 import com.github.StormTeam.Storm.EntityShelteringTask;
 import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.Storm;
@@ -19,7 +18,6 @@ import java.util.Set;
 public class AcidRainWeather extends StormWeather {
 
     private final GlobalVariables glob;
-    private PlayerDamagerTask pDamager;
     private EntityDamagerTask enDamager;
     private EntityShelteringTask shelter;
     private BlockDissolverTask dissolver;
@@ -35,7 +33,7 @@ public class AcidRainWeather extends StormWeather {
     public AcidRainWeather(Storm storm, String world) {
         super(storm, world);
         glob = Storm.wConfigs.get(world);
-        needRainFlag = true;
+        this.needRainFlag = true;
     }
 
     /**
@@ -50,12 +48,7 @@ public class AcidRainWeather extends StormWeather {
 
         Storm.util.broadcast(glob.Acid__Rain_Messages_On__Acid__Rain__Start, world);
 
-        if (glob.Features_Acid__Rain_Player__Damaging) {
-            pDamager = new PlayerDamagerTask(storm, world);
-            pDamager.run();
-        }
-
-        if (glob.Features_Acid__Rain_Entity__Damaging) {
+        if (glob.Features_Acid__Rain_Entity__Damaging || glob.Features_Blizzards_Player__Damaging) {
             enDamager = new EntityDamagerTask(storm, world);
             enDamager.run();
         }
@@ -81,8 +74,6 @@ public class AcidRainWeather extends StormWeather {
     public void end() {
         try {
             Storm.util.broadcast(glob.Acid__Rain_Messages_On__Acid__Rain__Stop, world);
-            pDamager.stop();
-            pDamager = null;
             enDamager.stop();
             enDamager = null;
             shelter.stop();
