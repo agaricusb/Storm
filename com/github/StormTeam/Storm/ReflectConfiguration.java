@@ -5,7 +5,6 @@ import org.bukkit.plugin.Plugin;
 
 import java.io.File;
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.concurrent.Semaphore;
 
 /**
@@ -67,29 +66,29 @@ public class ReflectConfiguration {
         }
         File worldFile = new File(worldFolder.getAbsoluteFile(), File.separator + name + ".yml");
 
-        YamlConfiguration worlds = YamlConfiguration
-                .loadConfiguration(worldFile);
+        YamlConfiguration worlds = YamlConfiguration.loadConfiguration(worldFile);
 
         for (Field field : getClass().getDeclaredFields()) {
+
             String path = "Storm."
                     + field.getName().replaceAll("__", " ")
                     .replaceAll("_", ".");
-            if (doSkip(field)) {
-            } else if (worlds.isSet(path)) {
+
+            if (worlds.isSet(path)) {
+                LimitInteger lim;
+                if ((lim = field.getAnnotation(LimitInteger.class)) != null) {
+                    int limit = lim.limit();
+                    if (((Integer) worlds.get(path)) > limit) {
+                        System.err.println("[Storm]" + lim.warning().replace("%node", path).replace("%limit", limit + ""));
+                        if (lim.correct())
+                            worlds.set(path, lim.limit());
+                    }
+                }
                 field.set(this, worlds.get(path));
-            } else {
+            } else
                 worlds.set(path, field.get(this));
-            }
         }
 
         worlds.save(worldFile);
-    }
-
-    private boolean doSkip(Field field) {
-        int mod = field.getModifiers();
-        return Modifier.isTransient(mod)
-                || Modifier.isStatic(mod)
-                || Modifier.isFinal(mod)
-                || Modifier.isPrivate(mod);
     }
 }

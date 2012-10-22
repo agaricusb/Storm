@@ -26,6 +26,7 @@ public class GlobalVariables extends ReflectConfiguration {
     }
 
     //Acid Rain
+    @LimitInteger
     public int Acid__Rain_Acid__Rain__Chance = 5;
     public int Acid__Rain_Acid__Rain__Base__Interval = 72000;
     public String Acid__Rain_Messages_On__Acid__Rain__Start = "Acid has started to fall from the sky!";
@@ -60,17 +61,21 @@ public class GlobalVariables extends ReflectConfiguration {
         }
     };
     public int Acid__Rain_Absorbing__Radius = 2;
+    @LimitInteger
     public int Acid__Rain_Dissolver_Block__Deterioration__Chance = 60;
     public int Acid__Rain_Scheduler_Dissolver__Calculation__Intervals__In__Ticks = 10;
     public int Acid__Rain_Scheduler_Damager__Calculation__Intervals__In__Ticks = 40;
     //Thunder Storms
+    @LimitInteger
     public int Thunder__Storm_Thunder__Storm__Chance = 4;
     public int Thunder__Storm_Thunder__Storm__Base__Interval = 72000;
     public String Thunder__Storm_Messages_On__Thunder__Storm__Start = "An electrical storm has started! Get inside for safety!";
     public String Thunder__Storm_Messages_On__Thunder__Storm__Stop = "Zeus has stopped bowling!";
+    @LimitInteger
     public int Thunder__Storm_Strike__Chance = 5;
     public int Thunder__Storm_Scheduler_Striker__Calculation__Intervals__In__Ticks = 10;
     //Blizzards
+    @LimitInteger
     public int Blizzard_Blizzard__Chance = 20;
     public int Blizzard_Blizzard__Base__Interval = 72000;
     public String Blizzard_Messages_On__Blizzard__Start = "It has started to snow violently! Seek a warm biome for safety!";
@@ -89,6 +94,7 @@ public class GlobalVariables extends ReflectConfiguration {
     public int Lightning_Damage_Damage = 5;
     public int Lightning_Damage_Damage__Radius = 10;
     public String Lightning_Messages_On__Player__Hit = "You were zapped by lightning. Ouch!";
+    @LimitInteger
     public int Lightning_Attraction_Blocks_AttractionChance = 80;
     public List<Integer> Lightning_Attraction_Blocks_Attractors = Arrays
             .asList(Block.IRON_BLOCK.id, Block.DIAMOND_BLOCK.id, Block.GOLD_BLOCK.id,
@@ -112,6 +118,7 @@ public class GlobalVariables extends ReflectConfiguration {
     };
     //Natural Disasters
     //-Meteors
+    @LimitInteger
     public int Natural__Disasters_Meteor_Chance__To__Spawn = 8;
     public int Natural__Disasters_Meteor_Meteor__Base__Interval = 72000;
     public String Natural__Disasters_Meteor_Messages_On__Meteor__Crash = "A meteor has exploded at %x, %y, %z.";
@@ -126,6 +133,7 @@ public class GlobalVariables extends ReflectConfiguration {
             add(Arrays.asList(5, 100));
         }
     };
+    @LimitInteger
     public int Natural__Disasters_Wildfires_Chance__To__Start = 20;
     public int Natural__Disasters_Wildfires_Wildfire__Base__Interval = 72000;
     public int Natural__Disasters_Wildfires_Spread__Limit = 2;

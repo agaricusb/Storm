@@ -96,7 +96,8 @@ public class Storm extends JavaPlugin {
             ThunderStorm.load(this);
 
         } catch (Exception e) {
-            ErrorLogger.generateErrorLog(e);
+            getLogger().log(Level.SEVERE, "Storm failed to start.");
+            setEnabled(false);
         }
     }
 

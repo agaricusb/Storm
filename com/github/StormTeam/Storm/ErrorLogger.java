@@ -89,7 +89,7 @@ public class ErrorLogger extends PluginLogger {
             }
         }
         if (NAME == null || TICKETS == null || ENDL == null)
-            return true;
+            return false;
         if (ERROR.contains(NAME + " has encountered an error!") && ERROR.contains(ErrorLogger.class.getName())) //Check if its not our own
             return false;
         Plugin PLUGIN = Bukkit.getPluginManager().getPlugin(NAME);

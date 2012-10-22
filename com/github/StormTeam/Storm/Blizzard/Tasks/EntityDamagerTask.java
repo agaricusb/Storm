@@ -57,7 +57,7 @@ public class EntityDamagerTask {
                                     if (Storm.util.isEntityUnderSky(damagee) && Storm.util.isRainy(damagee.getLocation().getBlock().getBiome())) {
                                         if (!Storm.util.isLocationNearBlock(damagee.getLocation(), glob.Blizzard_Heating__Blocks, glob.Blizzard_Heat__Radius)) {
                                             if (glob.Features_Blizzards_Entity__Damaging && damagee instanceof LivingEntity && !(damagee instanceof Player))
-                                                ((LivingEntity) (damagee)).damage(glob.Acid__Rain_Entity_Damage__From__Exposure);
+                                                ((LivingEntity) (damagee)).damage(glob.Blizzard_Entity_Damage__From__Exposure);
                                             else if (glob.Features_Blizzards_Player__Damaging && damagee instanceof Player) {
                                                 Player dam = (Player) damagee;
                                                 if (!dam.getGameMode().equals(GameMode.CREATIVE) && !dam.hasPermission("storm.blizzard.immune") && !glob.Blizzard_Heating__Blocks.contains(dam.getItemInHand().getTypeId())) {
