@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
 public @interface LimitInteger {
     int limit() default 100;
 
-    String warning() default "%node cannot be over %limit! Corrected to a value of %limit.";
+    String warning() default "%node cannot be over %limit nor have letters included! Defaulted to value of %limit.";
 
     boolean correct() default true;
 }

@@ -78,7 +78,15 @@ public class ReflectConfiguration {
                 LimitInteger lim;
                 if ((lim = field.getAnnotation(LimitInteger.class)) != null) {
                     int limit = lim.limit();
-                    if (((Integer) worlds.get(path)) > limit) {
+                    boolean doCorrect = false;
+                    try {
+                        if (worlds.getInt(path) > limit) {
+                            doCorrect = true;
+                        }
+                    } catch (Exception e) {
+                        doCorrect = true;
+                    }
+                    if (doCorrect) {
                         System.err.println("[Storm]" + lim.warning().replace("%node", path).replace("%limit", limit + ""));
                         if (lim.correct())
                             worlds.set(path, lim.limit());
