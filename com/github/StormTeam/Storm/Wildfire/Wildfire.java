@@ -38,13 +38,11 @@ public class Wildfire {
 
     /**
      * Enables wildfires.
-     *
-     * @param storm The Storm plugin, used for CommandExecutor registration
      */
 
-    public static void load(Storm storm) {
+    public static void load() {
         try {
-            Storm.pm.registerEvents(new WildfireListeners(), storm);
+            Storm.pm.registerEvents(new WildfireListeners(), Storm.instance);
             Storm.manager.registerWeather(WildfireWeather.class, "storm_wildfire");
             for (World w : Bukkit.getWorlds()) {
                 loadWorld(w);
@@ -79,7 +77,7 @@ public class Wildfire {
             }
         };
 
-        storm.getCommand("wildfire").setExecutor(exec);
+        Storm.instance.getCommand("wildfire").setExecutor(exec);
     }
 
     private static void loadWorld(World world) throws WeatherNotFoundException {

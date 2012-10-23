@@ -30,7 +30,7 @@ public class Blizzard {
      * @param storm The Storm plugin, used for CommandExecutor registration
      */
 
-    public static void load(Storm storm) {
+    public static void load() {
         modder = new SnowModder();
         try {
             Storm.manager.registerWeather(BlizzardWeather.class, "storm_blizzard");
@@ -64,7 +64,7 @@ public class Blizzard {
             }
         };
 
-        storm.getCommand("blizzard").setExecutor(exec);
+        Storm.instance.getCommand("blizzard").setExecutor(exec);
     }
 
     private static void loadWorld(World world) throws WeatherNotFoundException {

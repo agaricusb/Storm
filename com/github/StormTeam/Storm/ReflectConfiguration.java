@@ -4,6 +4,10 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.lang.reflect.Field;
 import java.util.concurrent.Semaphore;
 
@@ -47,7 +51,7 @@ public class ReflectConfiguration {
 
         try {
             mutex.acquire();
-            Storm.util.log("Loading configuration file: " + name);
+            System.err.println("[Storm]Loading configuration file: " + name);
             onLoad(plugin);
             mutex.release();
         } catch (Exception e) {
@@ -87,10 +91,22 @@ public class ReflectConfiguration {
                         doCorrect = true;
                     }
                     if (doCorrect) {
-                        System.err.println("[Storm]" + lim.warning().replace("%node", path).replace("%limit", limit + ""));
+                        System.err.println("[Storm]" + lim.warning().replace("%node", "'" + path.substring(6) + "'").replace("%limit", limit + ""));
                         if (lim.correct())
                             worlds.set(path, lim.limit());
                     }
+                }
+                Warn warm;
+                if ((warm = field.getAnnotation(Warn.class)) != null) {
+                    int kazi = warm.threshold();
+                    if (worlds.getInt(path) > kazi) {
+                        try {
+                            System.err.println("[Storm]Node '" + path.substring(6) + "' is not reccomended to have a value above " + kazi + ".");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
                 }
                 field.set(this, worlds.get(path));
             } else
@@ -99,4 +115,44 @@ public class ReflectConfiguration {
 
         worlds.save(worldFile);
     }
+
+    @Target(ElementType.FIELD)
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface Warn {
+        int threshold() default 100;
+    }
+
+    @Target(ElementType.FIELD)
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface LimitInteger {
+        int limit() default 100;
+
+        String warning() default "%node cannot be over %limit! Defaulted to value of %limit.";
+
+        boolean correct() default true;
+    }
+
+    @Target(ElementType.FIELD)
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface Comment {
+        String value();
+
+        CommentLocation location() default CommentLocation.INLINE;
+
+        public enum CommentLocation {
+            INLINE(1),
+            TOP(2),
+            BOTTOM(3);
+            private int id;
+
+            CommentLocation(int location) {
+                this.id = location;
+            }
+
+            public int getID() {
+                return id;
+            }
+        }
+    }
+
 }

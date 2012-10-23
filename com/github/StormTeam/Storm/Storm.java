@@ -16,13 +16,7 @@
  */
 package com.github.StormTeam.Storm;
 
-import com.github.StormTeam.Storm.Acid_Rain.AcidRain;
-import com.github.StormTeam.Storm.Blizzard.Blizzard;
-import com.github.StormTeam.Storm.Lightning.Lightning;
-import com.github.StormTeam.Storm.Meteors.Meteor;
-import com.github.StormTeam.Storm.Thunder_Storm.ThunderStorm;
 import com.github.StormTeam.Storm.Weather.WeatherManager;
-import com.github.StormTeam.Storm.Wildfire.Wildfire;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.plugin.PluginManager;
@@ -70,6 +64,8 @@ public class Storm extends JavaPlugin {
      */
     public static WeatherManager manager;
 
+    public static Storm instance;
+
     /**
      * Called to enable Storm.
      */
@@ -77,27 +73,31 @@ public class Storm extends JavaPlugin {
     @Override
     public void onEnable() {
         try {
+            instance = this;
+
             pm = getServer().getPluginManager();
             util = new StormUtil(this);
 
             configureVersion();
             initConfiguration();
-            ErrorLogger.register(this, "Storm", "com.github.StormTeam.Storm", "https://github.com/StormTeam/Storm/issues");
+            ErrorLogger.register(this, "Storm", "com.github.StormTeam.Storm", "http://www.stormteam.co.cc/projects/storm/issues");
 
             pm.registerEvents((manager = new WeatherManager(this)), this); //Register texture/world events
 
             new MetricsLite(this).start();
 
-            AcidRain.load(this);
-            Lightning.load(this);
-            Wildfire.load(this);
-            Blizzard.load(this);
-            Meteor.load(this);
-            ThunderStorm.load(this);
+            //For the modular builder later on
+            com.github.StormTeam.Storm.Acid_Rain.AcidRain.load();
+            com.github.StormTeam.Storm.Lightning.Lightning.load();
+            com.github.StormTeam.Storm.Wildfire.Wildfire.load();
+            com.github.StormTeam.Storm.Blizzard.Blizzard.load();
+            com.github.StormTeam.Storm.Meteors.Meteor.load();
+            com.github.StormTeam.Storm.Thunder_Storm.ThunderStorm.load();
 
         } catch (Exception e) {
             getLogger().log(Level.SEVERE, "Storm failed to start.");
             setEnabled(false);
+            e.printStackTrace();
         }
     }
 

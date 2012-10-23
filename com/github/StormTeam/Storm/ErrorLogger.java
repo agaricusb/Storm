@@ -89,38 +89,42 @@ public class ErrorLogger extends PluginLogger {
             }
         }
         if (NAME == null || TICKETS == null || ENDL == null)
-            return false;
+            return true;
         if (ERROR.contains(NAME + " has encountered an error!") && ERROR.contains(ErrorLogger.class.getName())) //Check if its not our own
-            return false;
-        Plugin PLUGIN = Bukkit.getPluginManager().getPlugin(NAME);
-        StringBuilder err = new StringBuilder();
-        err.append("\n=============").append(NAME).append(" has encountered an error!=============")
-                .append("\nStacktrace:\n").append(ERROR).append("\n")
-                .append(NAME).append(" version: ").append(PLUGIN.getDescription().getVersion())
-                .append("\nBukkit message: ").append(record.getMessage())
-                .append("\nPlugins loaded: ").append(Arrays.asList(Bukkit.getPluginManager().getPlugins()))
-                .append("\nCraftBukkit version: ").append(Bukkit.getServer().getBukkitVersion())
-                .append("\nJava version: ").append(getProperty("java.version"))
-                .append("\nOS info: ").append(getProperty("os.arch")).append(" ").append(getProperty("os.name")).append(", ").append(getProperty("os.version"))
-                .append("\nPlease report this error to the ").append(NAME).append(" ticket tracker (").append(TICKETS).append(")!");
+            return true;
         try {
-            //One-liner beauty.
-            String FILE_NAME = String.format("%s_%06x.error.log", NAME, new BigInteger(1, Arrays.copyOfRange(MessageDigest.getInstance("MD5").digest(err.toString().getBytes()), 0, 6)));
-            File root = new File(PLUGIN.getDataFolder(), "errors");
-            if (root.exists() || root.mkdir()) {
-                File dump = new File(root.getAbsoluteFile(), FILE_NAME);
-                if (!dump.exists() && dump.createNewFile()) {
-                    BufferedWriter writer = new BufferedWriter(new FileWriter(dump));
-                    writer.write((err.toString() + ENDL).substring(1)); //Remove the extra /n
-                    writer.close();
-                    err.append("\nThis has been saved to the file ./").append(PLUGIN.getName()).append("/errors/").append(FILE_NAME);
+            Plugin PLUGIN = Bukkit.getPluginManager().getPlugin(NAME);
+            StringBuilder err = new StringBuilder();
+            err.append("\n=============").append(NAME).append(" has encountered an error!=============")
+                    .append("\nStacktrace:\n").append(ERROR).append("\n")
+                    .append(NAME).append(" version: ").append(PLUGIN.getDescription().getVersion())
+                    .append("\nBukkit message: ").append(record.getMessage())
+                    .append("\nPlugins loaded: ").append(Arrays.asList(Bukkit.getPluginManager().getPlugins()))
+                    .append("\nCraftBukkit version: ").append(Bukkit.getServer().getBukkitVersion())
+                    .append("\nJava version: ").append(getProperty("java.version"))
+                    .append("\nOS info: ").append(getProperty("os.arch")).append(" ").append(getProperty("os.name")).append(", ").append(getProperty("os.version"))
+                    .append("\nPlease report this error to the ").append(NAME).append(" ticket tracker (").append(TICKETS).append(")!");
+            try {
+                //One-liner beauty.
+                String FILE_NAME = String.format("%s_%06x.error.log", NAME, new BigInteger(1, Arrays.copyOfRange(MessageDigest.getInstance("MD5").digest(err.toString().getBytes()), 0, 6)));
+                File root = new File(PLUGIN.getDataFolder(), "errors");
+                if (root.exists() || root.mkdir()) {
+                    File dump = new File(root.getAbsoluteFile(), FILE_NAME);
+                    if (!dump.exists() && dump.createNewFile()) {
+                        BufferedWriter writer = new BufferedWriter(new FileWriter(dump));
+                        writer.write((err.toString() + ENDL).substring(1)); //Remove the extra /n
+                        writer.close();
+                        err.append("\nThis has been saved to the file ./").append(PLUGIN.getName()).append("/errors/").append(FILE_NAME);
+                    }
                 }
+            } catch (Exception e) {
+                err.append("\nErrors occured while saving to file. Not saved.");
             }
+            System.err.println(err.append(ENDL));
+            return true;
         } catch (Exception e) {
-            err.append("\nErrors occured while saving to file. Not saved.");
+            return true;
         }
-        System.err.println(err.append(ENDL));
-        return true;
     }
 
     private static void saveMap(HashMap map) {

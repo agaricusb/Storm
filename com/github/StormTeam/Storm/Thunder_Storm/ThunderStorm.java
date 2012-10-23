@@ -19,16 +19,11 @@ import org.bukkit.entity.Player;
 
 public class ThunderStorm {
 
-    private static Storm storm;
-
     /**
      * Enables thunder storms.
-     *
-     * @param storm The Storm plugin, used for CommandExecutor registration
      */
 
-    public static void load(Storm storm) {
-        ThunderStorm.storm = storm;
+    public static void load() {
 
         try {
             Storm.manager.registerWeather(ThunderStormWeather.class, "storm_thunderstorm");
@@ -62,7 +57,7 @@ public class ThunderStorm {
                 return true;
             }
         };
-        ThunderStorm.storm.getCommand("thunderstorm").setExecutor(exec);
+        Storm.instance.getCommand("thunderstorm").setExecutor(exec);
     }
 
     private static void loadWorld(World world) throws WeatherNotFoundException {

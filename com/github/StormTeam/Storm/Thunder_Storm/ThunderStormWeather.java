@@ -1,6 +1,6 @@
 package com.github.StormTeam.Storm.Thunder_Storm;
 
-import com.github.StormTeam.Storm.EntityShelteringTask;
+import com.github.StormTeam.Storm.EntityShelterer;
 import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.Storm;
 import com.github.StormTeam.Storm.Thunder_Storm.Tasks.StrikerTask;
@@ -19,7 +19,7 @@ public class ThunderStormWeather extends StormWeather {
 
     private GlobalVariables glob;
     private StrikerTask striker;
-    private EntityShelteringTask shelter;
+    private EntityShelterer shelter;
     private int killID;
 
     /**
@@ -54,7 +54,7 @@ public class ThunderStormWeather extends StormWeather {
         }
 
         if (glob.Features_Thunder__Storms_Entity__Shelter__Pathfinding) {
-            shelter = new EntityShelteringTask(storm, world, "storm_thunderstorm", Storm.util.rainBiomes);
+            shelter = new EntityShelterer(storm, world, "storm_thunderstorm", Storm.util.rainBiomes);
             shelter.run();
         }
 

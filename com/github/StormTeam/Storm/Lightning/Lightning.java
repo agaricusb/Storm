@@ -12,13 +12,11 @@ public class Lightning {
 
     /**
      * Enables better lightning.
-     *
-     * @param storm The Storm plugin, used for listener registration
      */
 
-    public static void load(Storm storm) {
+    public static void load() {
         try {
-            Storm.pm.registerEvents(new StrikeListener(), storm);
+            Storm.pm.registerEvents(new StrikeListener(), Storm.instance);
         } catch (Exception e) {
             ErrorLogger.generateErrorLog(e);
         }

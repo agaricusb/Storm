@@ -15,18 +15,19 @@ public class SafeExplosion implements Listener {
 
     @EventHandler
     public void onExplode(EntityExplodeEvent ex) {
-        Entity en;
-        if (Meteor.meteors.contains((en = ex.getEntity()).getEntityId())) {
+        Entity en = ex.getEntity();
+        if (en == null)
+            return;
 
-            ArrayList<Block> toProtect = new ArrayList<Block>();
-            ArrayList<Block> toRemove = new ArrayList<Block>();
-            for (Block block : ex.blockList()) {
+        if (Meteor.meteors.contains(en.getEntityId())) {
+
+            ArrayList<Block> toProtect = new ArrayList<Block>(), toRemove = new ArrayList<Block>();
+
+            for (Block block : ex.blockList())
                 if (Storm.util.isBlockProtected(block))
                     toProtect.add(block);
                 else
                     toRemove.add(block);
-
-            }
 
             for (Block block : toProtect)
                 ex.blockList().remove(block);

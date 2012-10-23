@@ -1,6 +1,5 @@
 package com.github.StormTeam.Storm.Earthquake;
 
-import com.github.StormTeam.Storm.Earthquake.Exceptions.InvalidWorldException;
 import com.github.StormTeam.Storm.Earthquake.Listeners.PlayerListener;
 import com.github.StormTeam.Storm.Storm;
 import org.bukkit.Location;
@@ -20,16 +19,14 @@ public class Earthquake {
     }
 
     public static Integer loadQuake(Location one, Location two) {
-        try {
-            Integer id = quakes.size();
-            Quake q = new Quake(storm, id, one, two);
 
-            quakes.put(id, q);
+        Integer id = quakes.size();
+        Quake q = new Quake(storm, id, one, two);
 
-            return id;
-        } catch (InvalidWorldException e) {
-            return null;
-        }
+        quakes.put(id, q);
+
+        return id;
+
     }
 
     public static Boolean isQuaked(Player p) {

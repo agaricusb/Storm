@@ -1,7 +1,7 @@
 package com.github.StormTeam.Storm.Blizzard;
 
 import com.github.StormTeam.Storm.Blizzard.Tasks.EntityDamagerTask;
-import com.github.StormTeam.Storm.EntityShelteringTask;
+import com.github.StormTeam.Storm.EntityShelterer;
 import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.Storm;
 import com.github.StormTeam.Storm.Weather.StormWeather;
@@ -19,7 +19,7 @@ public class BlizzardWeather extends StormWeather {
 
     private final GlobalVariables glob;
     private EntityDamagerTask enDamager;
-    private EntityShelteringTask shelter;
+    private EntityShelterer shelter;
     private int killID;
 
     /**
@@ -58,7 +58,7 @@ public class BlizzardWeather extends StormWeather {
             enDamager.run();
         }
         if (glob.Features_Blizzards_Entity__Shelter__Pathfinding) {
-            shelter = new EntityShelteringTask(storm, world, "storm_blizzard", Storm.util.snowyBiomes);
+            shelter = new EntityShelterer(storm, world, "storm_blizzard", Storm.util.snowyBiomes);
             shelter.run();
         }
         killID = Storm.manager.createAutoKillWeatherTask("storm_blizzard", world, 7500 + Storm.random.nextInt(1024));

@@ -21,11 +21,9 @@ public class AcidRain {
 
     /**
      * Enables acid rain.
-     *
-     * @param storm The Storm plugin, used for CommandExecutor registration
      */
 
-    public static void load(Storm storm) {
+    public static void load() {
         try {
             Storm.manager.registerWeather(AcidRainWeather.class, "storm_acidrain");
 
@@ -56,7 +54,7 @@ public class AcidRain {
             }
         };
 
-        storm.getCommand("acidrain").setExecutor(exec);
+        Storm.instance.getCommand("acidrain").setExecutor(exec);
     }
 
     private static void loadWorld(World world) throws WeatherNotFoundException {

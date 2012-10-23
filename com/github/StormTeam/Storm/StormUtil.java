@@ -231,7 +231,7 @@ public class StormUtil {
      * @param radius   the radius of the range
      * @return a set of Bukkit player objects
      */
-    Set<Player> getNearbyPlayers(Location location, double radius) {
+    public Set<Player> getNearbyPlayers(Location location, double radius) {
         Set<Player> playerList = new HashSet<Player>();
         World locWorld = location.getWorld();
 

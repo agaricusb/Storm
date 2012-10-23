@@ -2,7 +2,7 @@ package com.github.StormTeam.Storm.Acid_Rain;
 
 import com.github.StormTeam.Storm.Acid_Rain.Tasks.BlockDissolverTask;
 import com.github.StormTeam.Storm.Acid_Rain.Tasks.EntityDamagerTask;
-import com.github.StormTeam.Storm.EntityShelteringTask;
+import com.github.StormTeam.Storm.EntityShelterer;
 import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.Storm;
 import com.github.StormTeam.Storm.Weather.StormWeather;
@@ -19,7 +19,7 @@ public class AcidRainWeather extends StormWeather {
 
     private final GlobalVariables glob;
     private EntityDamagerTask enDamager;
-    private EntityShelteringTask shelter;
+    private EntityShelterer shelter;
     private BlockDissolverTask dissolver;
     private int killID;
 
@@ -59,7 +59,7 @@ public class AcidRainWeather extends StormWeather {
         }
 
         if (glob.Features_Acid__Rain_Entity__Shelter__Pathfinding) {
-            shelter = new EntityShelteringTask(storm, world, "storm_acidrain", Storm.util.rainBiomes);
+            shelter = new EntityShelterer(storm, world, "storm_acidrain", Storm.util.rainBiomes);
             shelter.run();
         }
 

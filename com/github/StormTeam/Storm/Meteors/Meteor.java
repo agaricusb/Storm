@@ -32,14 +32,12 @@ public class Meteor {
 
     /**
      * Enables meteors.
-     *
-     * @param storm The Storm plugin, used for CommandExecutor registration
      */
 
-    public static void load(Storm storm) {
+    public static void load() {
 
         try {
-            Storm.pm.registerEvents(new SafeExplosion(), storm);
+            Storm.pm.registerEvents(new SafeExplosion(), Storm.instance);
             patchMeteor();
             Storm.manager.registerWeather(MeteorWeather.class, "storm_meteor");
 
@@ -79,7 +77,7 @@ public class Meteor {
             }
         };
 
-        storm.getCommand("meteor").setExecutor(exec);
+        Storm.instance.getCommand("meteor").setExecutor(exec);
     }
 
     private static void loadWorld(World world) throws WeatherNotFoundException {

@@ -1,13 +1,8 @@
 package com.github.StormTeam.Storm.Earthquake;
 
-import com.github.StormTeam.Storm.Earthquake.Events.QuakeFinishEvent;
-import com.github.StormTeam.Storm.Earthquake.Events.QuakeLoadEvent;
-import com.github.StormTeam.Storm.Earthquake.Events.QuakeStartEvent;
-import com.github.StormTeam.Storm.Earthquake.Exceptions.InvalidWorldException;
 import com.github.StormTeam.Storm.Earthquake.Listeners.BlockListener;
 import com.github.StormTeam.Storm.Earthquake.Listeners.MobListener;
 import com.github.StormTeam.Storm.Earthquake.Tasks.QuakeTask;
-import com.github.StormTeam.Storm.Earthquake.Tasks.RiftLoader;
 import com.github.StormTeam.Storm.Pair;
 import com.github.StormTeam.Storm.Storm;
 import org.bukkit.Chunk;
@@ -36,11 +31,6 @@ public class Quake {
     private Boolean isRunning = false;
 
     private void load() {
-        QuakeLoadEvent QLE = new QuakeLoadEvent(this);
-        Storm.pm.callEvent(QLE);
-
-        if (QLE.isCancelled())
-            return;
 
         this.isLoading = true;
 
@@ -65,8 +55,6 @@ public class Quake {
         storm.getLogger().severe("X: " + c3.getX());
         storm.getLogger().severe("Z: " + c3.getZ());
 
-        rLID = storm.getServer().getScheduler().scheduleAsyncDelayedTask(storm, new RiftLoader(this));
-
         // Creepers will not attack player during quake!
         mL = new MobListener(this);
 
@@ -84,8 +72,6 @@ public class Quake {
     }
 
     private void go() {
-        QuakeStartEvent QSE = new QuakeStartEvent(this);
-        Storm.pm.callEvent(QSE);
 
         // Blocks will bounce everywhere in the quake!
         bL = new BlockListener(this, storm);
@@ -96,7 +82,7 @@ public class Quake {
         tID = storm.getServer().getScheduler().scheduleSyncRepeatingTask(storm, new QuakeTask(this, storm), 0L, 2L);
     }
 
-    public Quake(Storm storm, Integer qID, Location point1, Location point2) throws InvalidWorldException {
+    public Quake(Storm storm, Integer qID, Location point1, Location point2) {
         this.storm = storm;
         this.quakeID = qID;
 
@@ -114,7 +100,7 @@ public class Quake {
             storm.getLogger().log(Level.SEVERE, "Quake loading at: [" + this.point1.LEFT + " - " + this.point1.RIGHT + "] - [" + this.point2.LEFT + " - " + this.point2.RIGHT + "]");
             this.load();
         } else {
-            throw new InvalidWorldException("World " + w + " and World " + w2 + " do not match!");
+            throw new RuntimeException("World " + w + " and World " + w2 + " do not match!");
         }
     }
 
@@ -125,8 +111,6 @@ public class Quake {
     }
 
     public void stop() {
-        QuakeFinishEvent QFE = new QuakeFinishEvent(this);
-        Storm.pm.callEvent(QFE);
         this.isLoading = false;
         this.isRunning = false;
         if (null != mL) {
