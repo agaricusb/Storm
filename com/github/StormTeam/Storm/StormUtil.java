@@ -263,7 +263,7 @@ public class StormUtil {
             for (int i = 0; i != 2; ++i) {
                 String got = toCheck.get(i);
 
-                if (got.contains(":")) { // Check for data value appended.
+                if (got.contains(":")) { // Check for data _ appended.
                     stateIndex.add(got.split(":"));
                 } else {
                     stateIndex.add(new String[]{got, "0"});
