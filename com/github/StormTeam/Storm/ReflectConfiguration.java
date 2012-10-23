@@ -34,6 +34,24 @@
  * <http://www.gnu.org/licenses/>.
  */
 
+/*
+ * This file is part of Storm.
+ *
+ * Storm is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of
+ * the License, or (at your option) any later version.
+ *
+ * Storm is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Storm.  If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
+
 package com.github.StormTeam.Storm;
 
 import com.google.common.io.Files;
@@ -155,54 +173,54 @@ public class ReflectConfiguration {
     }
 
     Collection<String> addComments(String[] lines) {
-        try {
-            int prevlevel = 0;
-            final int indent = 2;
-            LinkedList<String> outlines = new LinkedList<String>();
-            Stack<String> hierarchy = new Stack<String>();
-            for (String line : lines) {
-                String content = StringUtils.stripStart(line, " ");
-                int spaces = line.length() - content.length();
-                int level = spaces / indent + 1;
-                String[] tokens = content.split(":", 1);
-                String name = tokens[0];
-                if (level <= prevlevel) {
-                    for (int i = 0; i <= prevlevel - level; ++i) {
-                        hierarchy.pop();
-                    }
-                }
-                hierarchy.push(name);
-                prevlevel = level;
-                String id = StringUtils.join(hierarchy, "_").replaceAll(" ", "__");
-
-                Comment comment = this.getClass().getDeclaredField(id).getAnnotation(Comment.class);
-                if (comment == null) {
-                    outlines.add(line);
-                    continue;
-                }
-                String indentPrefix = StringUtils.repeat(" ", spaces);
-                if (comment.location() == Comment.CommentLocation.TOP) {
-                    for (String data : comment.value())
-                        outlines.add(indentPrefix + "# " + data);
-                }
-                if (comment.location() == Comment.CommentLocation.INLINE) {
-                    String[] comments = comment.value();
-                    outlines.add(line + " # " + comments[0]);
-                    for (int i = 1; i < comments.length; ++i)
-                        outlines.add(StringUtils.repeat(" ", line.length() + 1) + "# " + comments[i]);
-                } else {
-                    outlines.add(line);
-                }
-                if (comment.location() == Comment.CommentLocation.BOTTOM) {
-                    for (String data : comment.value())
-                        outlines.add(indentPrefix + "# " + data);
+        int prevlevel = 0;
+        final int indent = 2;
+        LinkedList<String> outlines = new LinkedList<String>();
+        Stack<String> hierarchy = new Stack<String>();
+        for (String line : lines) {
+            String content = StringUtils.stripStart(line, " ");
+            int spaces = line.length() - content.length();
+            int level = spaces / indent + 1;
+            String[] tokens = content.split(":", 2);
+            String name = tokens[0];
+            if (level <= prevlevel) {
+                for (int i = 0; i <= prevlevel - level; ++i) {
+                    hierarchy.pop();
                 }
             }
-            return outlines;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+            hierarchy.push(name);
+            prevlevel = level;
+            String id = StringUtils.join(hierarchy, "_").replaceAll(" ", "__");
+
+            Comment comment;
+            try {
+                comment = this.getClass().getDeclaredField(id).getAnnotation(Comment.class);
+            } catch (NoSuchFieldException e) {
+                comment = null;
+            }
+            if (comment == null) {
+                outlines.add(line);
+                continue;
+            }
+            String indentPrefix = StringUtils.repeat(" ", spaces);
+            if (comment.location() == Comment.CommentLocation.TOP) {
+                for (String data : comment.value())
+                    outlines.add(indentPrefix + "# " + data);
+            }
+            if (comment.location() == Comment.CommentLocation.INLINE) {
+                String[] comments = comment.value();
+                outlines.add(line + " # " + comments[0]);
+                for (int i = 1; i < comments.length; ++i)
+                    outlines.add(StringUtils.repeat(" ", line.length() + 1) + "# " + comments[i]);
+            } else {
+                outlines.add(line);
+            }
+            if (comment.location() == Comment.CommentLocation.BOTTOM) {
+                for (String data : comment.value())
+                    outlines.add(indentPrefix + "# " + data);
+            }
         }
+        return outlines;
     }
 
     @Target(ElementType.FIELD)
