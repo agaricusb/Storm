@@ -299,7 +299,7 @@ public class EntityMeteor extends EntityFireball {
     /**
      * Returns the brightness of the meteor
      *
-     * @param f Random value added by MC
+     * @param f Random _ added by MC
      * @return The brightness
      */
     @Override

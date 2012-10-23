@@ -56,6 +56,7 @@ package com.github.StormTeam.Storm;
 
 import com.google.common.io.Files;
 import org.apache.commons.lang.StringUtils;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 
@@ -65,26 +66,26 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Stack;
+import java.util.logging.Level;
 
 /**
  * A class for saving/loading lazy configuration classes/files.
  * Based on codename_B's non static config 'offering' :-)
+ * Node commenting by Xiaomao, fixed by Icyene
+ * Integer limiting by Icynene
  */
 
 public class ReflectConfiguration {
 
-    /**
-     * The plugin object to be used in config saving.
-     */
     private final Plugin plugin;
-    /**
-     * The name of the configuration file.
-     */
     private final String name;
+    private final String prefix;
+    private final String header;
 
     /**
      * Creates a ReflectConfiguration file based on given name
@@ -96,6 +97,8 @@ public class ReflectConfiguration {
     public ReflectConfiguration(Plugin plugin, String name) {
         this.plugin = plugin;
         this.name = name;
+        this.prefix = plugin.getName();
+        this.header = prefix + " configuration file: '" + name + "'.\nGenerated for " + prefix + " version " + plugin.getDescription().getVersion() + ".";
     }
 
     /**
@@ -105,7 +108,7 @@ public class ReflectConfiguration {
     public void load() {
         try {
             synchronized (this) {
-                System.err.println("[Storm]Loading configuration file: " + name);
+                plugin.getLogger().log(Level.INFO, "Loading configuration file: " + name);
                 onLoad(plugin);
             }
         } catch (Exception e) {
@@ -123,15 +126,13 @@ public class ReflectConfiguration {
                 }
             }
             File worldFile = new File(worldFolder.getAbsoluteFile(), File.separator + name + ".yml");
-
             YamlConfiguration worlds = YamlConfiguration.loadConfiguration(worldFile);
+            ((FileConfiguration) worlds).options().header(header);
 
             for (Field field : getClass().getDeclaredFields()) {
-
-                String path = "Storm."
-                        + field.getName().replaceAll("__", " ")
-                        .replaceAll("_", ".");
-
+                if (doSkip(field))
+                    continue;
+                String path = prefix + "." + field.getName().replaceAll("__", " ").replaceAll("_", ".");
                 if (worlds.isSet(path)) {
                     LimitInteger lim;
                     if ((lim = field.getAnnotation(LimitInteger.class)) != null) {
@@ -145,22 +146,10 @@ public class ReflectConfiguration {
                             doCorrect = true;
                         }
                         if (doCorrect) {
-                            System.err.println("[Storm]" + lim.warning().replace("%node", "'" + path.substring(6) + "'").replace("%limit", limit + ""));
+                            plugin.getLogger().log(Level.SEVERE, lim.warning().replace("%node", "'" + path.substring(6) + "'").replace("%limit", limit + ""));
                             if (lim.correct())
                                 worlds.set(path, lim.limit());
                         }
-                    }
-                    Warn warm;
-                    if ((warm = field.getAnnotation(Warn.class)) != null) {
-                        int kazi = warm.threshold();
-                        if (worlds.getInt(path) > kazi) {
-                            try {
-                                System.err.println("[Storm]Node '" + path.substring(6) + "' is not reccomended to have a value above " + kazi + ".");
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-
                     }
                     field.set(this, worlds.get(path));
                 } else
@@ -179,8 +168,8 @@ public class ReflectConfiguration {
         Stack<String> hierarchy = new Stack<String>();
         for (String line : lines) {
             String content = StringUtils.stripStart(line, " ");
-            int spaces = line.length() - content.length();
-            int level = spaces / indent + 1;
+            int spaces = line.length() - content.length(),
+                    level = spaces / indent + 1;
             String[] tokens = content.split(":", 2);
             String name = tokens[0];
             if (level <= prevlevel) {
@@ -192,41 +181,39 @@ public class ReflectConfiguration {
             prevlevel = level;
             String id = StringUtils.join(hierarchy, "_").replaceAll(" ", "__");
 
-            Comment comment;
+            Comment comment = null;
             try {
-                comment = this.getClass().getDeclaredField(id).getAnnotation(Comment.class);
-            } catch (NoSuchFieldException e) {
-                comment = null;
+                comment = getClass().getDeclaredField(id.replaceAll(prefix + ".", "")).getAnnotation(Comment.class);
+            } catch (NoSuchFieldException ignored) {
             }
             if (comment == null) {
                 outlines.add(line);
                 continue;
             }
             String indentPrefix = StringUtils.repeat(" ", spaces);
-            if (comment.location() == Comment.CommentLocation.TOP) {
-                for (String data : comment.value())
+            if (comment.location() == Comment.CommentLocation.TOP)
+                for (String data : comment._())
                     outlines.add(indentPrefix + "# " + data);
-            }
+
             if (comment.location() == Comment.CommentLocation.INLINE) {
-                String[] comments = comment.value();
+                String[] comments = comment._();
                 outlines.add(line + " # " + comments[0]);
                 for (int i = 1; i < comments.length; ++i)
                     outlines.add(StringUtils.repeat(" ", line.length() + 1) + "# " + comments[i]);
-            } else {
+            } else
                 outlines.add(line);
-            }
-            if (comment.location() == Comment.CommentLocation.BOTTOM) {
-                for (String data : comment.value())
+
+            if (comment.location() == Comment.CommentLocation.BOTTOM)
+                for (String data : comment._())
                     outlines.add(indentPrefix + "# " + data);
-            }
+
         }
         return outlines;
     }
 
-    @Target(ElementType.FIELD)
-    @Retention(RetentionPolicy.RUNTIME)
-    public @interface Warn {
-        int threshold() default 100;
+    public boolean doSkip(Field field) {
+        int mod = field.getModifiers();
+        return Modifier.isFinal(mod) || Modifier.isTransient(mod) || Modifier.isVolatile(mod);
     }
 
     @Target(ElementType.FIELD)
@@ -242,7 +229,7 @@ public class ReflectConfiguration {
     @Target(ElementType.FIELD)
     @Retention(RetentionPolicy.RUNTIME)
     public @interface Comment {
-        String[] value();
+        String[] _();
 
         CommentLocation location() default CommentLocation.INLINE;
 
@@ -250,16 +237,9 @@ public class ReflectConfiguration {
             INLINE(1),
             TOP(2),
             BOTTOM(3);
-            private int id;
 
             CommentLocation(int location) {
-                this.id = location;
-            }
-
-            public int getID() {
-                return id;
             }
         }
     }
-
 }

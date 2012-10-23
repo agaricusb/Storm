@@ -27,13 +27,12 @@ public class GlobalVariables extends ReflectConfiguration {
 
     //Acid Rain
     @LimitInteger
+    @Comment(_ = "The chance for acid rain to occur.")
     public int Acid__Rain_Acid__Rain__Chance = 5;
-    @Warn(threshold = 72000)
     public int Acid__Rain_Acid__Rain__Base__Interval = 72000;
     public String Acid__Rain_Messages_On__Acid__Rain__Start = "Acid has started to fall from the sky!";
     public String Acid__Rain_Messages_On__Acid__Rain__Stop = "Acid rain ceases to fall!";
     public String Acid__Rain_Messages_On__Player__Damaged__By__Acid__Rain = "You have been hurt by the acidic downfall!";
-    @Warn(threshold = 20)
     public int Acid__Rain_Player_Damage__From__Exposure = 1;
     public int Acid__Rain_Entity_Damage__From__Exposure = 1;
     public List<List<String>> Acid__Rain_Dissolver_Block__Transformations = new ArrayList<List<String>>() {
@@ -79,27 +78,21 @@ public class GlobalVariables extends ReflectConfiguration {
     //Blizzards
     @LimitInteger
     public int Blizzard_Blizzard__Chance = 20;
-    @Warn(threshold = 72000)
     public int Blizzard_Blizzard__Base__Interval = 72000;
     public String Blizzard_Messages_On__Blizzard__Start = "It has started to snow violently! Seek a warm biome for safety!";
     public String Blizzard_Messages_On__Blizzard__Stop = "The blizzard has stopped!";
     public String Blizzard_Messages_On__Player__Damaged__Cold = "You are freezing!";
-    @Warn(threshold = 6)
     public int Blizzard_Player_Blindness__Amplitude = 4;
     public List<Integer> Blizzard_Heating__Blocks = Arrays.asList(
             Block.FIRE.id, Block.LAVA.id, Block.STATIONARY_LAVA.id,
             Block.BURNING_FURNACE.id);
-    @Warn(threshold = 10)
     public int Blizzard_Heat__Radius = 2;
-    @Warn(threshold = 20)
     public int Blizzard_Player_Damage__From__Exposure = 2;
     public int Blizzard_Entity_Damage__From__Exposure = 2;
     public double Blizzard_Player_Speed__Loss__While__In__Snow = 0.4D;
     public int Blizzard_Scheduler_Damager__Calculation__Intervals__In__Ticks = 40;
     //Better Lightning
-    @Warn(threshold = 20)
     public int Lightning_Damage_Damage = 5;
-    @Warn(threshold = 15)
     public int Lightning_Damage_Damage__Radius = 10;
     public String Lightning_Messages_On__Player__Hit = "You were zapped by lightning. Ouch!";
     @LimitInteger
@@ -129,11 +122,9 @@ public class GlobalVariables extends ReflectConfiguration {
     //-Meteors
     @LimitInteger
     public int Natural__Disasters_Meteor_Chance__To__Spawn = 8;
-    @Warn(threshold = 72000)
     public int Natural__Disasters_Meteor_Meteor__Base__Interval = 72000;
     public String Natural__Disasters_Meteor_Messages_On__Meteor__Crash = "A meteor has exploded at %x, %y, %z.";
     public String Natural__Disasters_Meteor_Messages_On__Damaged__By__Shockwave = "You have been flattened by a meteor!";
-    @Warn(threshold = 20)
     public int Natural__Disasters_Meteor_Shockwave_Damage = 10;
     public int Natural__Disasters_Meteor_Shockwave_Damage__Radius = 100;
     public boolean Natural__Disasters_Meteor_Do__Winter = true;
@@ -146,14 +137,10 @@ public class GlobalVariables extends ReflectConfiguration {
     };
     @LimitInteger
     public int Natural__Disasters_Wildfires_Chance__To__Start = 20;
-    @Warn(threshold = 72000)
     public int Natural__Disasters_Wildfires_Wildfire__Base__Interval = 72000;
-    @Warn(threshold = 3)
     public int Natural__Disasters_Wildfires_Spread__Limit = 2;
-    @Warn(threshold = 3)
     public int Natural__Disasters_Wildfires_Scan__Radius = 2;
     public String Natural__Disasters_Wildfires_Messages_On__Start = "A wildfire has been spotted around %x, %y, %z!";
-    @Warn(threshold = 250)
     public int Natural__Disasters_Maximum__Fires = 100;
     //   public int Natural__Disasters_Earthquakes_Chance__To__Spawn = 1;
 //   public String Natural__Disasters_Earthquakes_Message__On__Earthquake__Start = "The ground beneath you begins quaking! Run mortal, run!";

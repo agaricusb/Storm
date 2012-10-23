@@ -40,8 +40,6 @@ public class SafeExplosion implements Listener {
 
             if (en.isDead())
                 Meteor.meteors.remove(en.getEntityId());
-
         }
     }
-
 }
