@@ -144,8 +144,11 @@ public class StormUtil {
      * @param world   world name
      */
     public void broadcast(String message, String world) {
+        World bw;
+        if ((bw = Bukkit.getWorld(world)) == null)
+            return;
         log(message);
-        broadcast(message, Bukkit.getWorld(world));
+        broadcast(message, bw);
     }
 
     /**
