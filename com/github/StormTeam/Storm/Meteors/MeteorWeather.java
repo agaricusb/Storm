@@ -112,7 +112,7 @@ public class MeteorWeather extends StormWeather {
                 glob.Natural__Disasters_Meteor_Messages_On__Damaged__By__Shockwave,
                 Storm.random.nextInt(100) + 200,
                 glob.Natural__Disasters_Meteor_Do__Winter,
-                glob.Natural__Disasters_Meteor_Meteor_Spawn,
+                glob.Natural__Disasters_Meteor_Meteor__Spawn,
                 Storm.random.nextInt(6) + 3);
 
         meteor.spawn();
