@@ -1,3 +1,21 @@
+/*
+ * This file is part of Storm.
+ *
+ * Storm is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of
+ * the License, or (at your option) any later version.
+ *
+ * Storm is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Storm.  If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
+
 package com.github.StormTeam.Storm.Meteors.Entities;
 
 import com.github.StormTeam.Storm.Meteors.Meteor;
@@ -12,6 +30,7 @@ import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A meteor entity.
@@ -200,17 +219,19 @@ public class EntityMeteor extends EntityFireball {
         die();
     }
 
+    private void addOres(ArrayList<Material> result, Material material, int percentage) {
+        for (int i = 0; i < percentage; ++i) {
+            if (result.size() >= 100)
+                break;
+            result.add(material);
+        }
+    }
+
     private void spawnMeteor(Location explosion) {
         ArrayList<Material> m = new ArrayList<Material>();
-        m.add(Material.COAL_ORE);
-        m.add(Material.IRON_ORE);
-        m.add(Material.REDSTONE_ORE);
-        m.add(Material.GOLD_ORE);
-        if (Storm.version == 1.3) {
-            m.add(Material.EMERALD_ORE);
+        for (List<Integer> ore : Storm.wConfigs.get(explosion.getWorld().getName()).Natural__Disasters_Meteor_Ore__Chance__Percentages) {
+            addOres(m, Material.getMaterial(ore.get(0)), ore.get(1));
         }
-        m.add(Material.DIAMOND_ORE);
-        m.add(Material.LAPIS_ORE);
         while (explosion.getBlock().getType().equals(Material.AIR)) {
             explosion.add(0, -1, 0);
         }
@@ -252,7 +273,7 @@ public class EntityMeteor extends EntityFireball {
                             }
                             break forY;
                         }
-                        break forZ;
+                        break;
                     }
 
                     if (!filled && lengthSq(nextXn, yn, zn) <= 1
