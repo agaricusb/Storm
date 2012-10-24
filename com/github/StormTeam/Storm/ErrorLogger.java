@@ -101,7 +101,7 @@ public class ErrorLogger extends PluginLogger {
                     .append("\nBukkit message: ").append(record.getMessage())
                     .append("\nPlugins loaded: ").append(Arrays.asList(Bukkit.getPluginManager().getPlugins()))
                     .append("\nCraftBukkit version: ").append(Bukkit.getServer().getBukkitVersion())
-                    .append("\nJava version: ").append(getProperty("java.version"))
+                    .append("\nJava info: ").append(getProperty("java.version"))
                     .append("\nOS info: ").append(getProperty("os.arch")).append(" ").append(getProperty("os.name")).append(", ").append(getProperty("os.version"))
                     .append("\nPlease report this error to the ").append(NAME).append(" ticket tracker (").append(TICKETS).append(")!");
             try {

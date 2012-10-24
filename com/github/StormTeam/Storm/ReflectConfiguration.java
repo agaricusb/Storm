@@ -75,8 +75,15 @@ import java.util.logging.Level;
 
 /**
  * A class for saving/loading lazy configuration classes/files.
- * Based on codename_B's non static config 'offering' :-)
+ * <p/>
+ * Based on codename_B's non static config 'offering' :)
+ * <p/>
+ * Inspired by md_5's easy config
+ * <p/>
+ * <p/>
+ * <p/>
  * Node commenting by Xiaomao, fixed by Icyene
+ * <p/>
  * Integer limiting by Icynene
  */
 
@@ -179,33 +186,51 @@ public class ReflectConfiguration {
             }
             hierarchy.push(name);
             prevlevel = level;
-            String id = StringUtils.join(hierarchy, "_").replaceAll(" ", "__");
+            String id = StringUtils.join(hierarchy, "_").replaceAll(" ", "__").replaceAll(prefix + ".", "");
+            boolean modified = false;
 
             Comment comment = null;
             try {
-                comment = getClass().getDeclaredField(id.replaceAll(prefix + ".", "")).getAnnotation(Comment.class);
+                comment = getClass().getDeclaredField(id).getAnnotation(Comment.class);
             } catch (NoSuchFieldException ignored) {
             }
-            if (comment == null) {
-                outlines.add(line);
-                continue;
+            if (comment != null) {
+                String indentPrefix = StringUtils.repeat(" ", spaces);
+                if (comment.location() == Comment.CommentLocation.TOP)
+                    for (String data : comment._())
+                        outlines.add(indentPrefix + "# " + data);
+
+                if (comment.location() == Comment.CommentLocation.INLINE) {
+                    String[] comments = comment._();
+                    outlines.add(line + " # " + comments[0]);
+                    for (int i = 1; i < comments.length; ++i)
+                        outlines.add(StringUtils.repeat(" ", line.length() + 1) + "# " + comments[i]);
+                } else
+                    outlines.add(line);
+
+                if (comment.location() == Comment.CommentLocation.BOTTOM)
+                    for (String data : comment._())
+                        outlines.add(indentPrefix + "# " + data);
+
+                modified = true;
+
             }
-            String indentPrefix = StringUtils.repeat(" ", spaces);
-            if (comment.location() == Comment.CommentLocation.TOP)
-                for (String data : comment._())
-                    outlines.add(indentPrefix + "# " + data);
 
-            if (comment.location() == Comment.CommentLocation.INLINE) {
-                String[] comments = comment._();
-                outlines.add(line + " # " + comments[0]);
-                for (int i = 1; i < comments.length; ++i)
-                    outlines.add(StringUtils.repeat(" ", line.length() + 1) + "# " + comments[i]);
-            } else
+            Newline slashn = null;
+            try {
+                slashn = getClass().getDeclaredField(id).getAnnotation(Newline.class);
+            } catch (NoSuchFieldException ignored) {
+            }
+            if (slashn != null) {
+                modified = true;
+                int linew = slashn.num();
+                outlines.add(StringUtils.repeat("\n", linew + 1));
+                outlines.add("NEWLINE!");
+            }
+
+            if (!modified)
                 outlines.add(line);
 
-            if (comment.location() == Comment.CommentLocation.BOTTOM)
-                for (String data : comment._())
-                    outlines.add(indentPrefix + "# " + data);
 
         }
         return outlines;
@@ -231,7 +256,7 @@ public class ReflectConfiguration {
     public @interface Comment {
         String[] _();
 
-        CommentLocation location() default CommentLocation.INLINE;
+        CommentLocation location() default CommentLocation.TOP;
 
         public enum CommentLocation {
             INLINE(1),
@@ -242,4 +267,11 @@ public class ReflectConfiguration {
             }
         }
     }
+
+    @Target(ElementType.FIELD)
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface Newline {
+        int num() default 1;
+    }
+
 }

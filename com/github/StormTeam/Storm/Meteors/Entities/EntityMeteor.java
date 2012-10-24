@@ -20,11 +20,11 @@ package com.github.StormTeam.Storm.Meteors.Entities;
 
 import com.github.StormTeam.Storm.Meteors.Meteor;
 import com.github.StormTeam.Storm.Storm;
+import net.minecraft.server.Block;
 import net.minecraft.server.EntityFireball;
 import net.minecraft.server.MovingObjectPosition;
 import net.minecraft.server.World;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
@@ -219,7 +219,7 @@ public class EntityMeteor extends EntityFireball {
         die();
     }
 
-    private void addOres(ArrayList<Material> result, Material material, int percentage) {
+    private void addOres(ArrayList<Integer> result, int material, int percentage) {
         for (int i = 0; i < percentage; ++i) {
             if (result.size() >= 100)
                 break;
@@ -228,20 +228,20 @@ public class EntityMeteor extends EntityFireball {
     }
 
     private void spawnMeteor(Location explosion) {
-        ArrayList<Material> m = new ArrayList<Material>();
+        ArrayList<Integer> ores = new ArrayList<Integer>();
         for (List<Integer> ore : Storm.wConfigs.get(explosion.getWorld().getName()).Natural__Disasters_Meteor_Ore__Chance__Percentages) {
-            addOres(m, Material.getMaterial(ore.get(0)), ore.get(1));
+            addOres(ores, ore.get(0), ore.get(1));
         }
-        while (explosion.getBlock().getType().equals(Material.AIR)) {
+        while (explosion.getBlock().getTypeId() == 0) {
             explosion.add(0, -1, 0);
         }
         explosion.add(0, radius + 1, 0);
-        this.makeSphere(explosion, null, radius, true, true, m);
-        this.makeSphere(explosion, Material.OBSIDIAN, radius, false, false, null);
+        this.makeSphere(explosion, null, radius, true, true, ores);
+        this.makeSphere(explosion, Block.OBSIDIAN.id, radius, false, false, null);
     }
 
-    void makeSphere(Location pos, Material block, double radius,
-                    boolean filled, boolean random, ArrayList<Material> m) {
+    void makeSphere(Location pos, Integer block, double radius,
+                    boolean filled, boolean random, ArrayList<Integer> m) {
         double radius_ = radius + 0.5;
         final int ceilRadiusX, ceilRadiusY, ceilRadiusZ;
         final double invRadiusX, invRadiusY, invRadiusZ;
@@ -287,7 +287,7 @@ public class EntityMeteor extends EntityFireball {
                                 (i & 2) == 0 ? y : -y,
                                 (i & 1) == 0 ? z : -z)
                                 .getBlock()
-                                .setType(random ? chooseRandom(m) : block);
+                                .setTypeId(random ? chooseRandom(m) : block);
                     }
                 }
             }
@@ -295,8 +295,8 @@ public class EntityMeteor extends EntityFireball {
 
     }
 
-    private Material chooseRandom(ArrayList<Material> m) {
-        return m.get(Storm.random.nextInt(m.size()));
+    private int chooseRandom(ArrayList<Integer> mats) {
+        return mats.get(Storm.random.nextInt(mats.size()));
     }
 
     private static double lengthSq(double x, double y, double z) {

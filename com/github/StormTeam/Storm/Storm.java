@@ -99,6 +99,7 @@ public class Storm extends JavaPlugin {
             setEnabled(false);
             e.printStackTrace();
         }
+        throw new RuntimeException("Blap!");
     }
 
     private void configureVersion() {
