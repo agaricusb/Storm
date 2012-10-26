@@ -47,7 +47,7 @@ public class PointsOnCircle implements Iterator<Vector>, Iterable<Vector> {
 
     public PointsOnCircle(int radius) {
         if (radius < 0)
-            throw new UnsupportedOperationException("Radius can't be 0");
+            throw new UnsupportedOperationException("Radius can't be 0!");
         this.radius = radius;
         if (radius == 0) {
             return;
@@ -79,7 +79,7 @@ public class PointsOnCircle implements Iterator<Vector>, Iterable<Vector> {
 
     @Override
     public void remove() {
-        throw new UnsupportedOperationException("You can't remove an element from this iterator");
+        throw new UnsupportedOperationException("You can't remove an element from this iterator!");
     }
 
     @Override

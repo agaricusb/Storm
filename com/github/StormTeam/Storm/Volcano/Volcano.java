@@ -36,47 +36,71 @@
 
 package com.github.StormTeam.Storm.Volcano;
 
+import com.github.StormTeam.Storm.BlockShifter;
 import com.github.StormTeam.Storm.Storm;
-import net.minecraft.server.Explosion;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.CraftWorld;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
+import org.bukkit.block.Block;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.util.Vector;
-
-import java.util.HashSet;
-import java.util.Set;
 
 public class Volcano implements Listener {
     private Location center;
     private World world;
     private float power;
-    private Set<Explosion> explosions = new HashSet<Explosion>();
+    private int radius;
+    private List<Vector> border;
 
-    public Volcano(Location center, float power) {
+    public Volcano(Location center, float power, int radius) {
         this.center = center;
         this.power = power;
+        this.radius = radius;
         this.world = center.getWorld();
+        this.border = new ArrayList<Vector>();
+        for (Vector v : new PointsOnCircle(radius)) {
+            this.border.add(v);
+        }
     }
 
-    void makeVolcano() {
+    void makeShaft() {
         int x = center.getBlockX();
         int y = center.getBlockY();
         int z = center.getBlockZ();
 
-        while (y > 0) {
-            Explosion exp = new Explosion(((CraftWorld) world).getHandle(), null, x, y, z, power);
-            explosions.add(exp);
-            exp.a();
+        world.createExplosion(x, y, z, 3 * power);
+        for (int i = 6; i <= y; ++i) {
+            world.createExplosion(x, i, z, power);
+            fillLayer(11, x, i - 5, z);
+            BlockShifter.sendClientChanges(world);
+        }
+        for (int i = y - 5; i <= y; ++i) {
+            fillLayer(11, x, i, z);
+            //Call the update thing here
+            BlockShifter.sendClientChanges(world);
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void EntityExplodeEvent(EntityExplodeEvent e) {
-        e.blockList();
+    void randomExplosionsAroundShaftBorder(int y) {
+        Location location = center.clone();
+        location.add(border.get(Storm.random.nextInt(border.size())));
+    }
+
+    void fillLayer(int material, int x, int y, int z) {
+        Location location = new Location(world, x, y, z);
+        Block block = location.getBlock();
+
+        if (block.getTypeId() != 0)
+            return;
+        BlockShifter.setBlockFast(block, material);
+        // Recursively fill the adjacent blocks only if the current
+        // location is within the radius specified, using Pythegorean
+        // theorem
+        if (Math.sqrt(Math.pow(x - center.getBlockX(), 2) + Math.pow(z - center.getBlockZ(), 2)) < this.radius) {
+            fillLayer(material, x + 1, y, z);
+            fillLayer(material, x - 1, y, z);
+            fillLayer(material, x, y, z + 1);
+            fillLayer(material, x, y, z - 1);
+        }
     }
 
     Vector getFlight(Vector v, float power, double flight) {

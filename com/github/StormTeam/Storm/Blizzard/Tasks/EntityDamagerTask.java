@@ -54,7 +54,7 @@ public class EntityDamagerTask {
                             @Override
                             public void run() {
                                 for (Entity damagee : affectedWorld.getEntities()) {
-                                    if (Storm.util.isEntityUnderSky(damagee) && Storm.util.isRainy(damagee.getLocation().getBlock().getBiome())) {
+                                    if (Storm.util.isEntityUnderSky(damagee) && Storm.util.isSnowy(damagee.getLocation().getBlock().getBiome())) {
                                         if (!Storm.util.isLocationNearBlock(damagee.getLocation(), glob.Blizzard_Heating__Blocks, glob.Blizzard_Heat__Radius)) {
                                             if (glob.Features_Blizzards_Entity__Damaging && damagee instanceof LivingEntity && !(damagee instanceof Player))
                                                 ((LivingEntity) (damagee)).damage(glob.Blizzard_Entity_Damage__From__Exposure);

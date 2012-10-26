@@ -223,9 +223,6 @@ public class ReflectConfiguration {
             }
             if (slashn != null) {
                 modified = true;
-                int linew = slashn.num();
-                outlines.add(StringUtils.repeat("\n", linew + 1));
-                outlines.add("NEWLINE!");
             }
 
             if (!modified)

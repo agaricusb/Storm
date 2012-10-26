@@ -4,7 +4,9 @@ import com.bekvon.bukkit.residence.Residence;
 import com.sk89q.worldguard.bukkit.BukkitUtil;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import net.minecraft.server.Packet250CustomPayload;
+import net.minecraft.server.PlayerManager;
 import net.minecraft.server.WorldData;
+import net.minecraft.server.WorldServer;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
@@ -16,6 +18,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -213,6 +216,35 @@ public class StormUtil {
         if (player.getGameMode() != GameMode.CREATIVE && player.getHealth() != 0) {
             player.damage(damage * 2);
             this.message(player, message);
+        }
+    }
+
+
+    public void setRenderDistance(World world, int distance) {
+        try {
+
+            net.minecraft.server.WorldServer cWorld = ((CraftWorld) world).getHandle();
+
+            Field viewDistance = PlayerManager.class.getDeclaredField("e");
+            viewDistance.setAccessible(true);
+
+
+            Field modifiersField = Field.class.getDeclaredField("modifiers");
+            modifiersField.setAccessible(true);
+            modifiersField.setInt(viewDistance, viewDistance.getModifiers() & ~Modifier.FINAL);
+
+            Field manager = WorldServer.class.getDeclaredField("manager");
+            manager.setAccessible(true);
+
+            modifiersField = Field.class.getDeclaredField("modifiers");
+            modifiersField.setAccessible(true);
+            modifiersField.setInt(manager, manager.getModifiers() & ~Modifier.FINAL);
+
+            viewDistance.set(manager.get(cWorld), distance);
+
+
+        } catch (Exception ignored) {
+            ignored.printStackTrace();
         }
     }
 

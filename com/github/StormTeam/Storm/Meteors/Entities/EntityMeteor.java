@@ -114,7 +114,6 @@ public class EntityMeteor extends EntityFireball {
     public void spawn() {
         Meteor.meteors.add(this.getBukkitEntity().getEntityId());
         world.addEntity(this, SpawnReason.CUSTOM);
-
     }
 
     /**
