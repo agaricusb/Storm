@@ -16,9 +16,14 @@
  */
 package com.github.StormTeam.Storm;
 
+import com.github.StormTeam.Storm.Volcano.Volcano;
 import com.github.StormTeam.Storm.Weather.WeatherManager;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -30,7 +35,7 @@ import java.util.logging.Level;
  * The main Storm class.
  */
 
-public class Storm extends JavaPlugin {
+public class Storm extends JavaPlugin implements Listener {
 
     private String _ =
             "Dear BukkitDev administrator(s):" +
@@ -70,6 +75,16 @@ public class Storm extends JavaPlugin {
      * Called to enable Storm.
      */
 
+    @EventHandler
+    public void spawnVulk(PlayerInteractEvent e) {
+        Block b = e.getClickedBlock();
+        if (b != null) {
+            Volcano volcano = new Volcano(b.getLocation(), 10, 30);
+            volcano.spawn();
+        }
+
+    }
+
     @Override
     public void onEnable() {
         try {
@@ -88,6 +103,7 @@ public class Storm extends JavaPlugin {
             ErrorLogger.register(this, "Storm", "com.github.StormTeam.Storm", "http://www.stormteam.co.cc/projects/storm/issues");
 
             pm.registerEvents((manager = new WeatherManager(this)), this); //Register texture/world events
+            pm.registerEvents(this, this);
 
             new MetricsLite(this).start();
 

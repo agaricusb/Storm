@@ -16,42 +16,6 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-/*
- * This file is part of Storm.
- *
- * Storm is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of
- * the License, or (at your option) any later version.
- *
- * Storm is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with Storm.  If not, see
- * <http://www.gnu.org/licenses/>.
- */
-
-/*
- * This file is part of Storm.
- *
- * Storm is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of
- * the License, or (at your option) any later version.
- *
- * Storm is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with Storm.  If not, see
- * <http://www.gnu.org/licenses/>.
- */
-
 package com.github.StormTeam.Storm.Volcano;
 
 import com.github.StormTeam.Storm.BlockShifter;
@@ -65,7 +29,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public class Volcano implements Listener {
@@ -74,7 +37,6 @@ public class Volcano implements Listener {
     private float power;
     private int radius;
     private List<Vector> border;
-    private LinkedList<Block> flowed;
 
     public Volcano(Location center, float power, int radius) {
         this.center = center;
@@ -87,20 +49,29 @@ public class Volcano implements Listener {
         }
     }
 
+    public void spawn() {
+        makeShaft();
+        generateVolcanoAboveGround();
+    }
+
     void makeShaft() {
         int x = center.getBlockX();
         int y = center.getBlockY();
         int z = center.getBlockZ();
-        BlockShifter changer = new BlockShifter();
 
-        world.createExplosion(x, y, z, 3 * power);
+        world.createExplosion(x, 5, z, 3 * power);
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException ignored) {
+        }
         for (int i = 6; i <= y; ++i) {
             world.createExplosion(x, i, z, power);
-            changer.updateClient(world);
+            fillLayer(11, x, i - 5, z);
+            BlockShifter.updateClient(world);
         }
         for (int i = y - 5; i <= y; ++i) {
-            fillLayer(11, x, i, z, changer);
-            changer.updateClient(world);
+            fillLayer(11, x, i, z);
+            BlockShifter.updateClient(world);
         }
     }
 
@@ -109,7 +80,7 @@ public class Volcano implements Listener {
         location.add(border.get(Storm.random.nextInt(border.size())));
     }
 
-    void fillLayer(int material, int x, int y, int z, BlockShifter change) {
+    void fillLayer(int material, int x, int y, int z) {
         Location location = new Location(world, x, y, z);
         Block block = location.getBlock();
 
@@ -117,14 +88,14 @@ public class Volcano implements Listener {
             return;
 
         //block.setTypeId(material);
-        change.setBlockFast(block, material);
+        BlockShifter.setBlockFast(block, material);
         // Recursively fill the adjacent blocks only if the current
         // location is within the radius specified
         if (location.distance(center) < this.radius) {
-            fillLayer(material, x + 1, y, z, change);
-            fillLayer(material, x - 1, y, z, change);
-            fillLayer(material, x, y, z + 1, change);
-            fillLayer(material, x, y, z - 1, change);
+            fillLayer(material, x + 1, y, z);
+            fillLayer(material, x - 1, y, z);
+            fillLayer(material, x, y, z + 1);
+            fillLayer(material, x, y, z - 1);
         }
     }
 
@@ -133,12 +104,28 @@ public class Volcano implements Listener {
             @Override
             public void run() {
                 int height = radius * 2 + center.getBlockY();
+                long sleep = 3000;
                 for (int i = center.getBlockY(); i < height; ++i) {
                     generateLayer(i);
                     try {
-                        Thread.sleep(30000);
-                    } catch (InterruptedException e) {
+                        Thread.sleep(sleep += 100);
+                    } catch (InterruptedException ignored) {
                     }
+                }
+                try {
+                    Thread.sleep(30000);
+                } catch (InterruptedException ignored) {
+                }
+
+                int x = center.getBlockX();
+                int y = center.getBlockY();
+                int z = center.getBlockZ();
+
+                world.createExplosion(x, y, z, 3 * power);
+                for (int i = y; i <= y; ++i) {
+                    world.createExplosion(x, i, z, power);
+                    fillLayer(11, x, i - 5, z);
+                    BlockShifter.updateClient(world);
                 }
             }
         });
