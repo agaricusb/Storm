@@ -50,8 +50,13 @@ public class Volcano implements Listener {
     }
 
     void spawn() {
-        makeShaft();
-        generateVolcanoAboveGround();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                makeShaft();
+                generateVolcanoAboveGround();
+            }
+        });
     }
 
     void makeShaft() {
@@ -64,8 +69,12 @@ public class Volcano implements Listener {
             Thread.sleep(500);
         } catch (InterruptedException ignored) {
         }
-        for (int i = 6; i <= y; ++i) {
+        for (int i = 6; i <= y; i += 2) {
             world.createExplosion(x, i, z, power);
+            try {
+                Thread.sleep(Storm.random.nextInt(2048) + 500);
+            } catch (InterruptedException ignored) {
+            }
             fillLayer(11, x, i - 5, z);
             BlockShifter.updateClient(world);
         }
@@ -76,10 +85,10 @@ public class Volcano implements Listener {
         }
     }
 
-    void randomExplosionsAroundShaftBorder(int y) {
+    /*void randomExplosionsAroundShaftBorder(int y) {
         Location location = center.clone();
         location.add(border.get(Storm.random.nextInt(border.size())));
-    }
+    }*/
 
     double distanceSurface(Location a, Location b) {
         return Math.sqrt(Math.pow(a.getX() - b.getX(), 2) + Math.pow(a.getZ() - b.getZ(), 2));
@@ -105,35 +114,30 @@ public class Volcano implements Listener {
     }
 
     void generateVolcanoAboveGround() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                int height = radius * 2 + center.getBlockY();
-                long sleep = 3000;
-                for (int i = center.getBlockY(); i < height; ++i) {
-                    generateLayer(i);
-                    try {
-                        Thread.sleep(sleep += 100);
-                    } catch (InterruptedException ignored) {
-                    }
-                }
-                try {
-                    Thread.sleep(30000);
-                } catch (InterruptedException ignored) {
-                }
-
-                int x = center.getBlockX();
-                int y = center.getBlockY();
-                int z = center.getBlockZ();
-
-                world.createExplosion(x, y, z, 3 * power);
-                for (int i = y; i <= y; ++i) {
-                    world.createExplosion(x, i, z, power);
-                    fillLayer(11, x, i - 5, z);
-                    BlockShifter.updateClient(world);
-                }
+        int height = radius * 2 + center.getBlockY();
+        long sleep = 3000;
+        for (int i = center.getBlockY(); i < height; ++i) {
+            generateLayer(i);
+            try {
+                Thread.sleep(sleep += 100);
+            } catch (InterruptedException ignored) {
             }
-        });
+        }
+        try {
+            Thread.sleep(30000);
+        } catch (InterruptedException ignored) {
+        }
+
+        int x = center.getBlockX();
+        int y = center.getBlockY();
+        int z = center.getBlockZ();
+
+        world.createExplosion(x, y, z, 3 * power);
+        for (int i = y; i <= y; ++i) {
+            world.createExplosion(x, i, z, power);
+            fillLayer(11, x, i - 5, z);
+            BlockShifter.updateClient(world);
+        }
     }
 
     void generateLayer(int y) {
