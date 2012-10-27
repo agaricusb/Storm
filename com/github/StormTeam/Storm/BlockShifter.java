@@ -15,8 +15,8 @@ import java.util.List;
 import java.util.Set;
 
 public class BlockShifter {
-
     private static final Set<Chunk> modifiedChunks = new HashSet<Chunk>();
+    private static final Object updateLock = new Object();
 
     public static boolean setBlockFast(Block b, int typeId) {
         Chunk in = b.getChunk();
@@ -35,28 +35,34 @@ public class BlockShifter {
     }
 
     public static void updateClient(World world) {
-        List<ChunkCoordIntPair> pairs = new ArrayList<ChunkCoordIntPair>();
-        List<Player> players;
+        synchronized (updateLock) {
+            List<ChunkCoordIntPair> pairs = new ArrayList<ChunkCoordIntPair>();
+            List<Player> players;
 
-        synchronized (modifiedChunks) {
-            for (Chunk cun : modifiedChunks) {
-                pairs.add(new ChunkCoordIntPair(cun.getX(), cun.getZ()));
+            synchronized (modifiedChunks) {
+                for (Chunk cun : modifiedChunks) {
+                    pairs.add(new ChunkCoordIntPair(cun.getX(), cun.getZ()));
+                }
+                modifiedChunks.clear();
+                players = new ArrayList<Player>(world.getPlayers());
             }
-            modifiedChunks.clear();
-            players = new ArrayList<Player>(world.getPlayers());
-        }
 
-        for (Player player : players) {
-            queueChunks(((CraftPlayer) player).getHandle(), pairs);
+            for (Player player : players) {
+                queueChunks(((CraftPlayer) player).getHandle(), pairs);
+            }
         }
     }
 
+    @SuppressWarnings("unchecked")
     private static void queueChunks(EntityPlayer ep, List<ChunkCoordIntPair> pairs) {
         Set<ChunkCoordIntPair> queued = new HashSet<ChunkCoordIntPair>();
         for (Object o : ep.chunkCoordIntPairQueue) {
             queued.add((ChunkCoordIntPair) o);
         }
-        for (ChunkCoordIntPair pair : pairs) {
+        for (Object o : pairs) {
+            queued.add((ChunkCoordIntPair) o);
+        }
+        for (ChunkCoordIntPair pair : queued) {
             ep.chunkCoordIntPairQueue.add(pair);
         }
     }

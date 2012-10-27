@@ -21,6 +21,7 @@ package com.github.StormTeam.Storm.Volcano;
 import com.github.StormTeam.Storm.BlockShifter;
 import com.github.StormTeam.Storm.Math.PointsOnCircle;
 import com.github.StormTeam.Storm.Storm;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -50,13 +51,13 @@ public class Volcano implements Listener {
     }
 
     public void spawn() {
-        new Thread(new Runnable() {
+        Bukkit.getScheduler().scheduleAsyncDelayedTask(Storm.instance, new Runnable() {
             @Override
             public void run() {
                 makeShaft();
                 generateVolcanoAboveGround();
             }
-        });
+        }, 10L);
     }
 
     void makeShaft() {
