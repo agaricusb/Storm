@@ -13,24 +13,26 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Semaphore;
 
 public class BlockShifter {
 
-    private static Set<Chunk> modifiedChunks = new HashSet();
+    private Set<Chunk> modifiedChunks = new HashSet();
+    private Semaphore mutex = new Semaphore(1);
 
-    public static boolean setBlockFast(Block b, int typeId) {
+    public boolean setBlockFast(Block b, int typeId) {
         Chunk in = b.getChunk();
         modifiedChunks.add(in);
         return ((CraftChunk) in).getHandle().a(b.getX() & 15, b.getY(), b.getZ() & 15, typeId);
     }
 
-    public static boolean setBlockFast(Block b, int typeId, byte data) {
+    public boolean setBlockFast(Block b, int typeId, byte data) {
         Chunk in = b.getChunk();
         modifiedChunks.add(in);
         return ((CraftChunk) in).getHandle().a(b.getX() & 15, b.getY(), b.getZ() & 15, typeId, data);
     }
 
-    public static void updateClient(World world) {
+    public void updateClient(World world) {
 
         List<ChunkCoordIntPair> pairs = new ArrayList<ChunkCoordIntPair>();
         for (Chunk cun : modifiedChunks) {
@@ -44,7 +46,7 @@ public class BlockShifter {
         modifiedChunks = new HashSet();
     }
 
-    private static void queueChunks(EntityPlayer ep, List<ChunkCoordIntPair> pairs) {
+    private void queueChunks(EntityPlayer ep, List<ChunkCoordIntPair> pairs) {
         Set<ChunkCoordIntPair> queued = new HashSet<ChunkCoordIntPair>();
         for (Object o : ep.chunkCoordIntPairQueue) {
             queued.add((ChunkCoordIntPair) o);

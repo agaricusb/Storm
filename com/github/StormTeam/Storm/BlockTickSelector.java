@@ -53,7 +53,7 @@ public class BlockTickSelector {
 
         this.world = ((CraftWorld) world).getHandle();
 
-        this.recheckGaps = Chunk.class.getDeclaredMethod(Storm.version == 1.3 ? "k" : "o"); //If 1.3.X, method is named "k", else "o".
+        this.recheckGaps = Chunk.class.getDeclaredMethod(Storm.version >= 1.3 ? "k" : "o"); //If 1.3.X, method is named "k", else "o".  //In 1.4 its 'q'
         this.recheckGaps.setAccessible(true); //Is private by default
         this.a = net.minecraft.server.World.class.getDeclaredMethod("a", int.class, int.class, Chunk.class);
         this.a.setAccessible(true);
