@@ -64,7 +64,7 @@ public class Storm extends JavaPlugin {
      */
     public static WeatherManager manager;
 
-    public static Storm instance;
+    public static Storm instance = null;
 
     /**
      * Called to enable Storm.
@@ -73,6 +73,11 @@ public class Storm extends JavaPlugin {
     @Override
     public void onEnable() {
         try {
+            if (instance != null) {
+                getLogger().log(Level.SEVERE, "Error! Only one instance of Storm may run at once! Storm detected running version: " +
+                        instance.getDescription().getVersion() + ". Please disable that version of Storm, and restart your server. Storm disabled.");
+                setEnabled(false);
+            }
             instance = this;
 
             pm = getServer().getPluginManager();
@@ -99,7 +104,6 @@ public class Storm extends JavaPlugin {
             setEnabled(false);
             e.printStackTrace();
         }
-        throw new RuntimeException("Blap!");
     }
 
     private void configureVersion() {

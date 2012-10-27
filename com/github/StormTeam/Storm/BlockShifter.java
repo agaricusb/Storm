@@ -1,39 +1,3 @@
-/*
- * This file is part of Storm.
- *
- * Storm is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of
- * the License, or (at your option) any later version.
- *
- * Storm is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with Storm.  If not, see
- * <http://www.gnu.org/licenses/>.
- */
-
-/*
- * This file is part of Storm.
- *
- * Storm is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of
- * the License, or (at your option) any later version.
- *
- * Storm is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with Storm.  If not, see
- * <http://www.gnu.org/licenses/>.
- */
-
 package com.github.StormTeam.Storm;
 
 import net.minecraft.server.ChunkCoordIntPair;
@@ -52,26 +16,32 @@ import java.util.Set;
 
 public class BlockShifter {
 
+    private static Set<Chunk> modifiedChunks = new HashSet();
+
     public static boolean setBlockFast(Block b, int typeId) {
-        Chunk c = b.getChunk();
-        net.minecraft.server.Chunk chunk = ((CraftChunk) c).getHandle();
-        return chunk.a(b.getX() & 15, b.getY(), b.getZ() & 15, typeId);
+        Chunk in = b.getChunk();
+        modifiedChunks.add(in);
+        return ((CraftChunk) in).getHandle().a(b.getX() & 15, b.getY(), b.getZ() & 15, typeId);
     }
 
     public static boolean setBlockFast(Block b, int typeId, byte data) {
-        Chunk c = b.getChunk();
-        net.minecraft.server.Chunk chunk = ((CraftChunk) c).getHandle();
-        return chunk.a(b.getX() & 15, b.getY(), b.getZ() & 15, typeId, data);
+        Chunk in = b.getChunk();
+        modifiedChunks.add(in);
+        return ((CraftChunk) in).getHandle().a(b.getX() & 15, b.getY(), b.getZ() & 15, typeId, data);
     }
 
-    public static void sendClientChanges(World world) {
+    public static void updateClient(World world) {
+
         List<ChunkCoordIntPair> pairs = new ArrayList<ChunkCoordIntPair>();
-        for (Chunk c : world.getLoadedChunks()) {
-            pairs.add(new ChunkCoordIntPair(c.getX(), c.getZ()));
+        for (Chunk cun : modifiedChunks) {
+            pairs.add(new ChunkCoordIntPair(cun.getX(), cun.getZ()));
         }
+
         for (Player player : world.getPlayers()) {
             queueChunks(((CraftPlayer) player).getHandle(), pairs);
         }
+
+        modifiedChunks = new HashSet();
     }
 
     private static void queueChunks(EntityPlayer ep, List<ChunkCoordIntPair> pairs) {
@@ -86,4 +56,3 @@ public class BlockShifter {
         }
     }
 }
-
