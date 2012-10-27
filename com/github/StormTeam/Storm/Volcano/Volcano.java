@@ -36,13 +36,21 @@
 
 package com.github.StormTeam.Storm.Volcano;
 
-import com.github.StormTeam.Storm.BlockShifter;
 import com.github.StormTeam.Storm.Storm;
+import com.sk89q.worldedit.bukkit.BukkitBiomeType;
+import net.minecraft.server.Explosion;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.util.Vector;
+
+import java.lang.Math;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Volcano implements Listener {
     private Location center;
@@ -70,14 +78,10 @@ public class Volcano implements Listener {
         world.createExplosion(x, y, z, 3 * power);
         for (int i = 6; i <= y; ++i) {
             world.createExplosion(x, i, z, power);
-            fillLayer(11, x, i - 5, z);
-            BlockShifter.sendClientChanges(world);
+            fillLayer(11, x, i-5, z);
         }
-        for (int i = y - 5; i <= y; ++i) {
+        for (int i = y - 5; i <= y; ++i)
             fillLayer(11, x, i, z);
-            //Call the update thing here
-            BlockShifter.sendClientChanges(world);
-        }
     }
 
     void randomExplosionsAroundShaftBorder(int y) {
@@ -89,9 +93,13 @@ public class Volcano implements Listener {
         Location location = new Location(world, x, y, z);
         Block block = location.getBlock();
 
+        ChunkSection[] cs = ((CraftChunk)block.getChunk()).i();
+
+        ChunkSection sec = cs[y];
+
         if (block.getTypeId() != 0)
             return;
-        BlockShifter.setBlockFast(block, material);
+        sec.a(x, y, z, material);
         // Recursively fill the adjacent blocks only if the current
         // location is within the radius specified, using Pythegorean
         // theorem
