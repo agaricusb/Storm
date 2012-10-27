@@ -34,23 +34,39 @@
  * <http://www.gnu.org/licenses/>.
  */
 
+/*
+ * This file is part of Storm.
+ *
+ * Storm is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of
+ * the License, or (at your option) any later version.
+ *
+ * Storm is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Storm.  If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
+
 package com.github.StormTeam.Storm.Volcano;
 
+import com.github.StormTeam.Storm.BlockShifter;
+import com.github.StormTeam.Storm.Math.PointsOnCircle;
 import com.github.StormTeam.Storm.Storm;
-import com.sk89q.worldedit.bukkit.BukkitBiomeType;
-import net.minecraft.server.Explosion;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.CraftWorld;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
+import org.bukkit.block.Block;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.util.Vector;
 
-import java.lang.Math;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 public class Volcano implements Listener {
     private Location center;
@@ -58,6 +74,7 @@ public class Volcano implements Listener {
     private float power;
     private int radius;
     private List<Vector> border;
+    private LinkedList<Block> flowed;
 
     public Volcano(Location center, float power, int radius) {
         this.center = center;
@@ -78,10 +95,13 @@ public class Volcano implements Listener {
         world.createExplosion(x, y, z, 3 * power);
         for (int i = 6; i <= y; ++i) {
             world.createExplosion(x, i, z, power);
-            fillLayer(11, x, i-5, z);
+            fillLayer(11, x, i - 5, z);
+            BlockShifter.sendClientChanges(world);
         }
-        for (int i = y - 5; i <= y; ++i)
+        for (int i = y - 5; i <= y; ++i) {
             fillLayer(11, x, i, z);
+            BlockShifter.sendClientChanges(world);
+        }
     }
 
     void randomExplosionsAroundShaftBorder(int y) {
@@ -93,22 +113,53 @@ public class Volcano implements Listener {
         Location location = new Location(world, x, y, z);
         Block block = location.getBlock();
 
-        ChunkSection[] cs = ((CraftChunk)block.getChunk()).i();
-
-        ChunkSection sec = cs[y];
-
         if (block.getTypeId() != 0)
             return;
-        sec.a(x, y, z, material);
+
+        //block.setTypeId(material);
+        BlockShifter.setBlockFast(block, material);
         // Recursively fill the adjacent blocks only if the current
-        // location is within the radius specified, using Pythegorean
-        // theorem
-        if (Math.sqrt(Math.pow(x - center.getBlockX(), 2) + Math.pow(z - center.getBlockZ(), 2)) < this.radius) {
+        // location is within the radius specified
+        if (location.distance(center) < this.radius) {
             fillLayer(material, x + 1, y, z);
             fillLayer(material, x - 1, y, z);
             fillLayer(material, x, y, z + 1);
             fillLayer(material, x, y, z - 1);
         }
+    }
+
+    void generateVolcanoAboveGround() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int height = radius * 2 + center.getBlockY();
+                for (int i = center.getBlockY(); i < height; ++i) {
+                    generateLayer(i);
+                    try {
+                        Thread.sleep(30000);
+                    } catch (InterruptedException e) {
+                    }
+                }
+            }
+        });
+    }
+
+    void generateLayer(int y) {
+        Location location = center.clone();
+        location.setY(y);
+        location.getBlock().setType(Material.LAVA);
+    }
+
+    public boolean ownsBlock(Block block) {
+        if (block.getWorld() != world)
+            return false;
+        Location location = block.getLocation();
+        location.setY(center.getY());
+        return location.distance(center) < this.radius * 2;
+    }
+
+    public int getLayer() {
+        return center.getBlockY();
     }
 
     Vector getFlight(Vector v, float power, double flight) {

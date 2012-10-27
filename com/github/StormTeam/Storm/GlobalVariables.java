@@ -1,7 +1,26 @@
+/*
+ * This file is part of Storm.
+ *
+ * Storm is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of
+ * the License, or (at your option) any later version.
+ *
+ * Storm is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Storm.  If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
+
 package com.github.StormTeam.Storm;
 
 import net.minecraft.server.Block;
 import net.minecraft.server.Item;
+import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
@@ -146,6 +165,20 @@ public class GlobalVariables extends ReflectConfiguration {
 //   public String Natural__Disasters_Earthquakes_Message__On__Earthquake__Start = "The ground beneath you begins quaking! Run mortal, run!";
 //   public List<Integer> Natural__Disasters_Earthquakes_Blocks__Can__Fall = Arrays.asList(Block.STONE.id, Block.COBBLESTONE.id);
 //   public long Natural__Disasters_Earthquake_Scheduler_Recalculation__Intervals__In__Ticks = 72000;
+    // Volcanoes
+    public List<Integer> Volcano_Composition = new ArrayList<Integer>() {{
+        for (int i = 0; i < 20; ++i)
+            add(Material.STONE.getId());
+        for (int i = 0; i < 5; ++i)
+            add(Material.COAL_ORE.getId());
+        for (int i = 0; i < 3; ++i)
+            add(Material.IRON_ORE.getId());
+        for (int i = 0; i < 2; ++i)
+            add(Material.GOLD_ORE.getId());
+        add(Material.DIAMOND_ORE.getId());
+        if (Storm.version > 1.2)
+            add(Material.EMERALD_ORE.getId());
+    }};
     // Texture Packs
     public String Textures_Acid__Rain__Texture__Path = "http://dl.dropbox.com/u/67341745/Storm/Acid_Rain.zip";
     public String Textures_Blizzard__Texture__Path = "http://dl.dropbox.com/u/67341745/Storm/Blizzard.zip";
