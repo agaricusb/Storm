@@ -36,15 +36,17 @@ public class BlockShifter {
 
     public static void updateClient(World world) {
         List<ChunkCoordIntPair> pairs = new ArrayList<ChunkCoordIntPair>();
+        List<Player> players;
 
         synchronized (modifiedChunks) {
             for (Chunk cun : modifiedChunks) {
                 pairs.add(new ChunkCoordIntPair(cun.getX(), cun.getZ()));
             }
             modifiedChunks.clear();
+            players = new ArrayList<Player>(world.getPlayers());
         }
 
-        for (Player player : world.getPlayers()) {
+        for (Player player : players) {
             queueChunks(((CraftPlayer) player).getHandle(), pairs);
         }
     }
