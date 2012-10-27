@@ -49,7 +49,7 @@ public class Volcano implements Listener {
         }
     }
 
-    void spawn() {
+    public void spawn() {
         new Thread(new Runnable() {
             @Override
             public void run() {
