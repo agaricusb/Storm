@@ -17,6 +17,7 @@
 package com.github.StormTeam.Storm;
 
 import com.github.StormTeam.Storm.Volcano.Volcano;
+import com.github.StormTeam.Storm.Volcano.VolcanoControl;
 import com.github.StormTeam.Storm.Weather.WeatherManager;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -104,6 +105,7 @@ public class Storm extends JavaPlugin implements Listener {
 
             pm.registerEvents((manager = new WeatherManager(this)), this); //Register texture/world events
             pm.registerEvents(this, this);
+            pm.registerEvents(new VolcanoControl(), this);
 
             new MetricsLite(this).start();
 
