@@ -69,6 +69,7 @@ public class Volcano implements Listener {
             fillLayer(11, x, i - 5, z);
             BlockShifter.updateClient(world);
         }
+        world.createExplosion(x, y, z, 2 * power);
         for (int i = y - 5; i <= y; ++i) {
             fillLayer(11, x, i, z);
             BlockShifter.updateClient(world);
@@ -78,6 +79,10 @@ public class Volcano implements Listener {
     void randomExplosionsAroundShaftBorder(int y) {
         Location location = center.clone();
         location.add(border.get(Storm.random.nextInt(border.size())));
+    }
+
+    double distanceSurface(Location a, Location b) {
+        return Math.sqrt(Math.pow(a.getX() - b.getX(), 2) + Math.pow(a.getZ() - b.getZ(), 2));
     }
 
     void fillLayer(int material, int x, int y, int z) {
@@ -91,7 +96,7 @@ public class Volcano implements Listener {
         BlockShifter.setBlockFast(block, material);
         // Recursively fill the adjacent blocks only if the current
         // location is within the radius specified
-        if (location.distance(center) < this.radius) {
+        if (distanceSurface(center, location) < this.radius) {
             fillLayer(material, x + 1, y, z);
             fillLayer(material, x - 1, y, z);
             fillLayer(material, x, y, z + 1);

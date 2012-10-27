@@ -41,7 +41,7 @@ public class BlockShifter {
             for (Chunk cun : modifiedChunks) {
                 pairs.add(new ChunkCoordIntPair(cun.getX(), cun.getZ()));
             }
-            modifiedChunks = new HashSet<Chunk>();
+            modifiedChunks.clear();
         }
 
         for (Player player : world.getPlayers()) {
