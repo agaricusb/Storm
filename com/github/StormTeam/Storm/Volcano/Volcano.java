@@ -16,42 +16,6 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-/*
- * This file is part of Storm.
- *
- * Storm is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of
- * the License, or (at your option) any later version.
- *
- * Storm is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with Storm.  If not, see
- * <http://www.gnu.org/licenses/>.
- */
-
-/*
- * This file is part of Storm.
- *
- * Storm is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of
- * the License, or (at your option) any later version.
- *
- * Storm is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with Storm.  If not, see
- * <http://www.gnu.org/licenses/>.
- */
-
 package com.github.StormTeam.Storm.Volcano;
 
 import com.github.StormTeam.Storm.BlockShifter;
@@ -65,7 +29,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public class Volcano implements Listener {
@@ -74,7 +37,6 @@ public class Volcano implements Listener {
     private float power;
     private int radius;
     private List<Vector> border;
-    private LinkedList<Block> flowed;
 
     public Volcano(Location center, float power, int radius) {
         this.center = center;
@@ -87,20 +49,29 @@ public class Volcano implements Listener {
         }
     }
 
+    void spawn() {
+        makeShaft();
+        generateVolcanoAboveGround();
+    }
+
     void makeShaft() {
         int x = center.getBlockX();
         int y = center.getBlockY();
         int z = center.getBlockZ();
 
-        world.createExplosion(x, y, z, 3 * power);
+        world.createExplosion(x, 5, z, 3 * power);
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException ignored) {
+        }
         for (int i = 6; i <= y; ++i) {
             world.createExplosion(x, i, z, power);
             fillLayer(11, x, i - 5, z);
-            BlockShifter.sendClientChanges(world);
+            BlockShifter.updateClient(world);
         }
         for (int i = y - 5; i <= y; ++i) {
             fillLayer(11, x, i, z);
-            BlockShifter.sendClientChanges(world);
+            BlockShifter.updateClient(world);
         }
     }
 
@@ -133,12 +104,28 @@ public class Volcano implements Listener {
             @Override
             public void run() {
                 int height = radius * 2 + center.getBlockY();
+                long sleep = 3000;
                 for (int i = center.getBlockY(); i < height; ++i) {
                     generateLayer(i);
                     try {
-                        Thread.sleep(30000);
-                    } catch (InterruptedException e) {
+                        Thread.sleep(sleep += 100);
+                    } catch (InterruptedException ignored) {
                     }
+                }
+                try {
+                    Thread.sleep(30000);
+                } catch (InterruptedException ignored) {
+                }
+
+                int x = center.getBlockX();
+                int y = center.getBlockY();
+                int z = center.getBlockZ();
+
+                world.createExplosion(x, y, z, 3 * power);
+                for (int i = y; i <= y; ++i) {
+                    world.createExplosion(x, i, z, power);
+                    fillLayer(11, x, i - 5, z);
+                    BlockShifter.updateClient(world);
                 }
             }
         });

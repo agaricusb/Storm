@@ -16,32 +16,37 @@ import java.util.Set;
 
 public class BlockShifter {
 
-    private static Set<Chunk> modifiedChunks = new HashSet();
+    private static final Set<Chunk> modifiedChunks = new HashSet<Chunk>();
 
     public static boolean setBlockFast(Block b, int typeId) {
         Chunk in = b.getChunk();
-        modifiedChunks.add(in);
-        return ((CraftChunk) in).getHandle().a(b.getX() & 15, b.getY(), b.getZ() & 15, typeId);
+        synchronized (modifiedChunks) {
+            modifiedChunks.add(in);
+            return ((CraftChunk) in).getHandle().a(b.getX() & 15, b.getY(), b.getZ() & 15, typeId);
+        }
     }
 
     public static boolean setBlockFast(Block b, int typeId, byte data) {
         Chunk in = b.getChunk();
-        modifiedChunks.add(in);
-        return ((CraftChunk) in).getHandle().a(b.getX() & 15, b.getY(), b.getZ() & 15, typeId, data);
+        synchronized (modifiedChunks) {
+            modifiedChunks.add(in);
+            return ((CraftChunk) in).getHandle().a(b.getX() & 15, b.getY(), b.getZ() & 15, typeId, data);
+        }
     }
 
     public static void updateClient(World world) {
-
         List<ChunkCoordIntPair> pairs = new ArrayList<ChunkCoordIntPair>();
-        for (Chunk cun : modifiedChunks) {
-            pairs.add(new ChunkCoordIntPair(cun.getX(), cun.getZ()));
+
+        synchronized (modifiedChunks) {
+            for (Chunk cun : modifiedChunks) {
+                pairs.add(new ChunkCoordIntPair(cun.getX(), cun.getZ()));
+            }
+            modifiedChunks = new HashSet<Chunk>();
         }
 
         for (Player player : world.getPlayers()) {
             queueChunks(((CraftPlayer) player).getHandle(), pairs);
         }
-
-        modifiedChunks = new HashSet();
     }
 
     private static void queueChunks(EntityPlayer ep, List<ChunkCoordIntPair> pairs) {
@@ -50,9 +55,7 @@ public class BlockShifter {
             queued.add((ChunkCoordIntPair) o);
         }
         for (ChunkCoordIntPair pair : pairs) {
-            if (!queued.contains(pair)) {
-                ep.chunkCoordIntPairQueue.add(pair);
-            }
+            ep.chunkCoordIntPairQueue.add(pair);
         }
     }
 }
