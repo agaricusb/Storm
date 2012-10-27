@@ -69,16 +69,20 @@ public class VolcanoControl implements Listener {
     }
 
     @EventHandler
-    void OnBlockFlow(BlockFromToEvent e) {
-        Block from = e.getBlock();
+    public void OnBlockFlow(BlockFromToEvent e) {
         Block to = e.getToBlock();
+        Block from = to.getRelative(e.getFace());
         World world = from.getWorld();
         for (Volcano volcano : VolcanoControl.volcanos) {
             if (volcano.ownsBlock(from)) {
                 if (from.getType() == Material.LAVA || from.getType() == Material.STATIONARY_LAVA) {
                     to.setType(to.getY() > volcano.getLayer() ? Material.LAVA : randomVolcanoBlock(world));
                     from.setType(randomVolcanoBlock(world));
+                } else {
+                    System.out.println("From isn't lava! Is: " + from.getType());
                 }
+            } else {
+                System.out.println("Volcano doesnt own block!");
             }
         }
     }

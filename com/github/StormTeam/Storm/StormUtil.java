@@ -414,8 +414,8 @@ public class StormUtil {
         for (int ox = radius; ox > -radius; ox--)
             for (int oz = radius; oz > -radius; oz--)
                 if (blocks.contains(world.getBlockAt(x + ox, y, z + oz).getTypeId()))
-                    return true;
-        return false;
+                    return false;
+        return true;
     }
 
     /**

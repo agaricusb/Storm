@@ -26,8 +26,6 @@ public class Blizzard {
 
     /**
      * Enables blizzard.
-     *
-     * @param storm The Storm plugin, used for CommandExecutor registration
      */
 
     public static void load() {

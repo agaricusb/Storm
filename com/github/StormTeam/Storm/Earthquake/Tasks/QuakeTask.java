@@ -14,13 +14,12 @@ import java.util.List;
  */
 public class QuakeTask implements Runnable {
 
-    private Storm s;
     private Quake q;
     private boolean toggle;
 
     public QuakeTask(Quake q, Storm s) {
         this.q = q;
-        this.s = s;
+        Storm s1 = s;
     }
 
 

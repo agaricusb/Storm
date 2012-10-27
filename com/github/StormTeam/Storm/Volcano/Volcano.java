@@ -19,6 +19,7 @@
 package com.github.StormTeam.Storm.Volcano;
 
 import com.github.StormTeam.Storm.BlockShifter;
+import com.github.StormTeam.Storm.ErrorLogger;
 import com.github.StormTeam.Storm.Math.PointsOnCircle;
 import com.github.StormTeam.Storm.Storm;
 import org.bukkit.Bukkit;
@@ -31,22 +32,23 @@ import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
 
 public class Volcano implements Listener {
     private Location center;
     private World world;
     private float power;
     private int radius;
-    private List<Vector> border;
 
     public Volcano(Location center, float power, int radius) {
         this.center = center;
         this.power = power;
         this.radius = radius;
         this.world = center.getWorld();
-        this.border = new ArrayList<Vector>();
+        List<Vector> border = new ArrayList<Vector>();
         for (Vector v : new PointsOnCircle(radius)) {
-            this.border.add(v);
+            border.add(v);
         }
     }
 
@@ -65,28 +67,41 @@ public class Volcano implements Listener {
         int y = center.getBlockY();
         int z = center.getBlockZ();
 
-        world.createExplosion(x, 5, z, 3 * power);
+        syncExplosion(x, 5, z, 3 * power);
+
+        sleep(512);
+
+        for (int i = 6; i <= y; i += 2) {
+            syncExplosion(x, i, z, power);
+
+            sleep(Storm.random.nextInt(1024) + 256);
+
+            fillLayer(11, x, i - 5, z);
+        }
+        syncExplosion(x, y, z, 4 * power);
+    }
+
+    void sleep(long time) {
         try {
-            Thread.sleep(512);
+            Thread.sleep(time);
         } catch (InterruptedException ignored) {
         }
-        for (int i = 6; i <= y; i += 2) {
-            world.createExplosion(x, i, z, power);
-            try {
-                Thread.sleep(Storm.random.nextInt(1024) + 256);
-            } catch (InterruptedException ignored) {
-            }
-            fillLayer(11, x, i - 5, z);
-            BlockShifter.updateClient(world);
-        }
-        world.createExplosion(x, y, z, 4 * power);
-        for (int i = y - 10; i <= y; ++i) {
-            try {
-                Thread.sleep(Storm.random.nextInt(1024) + 256);
-            } catch (InterruptedException ignored) {
-            }
-            fillLayer(11, x, i - 1, z);
-            BlockShifter.updateClient(world);
+    }
+
+    void syncExplosion(final int x, final int y, final int z, final float power) {
+        Future<Void> callExplosion = Bukkit.getScheduler().callSyncMethod(Storm.instance,
+                new Callable<Void>() {
+                    @Override
+                    public Void call() {
+                        world.createExplosion(x, y, z, power, true);
+                        return null;
+                    }
+                }
+        );
+        try {
+            callExplosion.get();
+        } catch (Exception e) {
+            ErrorLogger.generateErrorLog(e);
         }
     }
 
@@ -99,15 +114,17 @@ public class Volcano implements Listener {
         return Math.sqrt(Math.pow(a.getX() - b.getX(), 2) + Math.pow(a.getZ() - b.getZ(), 2));
     }
 
-    void fillLayer(int material, int x, int y, int z) {
+    void fillLayer(final int material, final int x, final int y, int z) {
         Location location = new Location(world, x, y, z);
-        Block block = location.getBlock();
+        final Block block = location.getBlock();
 
         if (block.getTypeId() != 0)
             return;
 
-        //   block.setTypeId(material);
         BlockShifter.setBlockFast(block, material);
+
+
+        //   block.setTypeId(material);
         // Recursively fill the adjacent blocks only if the current
         // location is within the radius specified
         if (distanceSurface(center, location) < this.radius) {
@@ -137,9 +154,9 @@ public class Volcano implements Listener {
         int y = center.getBlockY();
         int z = center.getBlockZ();
 
-        world.createExplosion(x, y, z, 3 * power);
+        syncExplosion(x, y, z, 3 * power);
         for (int i = y; i <= y; ++i) {
-            world.createExplosion(x, i, z, power);
+            syncExplosion(x, i, z, power);
             fillLayer(11, x, i - 5, z);
             BlockShifter.updateClient(world);
         }
@@ -148,7 +165,7 @@ public class Volcano implements Listener {
     void generateLayer(int y) {
         Location location = center.clone();
         location.setY(y);
-        location.getBlock().setType(Material.LAVA);
+        BlockShifter.syncSetBlock(location.getBlock(), Material.LAVA.getId());
     }
 
     public boolean ownsBlock(Block block) {
