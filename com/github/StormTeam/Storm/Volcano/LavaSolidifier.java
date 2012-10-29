@@ -18,7 +18,23 @@ public class LavaSolidifier {
         //http://redditpublic.com/wiki/Data_values#Water_and_Lava
 
         byte data = lava.getData();
-        int solidTime = data * tps * 2;
+        int multiplier = 0;
+
+        switch (data) {
+            case 0x00:
+                multiplier = 4;
+            case 0x02:
+                multiplier = 3;
+            case 0x04:
+                multiplier = 2;
+            case 0x06:
+            case 0x08:
+                multiplier = 1;
+            default:
+                multiplier = 2;
+        }
+
+        int solidTime = multiplier * tps * 2;
         BlockShifter.syncSetBlockDelayed(lava, idTo, solidTime);
     }
 }
