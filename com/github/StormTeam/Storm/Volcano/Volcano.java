@@ -20,18 +20,15 @@ package com.github.StormTeam.Storm.Volcano;
 
 import com.github.StormTeam.Storm.BlockShifter;
 import com.github.StormTeam.Storm.ErrorLogger;
-import com.github.StormTeam.Storm.Math.PointsOnCircle;
 import com.github.StormTeam.Storm.Storm;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
-import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 
@@ -40,52 +37,36 @@ public class Volcano implements Listener {
     private World world;
     private float power;
     private int radius;
-
+    public static boolean isListenerRegistered = false;
+    public static Listener controller;
     private int layer = 0;
-    public double growthRate = 1.7;
+    private int volcanoGrowthID = -1;
 
     public Volcano(Location center, float power, int radius) {
         this.center = center;
+        this.world = center.getWorld();
         this.power = power;
         this.radius = radius;
         this.world = center.getWorld();
-        List<Vector> border = new ArrayList<Vector>();
-        for (Vector v : new PointsOnCircle(radius)) {
-            border.add(v);
-        }
-    }
-
-    public Location getCenter() {
-        return this.center;
     }
 
     public void spawn() {
-        Bukkit.getScheduler().scheduleAsyncDelayedTask(Storm.instance, new Runnable() {
-            @Override
+        if (!isListenerRegistered) {
+            Storm.pm.registerEvents((controller = new VolcanoControl()), Storm.instance);
+        }
+        volcanoGrowthID = Bukkit.getScheduler().scheduleAsyncDelayedTask(Storm.instance, new Runnable() {
             public void run() {
-                //  makeShaft();
                 generateVolcanoAboveGround();
             }
         }, 10L);
     }
 
-    void makeShaft() {
-        int x = center.getBlockX();
-        int y = center.getBlockY();
-        int z = center.getBlockZ();
-
-        syncExplosion(x, 5, z, 3 * power);
-
-        sleep(512);
-
-        for (int i = 6; i <= y; i += 2) {
-            syncExplosion(x, i, z, power);
-
-            sleep(Storm.random.nextInt(1024) + 256);
-
-            fillLayer(11, x, i - 5, z);
+    public void remove() {
+        if (isListenerRegistered) {
+            HandlerList.unregisterAll(controller);
         }
-        syncExplosion(x, y, z, 4 * power);
+        if (Bukkit.getScheduler().isCurrentlyRunning(volcanoGrowthID))
+            Bukkit.getScheduler().cancelTask(volcanoGrowthID);
     }
 
     void sleep(long time) {
@@ -96,9 +77,8 @@ public class Volcano implements Listener {
     }
 
     void syncExplosion(final int x, final int y, final int z, final float power) {
-        Future<Void> callExplosion = Bukkit.getScheduler().callSyncMethod(Storm.instance,
+        Future callExplosion = Bukkit.getScheduler().callSyncMethod(Storm.instance,
                 new Callable<Void>() {
-                    @Override
                     public Void call() {
                         world.createExplosion(x, y, z, power, true);
                         return null;
@@ -112,46 +92,12 @@ public class Volcano implements Listener {
         }
     }
 
-    /*void randomExplosionsAroundShaftBorder(int y) {
-        Location location = center.clone();
-        location.add(border.get(Storm.random.nextInt(border.size())));
-    }*/
-
-    public double distanceSurface(Location a, Location b) {
-        return Math.sqrt(Math.pow(a.getX() - b.getX(), 2) + Math.pow(a.getZ() - b.getZ(), 2));
-    }
-
-
-    void fillLayer(final int material, final int x, final int y, int z) {
-        Location location = new Location(world, x, y, z);
-        final Block block = location.getBlock();
-
-        if (block.getTypeId() != 0)
-            return;
-
-        BlockShifter.setBlockFast(block, material);
-
-
-        //   block.setTypeId(material);
-        // Recursively fill the adjacent blocks only if the current
-        // location is within the radius specified
-        if (distanceSurface(center, location) < this.radius) {
-            fillLayer(material, x + 1, y, z);
-            fillLayer(material, x - 1, y, z);
-            fillLayer(material, x, y, z + 1);
-            fillLayer(material, x, y, z - 1);
-        }
-    }
-
     void generateVolcanoAboveGround() {
         int height = radius * 2 + center.getBlockY();
         long sleep = 15000;
         for (int i = center.getBlockY(); i < height; ++i) {
             generateLayer(i);
-            try {
-                Thread.sleep(sleep += 100);
-            } catch (InterruptedException ignored) {
-            }
+            sleep(sleep += 100);
         }
     }
 
@@ -168,20 +114,5 @@ public class Volcano implements Listener {
         Location location = block.getLocation();
         location.setY(center.getY());
         return location.distance(center) < this.radius * 2;
-    }
-
-    public int getLayer() {
-        return center.getBlockY();
-    }
-
-    Vector getFlight(Vector v, float power, double flight) {
-        double x = v.getX() > 0.0D ? flight : v.getX() == 0.0D ? -flight : Storm.random.nextBoolean() ? flight : -flight;
-        double y = power * 3.0F;
-        double z = v.getZ() > 0.0D ? flight : v.getZ() == 0.0D ? -flight : Storm.random.nextBoolean() ? flight : -flight;
-        return new Vector(x, y, z);
-    }
-
-    Vector getFlight(Location l, float power, double flight) {
-        return getFlight(l.subtract(center).toVector(), power, flight);
     }
 }
