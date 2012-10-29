@@ -17,24 +17,11 @@ public class LavaSolidifier {
         // (using the steps 0x0, 0x2, 0x4 and 0x6). If bit 0x8 is set, this liquid is "falling" and only spreads downward.
         //http://redditpublic.com/wiki/Data_values#Water_and_Lava
 
-        byte data = lava.getData();
-        int multiplier = 0;
+        int data = lava.getData();
 
-        switch (data) {
-            case 0x00:
-                multiplier = 4;
-            case 0x02:
-                multiplier = 3;
-            case 0x04:
-                multiplier = 2;
-            case 0x06:
-            case 0x08:
-                multiplier = 1;
-            default:
-                multiplier = 2;
-        }
+        //m = 4-(b - (b/2))
 
-        int solidTime = multiplier * tps * 2;
+        int solidTime = data == 8 ? 1 : 4 - data - data / 2 * tps * 2;
         BlockShifter.syncSetBlockDelayed(lava, idTo, solidTime);
     }
 }
