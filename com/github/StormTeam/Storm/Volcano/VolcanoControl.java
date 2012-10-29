@@ -95,8 +95,12 @@ public class VolcanoControl implements Listener {
                     int by = grow.getBlockY();
                     int bz = grow.getBlockZ();
 
-                    if (Storm.random.nextInt((int) Math.abs(Math.sqrt((Math.abs(vx - bx) ^ 2 + Math.abs(vz - bz) ^ 2) / 2 + Math.abs(vy - by)) * 2)) != 0)
-                        return;
+                    // int calc = (int) Math.abs(Math.sqrt((Math.abs(vx - bx) ^ 2 + Math.abs(vz - bz) ^ 2) / 2 + Math.abs(vy - by)) * 2);
+
+                    // calc = calc == 0 ? 1 : calc;
+
+                    // if (Storm.random.nextInt(calc) != 1)
+                    // return;
 
                     newSolidifier(from);
 

@@ -21,7 +21,8 @@ public class LavaSolidifier {
 
         //m = 4-(b - (b/2))
 
-        int solidTime = data == 8 ? 1 : 4 - data - data / 2 * tps * 2;
+        int solidTime = (data == 8 ? 1 : 4 - data - data / 2) * tps * 2;
+        System.out.println("BDATA: " + data + ". DELAY: " + solidTime + ".");
         BlockShifter.syncSetBlockDelayed(lava, idTo, solidTime);
     }
 }
