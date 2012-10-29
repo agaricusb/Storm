@@ -90,4 +90,14 @@ public class BlockShifter {
             ErrorLogger.generateErrorLog(e);
         }
     }
+
+    public static void syncSetBlockDelayed(final Block b, final int id, long delay) {
+        final int pre = b.getTypeId();
+        Bukkit.getScheduler().scheduleAsyncDelayedTask(Storm.instance, new Runnable() {
+            public void run() {
+                if (pre == b.getTypeId())
+                    syncSetBlock(b, id);
+            }
+        }, delay);
+    }
 }

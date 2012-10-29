@@ -37,9 +37,11 @@
 package com.github.StormTeam.Storm.Volcano;
 
 import com.github.StormTeam.Storm.Storm;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockFromToEvent;
@@ -68,21 +70,38 @@ public class VolcanoControl implements Listener {
         return randomVolcanoBlock(world.getName());
     }
 
+    void newSolidifier(Block lava) {
+        new LavaSolidifier(lava, randomVolcanoBlock(lava.getWorld()).getId());
+    }
+
     @EventHandler
     public void OnBlockFlow(BlockFromToEvent e) {
         Block to = e.getToBlock();
-        Block from = to.getRelative(e.getFace());
+        Block from = e.getBlock();
         World world = from.getWorld();
         for (Volcano volcano : VolcanoControl.volcanos) {
             if (volcano.ownsBlock(from)) {
-                if (from.getType() == Material.LAVA || from.getType() == Material.STATIONARY_LAVA) {
-                    to.setType(to.getY() > volcano.getLayer() ? Material.LAVA : randomVolcanoBlock(world));
-                    from.setType(randomVolcanoBlock(world));
-                } else {
-                    System.out.println("From isn't lava! Is: " + from.getType());
+                if (from.getTypeId() == 10 || from.getTypeId() == 11) {
+
+                    Block growth = from.getRelative(BlockFace.UP);
+
+                    Location center = volcano.getCenter();
+                    int vx = center.getBlockX();
+                    int vy = center.getBlockY();
+                    int vz = center.getBlockZ();
+
+                    Location grow = growth.getLocation();
+                    int bx = grow.getBlockX();
+                    int by = grow.getBlockY();
+                    int bz = grow.getBlockZ();
+
+                    if (Storm.random.nextInt((int) Math.abs(Math.sqrt((Math.abs(vx - bx) ^ 2 + Math.abs(vz - bz) ^ 2) / 2 + Math.abs(vy - by)) * 2)) != 0)
+                        return;
+
+                    newSolidifier(from);
+
+                    //BlockShifter.syncSetBlockDelayed(from.getRelative(BlockFace.UP), Material.LAVA.getId(), Storm.random.nextInt(80) + 40);
                 }
-            } else {
-                System.out.println("Volcano doesnt own block!");
             }
         }
     }

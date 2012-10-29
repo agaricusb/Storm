@@ -185,17 +185,17 @@ public class GlobalVariables extends ReflectConfiguration {
 //   public long Natural__Disasters_Earthquake_Scheduler_Recalculation__Intervals__In__Ticks = 72000;
     // Volcanoes
     public List<Integer> Volcano_Composition = new ArrayList<Integer>() {{
-        for (int i = 0; i < 20; ++i)
+        for (int i = 0; i < 100; ++i)
             add(Material.STONE.getId());
-        for (int i = 0; i < 5; ++i)
-            add(Material.COAL_ORE.getId());
-        for (int i = 0; i < 3; ++i)
-            add(Material.IRON_ORE.getId());
-        for (int i = 0; i < 2; ++i)
-            add(Material.GOLD_ORE.getId());
-        add(Material.DIAMOND_ORE.getId());
-        if (Storm.version > 1.2)
-            add(Material.EMERALD_ORE.getId());
+        // for (int i = 0; i < 5; ++i)
+        //    add(Material.COAL_ORE.getId());
+        //for (int i = 0; i < 3; ++i)
+        //    add(Material.IRON_ORE.getId());
+        // for (int i = 0; i < 2; ++i)
+        //     add(Material.GOLD_ORE.getId());
+        //  add(Material.DIAMOND_ORE.getId());
+        //  if (Storm.version > 1.2)
+        //      add(Material.EMERALD_ORE.getId());
     }};
     // Texture Packs
     @Newline(num = 2)

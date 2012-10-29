@@ -41,6 +41,9 @@ public class Volcano implements Listener {
     private float power;
     private int radius;
 
+    private int layer = 0;
+    public double growthRate = 1.7;
+
     public Volcano(Location center, float power, int radius) {
         this.center = center;
         this.power = power;
@@ -52,11 +55,15 @@ public class Volcano implements Listener {
         }
     }
 
+    public Location getCenter() {
+        return this.center;
+    }
+
     public void spawn() {
         Bukkit.getScheduler().scheduleAsyncDelayedTask(Storm.instance, new Runnable() {
             @Override
             public void run() {
-                makeShaft();
+                //  makeShaft();
                 generateVolcanoAboveGround();
             }
         }, 10L);
@@ -110,9 +117,10 @@ public class Volcano implements Listener {
         location.add(border.get(Storm.random.nextInt(border.size())));
     }*/
 
-    double distanceSurface(Location a, Location b) {
+    public double distanceSurface(Location a, Location b) {
         return Math.sqrt(Math.pow(a.getX() - b.getX(), 2) + Math.pow(a.getZ() - b.getZ(), 2));
     }
+
 
     void fillLayer(final int material, final int x, final int y, int z) {
         Location location = new Location(world, x, y, z);
@@ -137,7 +145,7 @@ public class Volcano implements Listener {
 
     void generateVolcanoAboveGround() {
         int height = radius * 2 + center.getBlockY();
-        long sleep = 3000;
+        long sleep = 15000;
         for (int i = center.getBlockY(); i < height; ++i) {
             generateLayer(i);
             try {
@@ -145,27 +153,13 @@ public class Volcano implements Listener {
             } catch (InterruptedException ignored) {
             }
         }
-        try {
-            Thread.sleep(30000);
-        } catch (InterruptedException ignored) {
-        }
-
-        int x = center.getBlockX();
-        int y = center.getBlockY();
-        int z = center.getBlockZ();
-
-        syncExplosion(x, y, z, 3 * power);
-        for (int i = y; i <= y; ++i) {
-            syncExplosion(x, i, z, power);
-            fillLayer(11, x, i - 5, z);
-            BlockShifter.updateClient(world);
-        }
     }
 
     void generateLayer(int y) {
         Location location = center.clone();
         location.setY(y);
         BlockShifter.syncSetBlock(location.getBlock(), Material.LAVA.getId());
+        layer = layer++;
     }
 
     public boolean ownsBlock(Block block) {

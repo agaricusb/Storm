@@ -22,6 +22,7 @@ import com.github.StormTeam.Storm.Weather.WeatherManager;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -78,7 +79,7 @@ public class Storm extends JavaPlugin implements Listener {
 
     @EventHandler
     public void spawnVulk(PlayerInteractEvent e) {
-        Block b = e.getClickedBlock();
+        Block b = e.getClickedBlock().getRelative(BlockFace.UP);
         if (b != null) {
             Volcano volcano = new Volcano(b.getLocation(), 10, 30);
             volcano.spawn();
