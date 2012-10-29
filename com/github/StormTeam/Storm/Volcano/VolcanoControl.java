@@ -19,6 +19,7 @@
 
 package com.github.StormTeam.Storm.Volcano;
 
+import com.github.StormTeam.Storm.BlockShifter;
 import com.github.StormTeam.Storm.Storm;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -50,12 +51,18 @@ public class VolcanoControl implements Listener {
         return randomVolcanoBlock(world.getName());
     }
 
+    static void solidify(Block lava, int idTo) {
+        int data;
+        if ((data = lava.getData()) != 0x9)
+            BlockShifter.syncSetBlockDelayed(lava, idTo, ((data & 0x8) == 0x8 ? 1 : 4 - data / 2) * 20 * 2);
+    }
+
     @EventHandler
     public void coolLava(BlockFromToEvent e) {
         Block from = e.getBlock();
         int id = from.getTypeId();
         for (Volcano volcano : VolcanoControl.volcanos)
             if (volcano.ownsBlock(from) && (id == 10 || id == 11))
-                new LavaSolidifier(from, randomVolcanoBlock(from.getWorld()));
+                solidify(from, randomVolcanoBlock(from.getWorld()));
     }
 }

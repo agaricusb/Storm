@@ -32,7 +32,7 @@ import org.bukkit.event.Listener;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 
-public class Volcano implements Listener {
+public class Volcano {
     private Location center;
     private World world;
     private float power;
