@@ -27,13 +27,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockFromToEvent;
 
+import java.io.*;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 public class VolcanoControl implements Listener {
-    static public Set<Volcano> volcanos = new HashSet();
+    static public Set<Volcano> volcanoes = new HashSet<Volcano>();
     static HashMap<String, List<Integer>> volcanoBlockCache = new HashMap<String, List<Integer>>();
 
     static List<Integer> getVolcanoBlock(String world) {
@@ -51,6 +52,19 @@ public class VolcanoControl implements Listener {
         return randomVolcanoBlock(world.getName());
     }
 
+    public static void save(File file) throws IOException {
+        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file));
+        oos.writeObject(volcanoes);
+        oos.close();
+    }
+
+    @SuppressWarnings("unchecked")
+    public static void load(File file) throws IOException, ClassNotFoundException {
+        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file));
+        volcanoes = (Set<Volcano>) ois.readObject();
+        ois.close();
+    }
+
     static void solidify(Block lava, int idTo) {
         int data;
         if ((data = lava.getData()) != 0x9)
@@ -61,7 +75,7 @@ public class VolcanoControl implements Listener {
     public void coolLava(BlockFromToEvent e) {
         Block from = e.getBlock();
         int id = from.getTypeId();
-        for (Volcano volcano : VolcanoControl.volcanos)
+        for (Volcano volcano : VolcanoControl.volcanoes)
             if (volcano.ownsBlock(from) && (id == 10 || id == 11))
                 solidify(from, randomVolcanoBlock(from.getWorld()));
     }
