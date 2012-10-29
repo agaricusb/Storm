@@ -21,6 +21,7 @@ package com.github.StormTeam.Storm.Volcano;
 
 import com.github.StormTeam.Storm.BlockShifter;
 import com.github.StormTeam.Storm.Storm;
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
@@ -54,15 +55,23 @@ public class VolcanoControl implements Listener {
     static void solidify(Block lava, int idTo) {
         int data;
         if ((data = lava.getData()) != 0x9)
-            BlockShifter.syncSetBlockDelayed(lava, idTo, ((data & 0x8) == 0x8 ? 1 : 4 - data / 2) * 20 * 2);
+            BlockShifter.syncSetBlockDelayed(lava, idTo, ((data & 0x8) == 0x8 ? 1 : 4 - data >> 1) * 20 * 2);
     }
 
     @EventHandler
-    public void coolLava(BlockFromToEvent e) {
-        Block from = e.getBlock();
-        int id = from.getTypeId();
-        for (Volcano volcano : VolcanoControl.volcanos)
-            if (volcano.ownsBlock(from) && (id == 10 || id == 11))
-                solidify(from, randomVolcanoBlock(from.getWorld()));
+    public void coolLava(final BlockFromToEvent e) {
+        if (e.isCancelled())
+            return;
+
+        //Don't hang the (main) thread.
+        Bukkit.getScheduler().scheduleAsyncDelayedTask(Storm.instance, new Runnable() {
+            public void run() {
+                Block from = e.getBlock();
+                int id = from.getTypeId();
+                for (Volcano volcano : VolcanoControl.volcanos)
+                    if ((id == 10 || id == 11) && volcano.ownsBlock(from))
+                        solidify(from, randomVolcanoBlock(from.getWorld()));
+            }
+        }, 0L);
     }
 }
