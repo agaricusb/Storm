@@ -21,20 +21,20 @@ package com.github.StormTeam.Storm.Volcano;
 
 import com.github.StormTeam.Storm.BlockShifter;
 import com.github.StormTeam.Storm.Storm;
-import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockFromToEvent;
 
+import java.io.*;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 public class VolcanoControl implements Listener {
-    static public Set<Volcano> volcanos = new HashSet();
+    static public Set<Volcano> volcanoes = new HashSet<Volcano>();
     static HashMap<String, List<Integer>> volcanoBlockCache = new HashMap<String, List<Integer>>();
 
     static List<Integer> getVolcanoBlock(String world) {
@@ -52,26 +52,30 @@ public class VolcanoControl implements Listener {
         return randomVolcanoBlock(world.getName());
     }
 
+    public static void save(File file) throws IOException {
+        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file));
+        oos.writeObject(volcanoes);
+        oos.close();
+    }
+
+    public static void load(File file) throws IOException, ClassNotFoundException {
+        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file));
+        volcanoes = (Set<Volcano>) ois.readObject();
+        ois.close();
+    }
+
     static void solidify(Block lava, int idTo) {
         int data;
         if ((data = lava.getData()) != 0x9)
-            BlockShifter.syncSetBlockDelayed(lava, idTo, ((data & 0x8) == 0x8 ? 1 : 4 - data >> 1) * 20 * 2);
+            BlockShifter.syncSetBlockDelayed(lava, idTo, ((data & 0x8) == 0x8 ? 1 : 4 - data / 2) * 20 * 2);
     }
 
     @EventHandler
-    public void coolLava(final BlockFromToEvent e) {
-        if (e.isCancelled())
-            return;
-
-        //Don't hang the (main) thread.
-        Bukkit.getScheduler().scheduleAsyncDelayedTask(Storm.instance, new Runnable() {
-            public void run() {
-                Block from = e.getBlock();
-                int id = from.getTypeId();
-                for (Volcano volcano : VolcanoControl.volcanos)
-                    if ((id == 10 || id == 11) && volcano.ownsBlock(from))
-                        solidify(from, randomVolcanoBlock(from.getWorld()));
-            }
-        }, 0L);
+    public void coolLava(BlockFromToEvent e) {
+        Block from = e.getBlock();
+        int id = from.getTypeId();
+        for (Volcano volcano : VolcanoControl.volcanoes)
+            if (volcano.ownsBlock(from) && (id == 10 || id == 11))
+                solidify(from, randomVolcanoBlock(from.getWorld()));
     }
 }

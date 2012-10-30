@@ -20,6 +20,7 @@ package com.github.StormTeam.Storm.Volcano;
 
 import com.github.StormTeam.Storm.BlockShifter;
 import com.github.StormTeam.Storm.ErrorLogger;
+import com.github.StormTeam.Storm.Serialization.SerializableLocation;
 import com.github.StormTeam.Storm.Storm;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -29,25 +30,43 @@ import org.bukkit.block.Block;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 
+import java.io.File;
+import java.io.Serializable;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 
-public class Volcano {
-    private Location center;
-    private World world;
+public class Volcano implements Serializable {
+    private SerializableLocation center;
+    public transient World world;
     private float power;
-    private int radius;
-    public static boolean isListenerRegistered = false;
-    public static Listener controller;
-    private int layer = 0;
-    private int volcanoGrowthID = -1;
+    public int radius;
+    private transient static boolean isListenerRegistered = false;
+    private transient static Listener controller;
+    public transient int layer = 0;
+    private transient int volcanoGrowthID = -1;
+    private transient File vulkanos;
+    public int x, y, z;
 
     public Volcano(Location center, float power, int radius) {
-        this.center = center;
+        this.center = new SerializableLocation(center);
         this.world = center.getWorld();
         this.power = power;
         this.radius = radius;
         this.world = center.getWorld();
+        this.vulkanos = new File(Storm.instance.getDataFolder() + File.separator + "volcanoes.bin");
+    }
+
+    public Volcano(World world, int x, int y, int z, float power, int radius) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.center = new SerializableLocation(new Location(world, x, y, z));
+        this.world = center.getWorld();
+        this.power = power;
+        this.radius = radius;
+        this.world = center.getWorld();
+        this.vulkanos = new File(Storm.instance.getDataFolder() + File.separator + "volcanoes.bin");
+
     }
 
     public void spawn() {
@@ -102,7 +121,8 @@ public class Volcano {
     }
 
     void generateLayer(int y) {
-        Location location = center.clone();
+        dumpVolcanoes();
+        Location location = center.getLocation().clone();
         location.setY(y);
         BlockShifter.syncSetBlock(location.getBlock(), Material.LAVA.getId());
         layer = layer++;
@@ -112,7 +132,18 @@ public class Volcano {
         if (block.getWorld() != world)
             return false;
         Location location = block.getLocation();
-        location.setY(center.getY());
-        return location.distance(center) < this.radius * 2;
+        location.setY(center.getBlockY());
+        return location.distance(center.getLocation()) < this.radius * 2;
+    }
+
+    public void dumpVolcanoes() {
+        try {
+            if (!vulkanos.exists())
+                if (!vulkanos.createNewFile())
+                    return;
+            VolcanoControl.save(vulkanos);
+        } catch (Exception e) {
+            ErrorLogger.generateErrorLog(e);
+        }
     }
 }

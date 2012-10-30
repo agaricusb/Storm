@@ -39,6 +39,7 @@ import java.util.logging.Level;
 
 public class Storm extends JavaPlugin implements Listener {
 
+    @SuppressWarnings("UnusedDeclaration")
     private String _ =
             "Dear BukkitDev administrator(s):" +
                     "Thank you for your time in reviewing this project! If you find anything" +
@@ -78,12 +79,12 @@ public class Storm extends JavaPlugin implements Listener {
      */
 
     @EventHandler
-    public void spawnVulk(PlayerInteractEvent e) {
+    public void spawnVolcano(PlayerInteractEvent e) {
         Block b = e.getClickedBlock().getRelative(BlockFace.UP);
         if (b != null) {
             Volcano volcano = new Volcano(b.getLocation(), 10, 30);
             volcano.spawn();
-            VolcanoControl.volcanos.add(volcano);
+            VolcanoControl.volcanoes.add(volcano);
         }
 
     }
@@ -127,11 +128,12 @@ public class Storm extends JavaPlugin implements Listener {
     }
 
     private void configureVersion() {
-        String vers = getServer().getVersion();
-        if (vers.contains("1.2.")) {
+        String version1 = getServer().getVersion();
+        // TODO: change to startsWith if possible
+        if (version1.contains("1.2.")) {
             version = 1.2;
         } else {
-            if (vers.contains("1.3.")) {
+            if (version1.contains("1.3.")) {
                 version = 1.3;
             } else {
                 getLogger().log(Level.SEVERE, "Unsupported MC version detected! Bad things may happen!");
