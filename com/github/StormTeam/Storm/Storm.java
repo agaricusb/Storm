@@ -16,8 +16,8 @@
  */
 package com.github.StormTeam.Storm;
 
-import com.github.StormTeam.Storm.Volcano.Volcano;
 import com.github.StormTeam.Storm.Volcano.VolcanoControl;
+import com.github.StormTeam.Storm.Volcano.VolcanoMaker;
 import com.github.StormTeam.Storm.Weather.WeatherManager;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -82,7 +82,7 @@ public class Storm extends JavaPlugin implements Listener {
     public void spawnVolcano(PlayerInteractEvent e) {
         Block b = e.getClickedBlock().getRelative(BlockFace.UP);
         if (b != null) {
-            Volcano volcano = new Volcano(b.getLocation(), 10, 30);
+            VolcanoMaker volcano = new VolcanoMaker(b.getLocation(), 10, 30, 0);
             volcano.spawn();
             VolcanoControl.volcanoes.add(volcano);
         }
@@ -119,6 +119,7 @@ public class Storm extends JavaPlugin implements Listener {
             com.github.StormTeam.Storm.Blizzard.Blizzard.load();
             com.github.StormTeam.Storm.Meteors.Meteor.load();
             com.github.StormTeam.Storm.Thunder_Storm.ThunderStorm.load();
+            com.github.StormTeam.Storm.Volcano.Volcano.load();
 
         } catch (Exception e) {
             getLogger().log(Level.SEVERE, "Storm failed to start.");
