@@ -84,7 +84,6 @@ public class Storm extends JavaPlugin implements Listener {
         if (b != null) {
             VolcanoMaker volcano = new VolcanoMaker(b.getLocation(), 10, 30, 0);
             volcano.spawn();
-            VolcanoControl.volcanoes.add(volcano);
         }
 
     }

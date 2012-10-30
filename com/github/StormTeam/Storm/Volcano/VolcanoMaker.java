@@ -37,9 +37,9 @@ public class VolcanoMaker {
     private World world;
     public float power;
     public int radius;
-    public transient Listener controller = null;
+    public Listener controller = null;
     public int layer = 0;
-    public transient int volcanoGrowthID = -1;
+    public int volcanoGrowthID = -1;
 
     public VolcanoMaker(Location center, float power, int radius, int layer) {
         this.center = center;
@@ -87,21 +87,23 @@ public class VolcanoMaker {
 
 
         try {
-            controller = new VolcanoControl();
-            Storm.pm.registerEvents(controller, Storm.instance);
+            if (controller == null) {
+                controller = new VolcanoControl();
+                Storm.pm.registerEvents(controller, Storm.instance);
+            }
         } catch (Exception e) {
             ErrorLogger.generateErrorLog(e);
         }
-
-        System.out.println(serialize());
+        VolcanoControl.volcanoes.add(this);
     }
 
     public void remove() {
-        if (controller != null) {
+        if (controller != null && VolcanoControl.volcanoes.isEmpty()) {
             HandlerList.unregisterAll(controller);
         }
         if (Bukkit.getScheduler().isCurrentlyRunning(volcanoGrowthID))
             Bukkit.getScheduler().cancelTask(volcanoGrowthID);
+        VolcanoControl.volcanoes.remove(this);
     }
 
     void sleep(long time) {
