@@ -116,8 +116,8 @@ public class VolcanoMaker {
     void generateVolcanoAboveGround() {
         int height = radius * 2 + center.getBlockY();
         long sleep = 15000;
-        for (int i = center.getBlockY(); i < height; ++i) {
-            generateLayer(i);
+        for (int i = 0; i < height; ++i) {
+            generateLayer(center.getBlockY() + layer);
             sleep(sleep += 100);
         }
     }
@@ -127,7 +127,7 @@ public class VolcanoMaker {
         Location location = center.clone();
         location.setY(y);
         BlockShifter.syncSetBlock(location.getBlock(), Material.LAVA.getId());
-        layer = layer++;
+        layer++;
     }
 
     public boolean ownsBlock(Block block) {
