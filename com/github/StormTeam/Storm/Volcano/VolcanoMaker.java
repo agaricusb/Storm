@@ -49,10 +49,12 @@ import org.bukkit.event.Listener;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
 
 public class VolcanoMaker {
     public Location center;
-    private World world;
+    public World world;
     public float power;
     public int radius;
     public Listener controller = null;
@@ -66,6 +68,9 @@ public class VolcanoMaker {
         this.power = power;
         this.radius = radius;
         this.layer = layer;
+    }
+
+    public VolcanoMaker() {
     }
 
     public String serialize() {
@@ -165,7 +170,24 @@ public class VolcanoMaker {
                 location.setY(center.getBlockY() + layer);
                 syncExplosion(location, 5f);
             }
-        }, 1L);
+        }, 1L, 15000L);
+    }
+
+    void syncExplosion(final Location exp, final float power) {
+        Future<Void> callExplosion = Bukkit.getScheduler().callSyncMethod(Storm.instance,
+                new Callable<Void>() {
+                    @Override
+                    public Void call() {
+                        world.createExplosion(exp, power, true);
+                        return null;
+                    }
+                }
+        );
+        try {
+            callExplosion.get();
+        } catch (Exception e) {
+            ErrorLogger.generateErrorLog(e);
+        }
     }
 
     public void dumpVolcanoes() {
