@@ -21,7 +21,10 @@ package com.github.StormTeam.Storm.Volcano;
 import com.github.StormTeam.Storm.BlockShifter;
 import com.github.StormTeam.Storm.ErrorLogger;
 import com.github.StormTeam.Storm.Storm;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -30,14 +33,14 @@ import java.util.Arrays;
 import java.util.List;
 
 public class VolcanoMaker {
-    private Location center;
-    private Chunk centerChunk;
+    public Location center;
     private World world;
-    private float power;
-    private int radius;
-    private Listener controller = null;
-    private int layer = 0;
-    private int volcanoGrowthID = -1;
+    public float power;
+    public int radius;
+    public Listener controller = null;
+    public int layer = 0;
+    public int volcanoGrowthID = -1;
+    public boolean active = true;
 
     public VolcanoMaker(Location center, float power, int radius, int layer) {
         this.center = center;
@@ -45,19 +48,6 @@ public class VolcanoMaker {
         this.power = power;
         this.radius = radius;
         this.layer = layer;
-    }
-
-    public VolcanoMaker() {
-    }
-
-    ;
-
-    public World getWorld() {
-        return this.world;
-    }
-
-    public Location getCenter() {
-        return this.center;
     }
 
     public String serialize() {
@@ -68,6 +58,7 @@ public class VolcanoMaker {
         serialized.append("|" + world.getName());
         serialized.append("|" + (int) radius);
         serialized.append("|" + (int) layer);
+        serialized.append("|" + active);
 
         //  String back = ":45:48:99:world:30:5\n";
         return serialized.toString() + "\n";
@@ -76,9 +67,7 @@ public class VolcanoMaker {
     public void deserialize(String de) {
         de = de.replace("\n", "");
         System.out.println(de);
-        List<String> split = Arrays.asList(de.split("\\|"));
-
-        System.out.println(split);
+        List<String> split = Arrays.asList(de.split("|"));
 
         int x = Integer.parseInt(split.get(0));
         int y = Integer.parseInt(split.get(1));
@@ -88,6 +77,7 @@ public class VolcanoMaker {
         center = new Location(world, x, y, z);
         radius = Integer.parseInt(split.get(4));
         layer = Integer.parseInt(split.get(5));
+        active = Boolean.valueOf(split.get(6));
     }
 
     public void spawn() {
@@ -108,7 +98,6 @@ public class VolcanoMaker {
             ErrorLogger.generateErrorLog(e);
         }
         VolcanoControl.volcanoes.add(this);
-        this.centerChunk = world.getChunkAt(center);
     }
 
     public void remove() {
@@ -131,8 +120,6 @@ public class VolcanoMaker {
         int height = radius * 2 + center.getBlockY();
         long sleep = 15000;
         for (int i = 0; i < height; ++i) {
-            if (!centerChunk.isLoaded())
-                continue;
             generateLayer(center.getBlockY() + layer);
             sleep(sleep += 100);
         }
@@ -153,6 +140,16 @@ public class VolcanoMaker {
         Location location = block.getLocation();
         location.setY(center.getBlockY());
         return location.distance(center) < this.radius * 2;
+    }
+    
+    public void erupt() {
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(Storm.instance, new Runnable() {
+            public void run() {
+                Location location = center.clone();
+                location.setY(center.getBlockY() + layer);
+                syncExplosion(location, 5f);
+            }
+        }, 1L);
     }
 
     public void dumpVolcanoes() {
