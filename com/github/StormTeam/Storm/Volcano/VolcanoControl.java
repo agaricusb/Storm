@@ -101,7 +101,7 @@ public class VolcanoControl implements Listener {
         Block from = e.getBlock();
         int id = from.getTypeId();
         for (VolcanoMaker volcano : volcanoes) {
-            if (volcano.ownsBlock(from) && (id == 10 || id == 11))
+            if (((id & 0xfe) == 0xa) && volcano.active && volcano.ownsBlock(from))
                 solidify(from, randomVolcanoBlock(from.getWorld()));
         }
     }
