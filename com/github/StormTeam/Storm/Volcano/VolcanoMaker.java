@@ -129,13 +129,7 @@ public class VolcanoMaker {
         dumpVolcanoes();
         Location location = center.clone();
         location.setY(y);
-        Block nonAir = location.getBlock();
-        if(nonAir.getTypeId() == 0) {
-            layer--;
-            generateLayer(layer);
-            return;
-        }    
-        BlockShifter.syncSetBlock(nonAir, Material.LAVA.getId());
+        BlockShifter.syncSetBlock(location.getBlock(), Material.LAVA.getId());
         layer++;
     }
 
@@ -146,6 +140,16 @@ public class VolcanoMaker {
         Location location = block.getLocation();
         location.setY(center.getBlockY());
         return location.distance(center) < this.radius * 2;
+    }
+    
+    public void erupt() {
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(Storm.instance, new Runnable() {
+            public void run() {
+                Location location = center.clone();
+                location.setY(center.getBlockY() + layer);
+                syncExplosion(location, 5f);
+            }
+        }, 1L);
     }
 
     public void dumpVolcanoes() {
