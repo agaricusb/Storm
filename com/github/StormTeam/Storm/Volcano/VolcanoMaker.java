@@ -40,6 +40,7 @@ public class VolcanoMaker {
     public Listener controller = null;
     public int layer = 0;
     public int volcanoGrowthID = -1;
+    public boolean active = true;
 
     public VolcanoMaker(Location center, float power, int radius, int layer) {
         this.center = center;
@@ -57,6 +58,7 @@ public class VolcanoMaker {
         serialized.append("|" + world.getName());
         serialized.append("|" + (int) radius);
         serialized.append("|" + (int) layer);
+        serialized.append("|" + active);
 
         //  String back = ":45:48:99:world:30:5\n";
         return serialized.toString() + "\n";
@@ -75,6 +77,7 @@ public class VolcanoMaker {
         center = new Location(world, x, y, z);
         radius = Integer.parseInt(split.get(4));
         layer = Integer.parseInt(split.get(5));
+        active = Boolean.valueOf(split.get(6));
     }
 
     public void spawn() {
