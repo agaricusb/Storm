@@ -129,7 +129,13 @@ public class VolcanoMaker {
         dumpVolcanoes();
         Location location = center.clone();
         location.setY(y);
-        BlockShifter.syncSetBlock(location.getBlock(), Material.LAVA.getId());
+        Block nonAir = location.getBlock();
+        if(nonAir.getTypeId() == 0) {
+            layer--;
+            generateLayer(layer);
+            return;
+        }    
+        BlockShifter.syncSetBlock(nonAir, Material.LAVA.getId());
         layer++;
     }
 
