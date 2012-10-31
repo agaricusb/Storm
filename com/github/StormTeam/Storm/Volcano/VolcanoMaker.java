@@ -21,10 +21,7 @@ package com.github.StormTeam.Storm.Volcano;
 import com.github.StormTeam.Storm.BlockShifter;
 import com.github.StormTeam.Storm.ErrorLogger;
 import com.github.StormTeam.Storm.Storm;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -33,13 +30,14 @@ import java.util.Arrays;
 import java.util.List;
 
 public class VolcanoMaker {
-    public Location center;
+    private Location center;
+    private Chunk centerChunk;
     private World world;
-    public float power;
-    public int radius;
-    public Listener controller = null;
-    public int layer = 0;
-    public int volcanoGrowthID = -1;
+    private float power;
+    private int radius;
+    private Listener controller = null;
+    private int layer = 0;
+    private int volcanoGrowthID = -1;
 
     public VolcanoMaker(Location center, float power, int radius, int layer) {
         this.center = center;
@@ -47,6 +45,19 @@ public class VolcanoMaker {
         this.power = power;
         this.radius = radius;
         this.layer = layer;
+    }
+
+    public VolcanoMaker() {
+    }
+
+    ;
+
+    public World getWorld() {
+        return this.world;
+    }
+
+    public Location getCenter() {
+        return this.center;
     }
 
     public String serialize() {
@@ -65,7 +76,9 @@ public class VolcanoMaker {
     public void deserialize(String de) {
         de = de.replace("\n", "");
         System.out.println(de);
-        List<String> split = Arrays.asList(de.split("|"));
+        List<String> split = Arrays.asList(de.split("\\|"));
+
+        System.out.println(split);
 
         int x = Integer.parseInt(split.get(0));
         int y = Integer.parseInt(split.get(1));
@@ -95,6 +108,7 @@ public class VolcanoMaker {
             ErrorLogger.generateErrorLog(e);
         }
         VolcanoControl.volcanoes.add(this);
+        this.centerChunk = world.getChunkAt(center);
     }
 
     public void remove() {
@@ -117,6 +131,8 @@ public class VolcanoMaker {
         int height = radius * 2 + center.getBlockY();
         long sleep = 15000;
         for (int i = 0; i < height; ++i) {
+            if (!centerChunk.isLoaded())
+                continue;
             generateLayer(center.getBlockY() + layer);
             sleep(sleep += 100);
         }
