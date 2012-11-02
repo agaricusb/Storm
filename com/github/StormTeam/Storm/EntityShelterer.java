@@ -11,6 +11,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -25,7 +26,17 @@ public class EntityShelterer {
     private Method register;
     private ArrayList<Integer> registered = new ArrayList<Integer>();
     private Set<Biome> filter = new HashSet();
+    private Set<Class<?>> filteredEntities = new HashSet() {{
+        add(EntityPlayer.class);
+        add(EntitySlime.class);
+        if (Storm.version > 1.3) {
+            add(EntityBat.class);
+            add(EntityWitch.class);
+        }
+    }};
     private String name;
+    private Method vec3DCreate;
+
 
     public EntityShelterer(Storm storm, String affectedWorld, String name, Set<Biome> biomeFilter) {
         this.storm = storm;
@@ -33,6 +44,10 @@ public class EntityShelterer {
         this.name = name;
         this.filter = biomeFilter;
         try {
+            if (Storm.version <= 1.3)
+                vec3DCreate = Vec3D.class.getDeclaredMethod("a", int.class, int.class, int.class);
+            else
+                vec3DCreate = Vec3D.class.getDeclaredMethod("a", double.class, double.class, double.class);
             selector = EntityLiving.class.getDeclaredField("goalSelector");
             register = PathfinderGoalSelector.class.getDeclaredMethod("a", int.class, PathfinderGoal.class);
             selector.setAccessible(true);
@@ -50,8 +65,7 @@ public class EntityShelterer {
                     for (Entity en : affectedWorld.getEntities()) {
                         net.minecraft.server.Entity notchMob = ((CraftEntity) en).getHandle();
                         if (notchMob instanceof EntityLiving) {
-                            if (!(notchMob instanceof EntityPlayer) &&
-                                    !(notchMob instanceof EntitySlime)) {
+                            if (!filteredEntities.contains(notchMob.getClass())) {
                                 int eid = en.getEntityId();
                                 if (!registered.contains(eid) && filter.contains(en.getLocation().getBlock().getBiome())) {
                                     register.invoke(selector.get(notchMob), 1, new PathfinderGoalFleeSky((EntityCreature) notchMob, 0.25F, name));
@@ -152,29 +166,48 @@ public class EntityShelterer {
         }
 
         private boolean setup() {
-            if (!Storm.manager.getActiveWeathers(world.getWorld().getName()).contains(name) || !isUnderSky())
-                return false;
-            Vec3D path = getPathToShelter();
-            if (path == null) {
+            try {
+                if (!Storm.manager.getActiveWeathers(world.getWorld().getName()).contains(name) || !isUnderSky())
+                    return false;
+                Vec3D path = getPathToShelter();
+                if (path == null) {
+                    return false;
+                }
+                setup(path);
+                return true;
+            } catch (Exception e) {
+                ErrorLogger.generateErrorLog(e);
                 return false;
             }
-            setup(path);
-            return true;
         }
 
         private void setup(Vec3D path) {
-            x = path.a;
-            y = path.b;
-            z = path.c;
+
+            if (Storm.version <= 1.3) {
+                x = (Integer) ((Object) path.a);
+                y = (Integer) ((Object) path.b);
+                z = (Integer) ((Object) path.c);
+                return;
+            }
+
+            //NASTY!
+            x = (int) path.c;
+            y = (int) path.d;
+            z = (int) path.e;
+
         }
 
-        private Vec3D getPathToShelter() {
+        private Vec3D getPathToShelter() throws InvocationTargetException, IllegalAccessException {
             for (int i = 0; i < 20; i++) {
                 int px = MathHelper.floor((entity.locX + (double) Storm.random.nextInt(20)) - 10D),
                         py = MathHelper.floor((entity.boundingBox.b + (double) Storm.random.nextInt(12)) - 6D),
                         pz = MathHelper.floor((entity.locZ + (double) Storm.random.nextInt(20)) - 10D);
                 if (!isUnderSky(world, px, py, pz))
-                    return Vec3D.a().create(px, py, pz);
+                    if (Storm.version <= 1.3)
+                        return (Vec3D) vec3DCreate.invoke(null, px, py, pz);
+                    else
+                        return (Vec3D) vec3DCreate.invoke(null, (double) px, (double) py, (double) pz);
+
             }
             return null;
         }

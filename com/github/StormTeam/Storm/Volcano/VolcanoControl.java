@@ -20,9 +20,11 @@
 package com.github.StormTeam.Storm.Volcano;
 
 import com.github.StormTeam.Storm.BlockShifter;
+import com.github.StormTeam.Storm.ErrorLogger;
 import com.github.StormTeam.Storm.Storm;
 import com.google.common.io.Files;
 import org.apache.commons.lang.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -87,17 +89,28 @@ public class VolcanoControl implements Listener {
         return randomVolcanoBlock(world.getName());
     }
 
-    public static void save(File dump) throws IOException {
+    public static void save(final File dump) {
         synchronized (mutex) {
-            if (!dump.exists())
-                dump.createNewFile();
-            String contents = "";
-            for (VolcanoMaker vulc : volcanoes) {
-                contents = contents + vulc.serialize();
+            Bukkit.getScheduler().scheduleAsyncDelayedTask(Storm.instance, new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        if (!dump.exists())
+                            dump.createNewFile();
+                        String contents = "";
+                        for (VolcanoMaker vulc : volcanoes) {
+                            contents = contents + vulc.serialize();
+                        }
+                        BufferedWriter writer = new BufferedWriter(new FileWriter(dump));
+                        writer.write(contents);
+                        writer.close();
+                    } catch (Exception e) {
+                        ErrorLogger.generateErrorLog(e);
+                    }
+                }
             }
-            BufferedWriter writer = new BufferedWriter(new FileWriter(dump));
-            writer.write(contents);
-            writer.close();
+            );
+
         }
     }
 
@@ -118,8 +131,6 @@ public class VolcanoControl implements Listener {
         int data;
         if ((data = lava.getData()) != 0x9)
             BlockShifter.syncSetBlockDelayed(lava, idTo, ((data & 0x8) == 0x8 ? 1 : 4 - data / 2) * 20 * 2);
-        else
-            return;
         if (anchoredChunks.containsKey(lava.getWorld()))
             anchoredChunks.get(lava.getWorld()).add(lava.getChunk());
     }

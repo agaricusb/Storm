@@ -1,6 +1,8 @@
 package com.github.StormTeam.Storm.Weather;
 
 import com.github.StormTeam.Storm.Storm;
+import org.bukkit.Bukkit;
+import org.bukkit.World;
 
 import java.util.Set;
 
@@ -17,6 +19,7 @@ public abstract class StormWeather {
     protected StormWeather(Storm storm, String world) {
         this.storm = storm;
         this.world = world;
+        this.bukkitWorld = Bukkit.getWorld(world);
     }
 
     /**
@@ -63,4 +66,6 @@ public abstract class StormWeather {
      * The storm plugin object.
      */
     protected Storm storm;
+
+    protected World bukkitWorld;
 }

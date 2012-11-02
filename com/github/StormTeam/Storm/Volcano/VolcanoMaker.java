@@ -41,7 +41,6 @@ import com.github.StormTeam.Storm.ErrorLogger;
 import com.github.StormTeam.Storm.Storm;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.event.HandlerList;
@@ -104,14 +103,7 @@ public class VolcanoMaker {
     }
 
     public void spawn() {
-
-        volcanoGrowthID = Bukkit.getScheduler().scheduleAsyncDelayedTask(Storm.instance, new Runnable() {
-            public void run() {
-                generateVolcanoAboveGround();
-            }
-        }, 0L);
-
-
+        grow(true);
         try {
             if (controller == null) {
                 controller = new VolcanoControl();
@@ -127,9 +119,20 @@ public class VolcanoMaker {
         if (controller != null && VolcanoControl.volcanoes.isEmpty()) {
             HandlerList.unregisterAll(controller);
         }
-        if (Bukkit.getScheduler().isCurrentlyRunning(volcanoGrowthID))
-            Bukkit.getScheduler().cancelTask(volcanoGrowthID);
+        grow(false);
         VolcanoControl.volcanoes.remove(this);
+    }
+
+    public void grow(boolean flag) {
+        if (flag)
+            if (!Bukkit.getScheduler().isCurrentlyRunning(volcanoGrowthID))
+                volcanoGrowthID = Bukkit.getScheduler().scheduleAsyncDelayedTask(Storm.instance, new Runnable() {
+                    public void run() {
+                        generateVolcanoAboveGround();
+                    }
+                }, 0L);
+            else if (Bukkit.getScheduler().isCurrentlyRunning(volcanoGrowthID))
+                Bukkit.getScheduler().cancelTask(volcanoGrowthID);
     }
 
     void sleep(long time) {
@@ -146,14 +149,17 @@ public class VolcanoMaker {
             generateLayer(center.getBlockY() + layer);
             sleep(sleep += 100);
         }
+        grow(false);
     }
 
     void generateLayer(int y) {
         dumpVolcanoes();
         Location location = center.clone();
         location.setY(y);
-        BlockShifter.syncSetBlock(location.getBlock(), Material.LAVA.getId());
-        layer++;
+        synchronized (location) {
+            BlockShifter.syncSetBlock(location.getBlock(), 11);
+            layer++;
+        }
     }
 
     public boolean ownsBlock(Block block) {

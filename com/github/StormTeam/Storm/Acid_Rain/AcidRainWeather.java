@@ -46,7 +46,7 @@ public class AcidRainWeather extends StormWeather {
             return;
         }
 
-        Storm.util.broadcast(glob.Acid__Rain_Messages_On__Acid__Rain__Start, world);
+        Storm.util.broadcast(glob.Acid__Rain_Messages_On__Acid__Rain__Start, bukkitWorld);
 
         if (glob.Features_Acid__Rain_Entity__Damaging || glob.Features_Blizzards_Player__Damaging) {
             enDamager = new EntityDamagerTask(storm, world);
@@ -73,7 +73,7 @@ public class AcidRainWeather extends StormWeather {
     @Override
     public void end() {
         try {
-            Storm.util.broadcast(glob.Acid__Rain_Messages_On__Acid__Rain__Stop, world);
+            Storm.util.broadcast(glob.Acid__Rain_Messages_On__Acid__Rain__Stop, bukkitWorld);
             enDamager.stop();
             enDamager = null;
             shelter.stop();

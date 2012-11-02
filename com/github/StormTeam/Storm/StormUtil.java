@@ -29,13 +29,13 @@ import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.CraftWorld;
-import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.logging.Level;
@@ -53,6 +53,7 @@ public class StormUtil {
     private boolean hasWG = false;
     private boolean hasResidence = false;
     private Field isRaining, isThundering, rainTicks, thunderTicks;
+    private Method explode;
     private Logger log;
 
     /**
@@ -74,13 +75,23 @@ public class StormUtil {
             isThundering.setAccessible(true);
             rainTicks = WorldData.class.getDeclaredField("rainTicks");
             rainTicks.setAccessible(true);
-            thunderTicks = WorldData.class.getDeclaredField("rainTicks");
+            thunderTicks = WorldData.class.getDeclaredField("thunderTicks");
             thunderTicks.setAccessible(true);
+
+            if (Storm.version >= 1.4D) {
+                explode = net.minecraft.server.World.class.getDeclaredMethod("createExplosion",
+                        net.minecraft.server.Entity.class, double.class, double.class, double.class, float.class, boolean.class, boolean.class);
+                //(Entity entity, double d0, double d1, double d2, float f, boolean flag, boolean flag1)
+
+            } else {
+                explode = net.minecraft.server.World.class.getDeclaredMethod("createExplosion",
+                        net.minecraft.server.Entity.class, double.class, double.class, double.class, float.class, boolean.class);
+            }
 
             log = plugin.getLogger();
 
         } catch (Exception e) {
-            ErrorLogger.generateErrorLog(e);
+            e.printStackTrace();
         }
     }
 
@@ -153,9 +164,10 @@ public class StormUtil {
      * @param world   Bukkit world object
      */
     public void broadcast(String message, World world) {
-        for (Player p : world.getPlayers()) {
-            message(p, message);
-        }
+        if (world != null)
+            for (Player p : world.getPlayers()) {
+                message(p, message);
+            }
     }
 
     /**
@@ -299,6 +311,18 @@ public class StormUtil {
         return playerList;
     }
 
+    public void createExplosion(net.minecraft.server.Entity entityMeteor, double locX, double locY, double locZ, float trailPower, boolean b) {
+        try {
+            if (Storm.version >= 1.4)
+                explode.invoke(entityMeteor.world, locX, locY, locZ, trailPower, b, true);
+            else
+                explode.invoke(entityMeteor.world, locX, locY, locZ, trailPower, b);
+        } catch (Exception e) {
+            entityMeteor.world.getWorld().createExplosion(locX, locY, locZ, trailPower);
+            ErrorLogger.generateErrorLog(e);
+        }
+    }
+
     /**
      * Applies a list of transformation on a block, if the block is not protected.
      *
@@ -419,39 +443,6 @@ public class StormUtil {
     }
 
     /**
-     * Gets a location that is safe for the entity.
-     *
-     * @param entity The entity
-     * @param radius The radius to search in
-     * @return Returns a safe location.
-     */
-    public Location getSafeLocation(Entity entity, int radius) {
-        Location location = entity.getLocation();
-        World world = location.getWorld();
-
-        net.minecraft.server.Entity notchEntity = ((CraftEntity) entity).getHandle();
-        int height = (int) (notchEntity.boundingBox.e - notchEntity.boundingBox.b);
-
-        int x = (int) location.getX(), y = (int) location.getY(), z = (int) location.getZ();
-
-        for (int ox = radius; ox > -radius; ox--)
-            loopZ:
-                    for (int oz = radius; oz > -radius; oz--) {
-                        int oy;
-                        if (isLocationUnderSky(new Location(world, x + ox, y, z + oz)))
-                            continue;
-                        for (oy = 0; oy < height; ++oy) {
-                            if (world.getBlockAt(x + ox, y + oy, z + oz).getTypeId() != 0)
-                                continue loopZ;
-                            else
-                                break;
-                        }
-                        return new Location(world, x + ox, y + oy, z + oz);
-                    }
-        return location;
-    }
-
-    /**
      * Returns a HashSet containing all the arguments passed in.
      *
      * @param objects All the objects to include.
@@ -544,4 +535,6 @@ public class StormUtil {
     public boolean isSnowy(Biome b) {
         return isTundra(b);
     }
+
+
 }
