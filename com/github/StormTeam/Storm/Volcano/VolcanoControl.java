@@ -49,6 +49,8 @@ public class VolcanoControl implements Listener {
 
     @EventHandler
     public void coolLava(BlockFromToEvent e) {
+        if (e.isCancelled())
+            return;
         Block from = e.getBlock();
         for (VolcanoMaker volcano : volcanoes) {
             if ((from.getTypeId() & 0xfe) == 0xa && volcano.active && volcano.ownsBlock(from)) //Checks if the block is lava and if a volcano owns it
@@ -58,6 +60,8 @@ public class VolcanoControl implements Listener {
 
     @EventHandler
     public void unloadEvent(ChunkUnloadEvent e) {
+        if (e.isCancelled())
+            return;
         if (anchoredChunks.containsKey(e.getWorld())) {
             if (anchoredChunks.get(e.getWorld()).contains(e.getChunk()))
                 e.setCancelled(true);
@@ -66,6 +70,8 @@ public class VolcanoControl implements Listener {
 
     @EventHandler
     public void unloadWorld(WorldUnloadEvent e) {
+        if (e.isCancelled())
+            return;
         for (VolcanoMaker vulk : volcanoes) {
             if (vulk.world.equals(e.getWorld())) {
                 vulk.active = false;

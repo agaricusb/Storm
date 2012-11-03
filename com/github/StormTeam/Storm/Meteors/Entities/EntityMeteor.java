@@ -30,6 +30,7 @@ import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A meteor entity.
@@ -107,10 +108,9 @@ public class EntityMeteor extends EntityFireball {
         this.spawnMeteorOnImpact = spawnOnImpact;
         this.radius = radius;
 
-        for (List<String> ore : Storm.wConfigs.get(world.getWorld().getName()).Natural__Disasters_Meteor_Ore__Chance__Percentages) {
-            ores.put(new IDBlock(ore.get(0)), Integer.parseInt(ore.get(1)));
-        }
-
+        if (spawnMeteorOnImpact)
+            for (List<String> ore : Storm.wConfigs.get(world.getWorld().getName()).Natural__Disasters_Meteor_Ore__Chance__Percentages)
+                ores.put(new IDBlock(ore.get(0)), Integer.parseInt(ore.get(1)));
     }
 
     /**
@@ -232,7 +232,7 @@ public class EntityMeteor extends EntityFireball {
         die();
     }
 
-    private void addOres(ArrayList<Integer> result, int material, int percentage) {
+    private void addOres(ArrayList<IDBlock> result, IDBlock material, int percentage) {
         for (int i = 0; i < percentage; ++i) {
             if (result.size() >= 100)
                 break;
@@ -241,21 +241,20 @@ public class EntityMeteor extends EntityFireball {
     }
 
     private void spawnMeteor(Location explosion) {
-        ArrayList<Integer> ores = new ArrayList<Integer>();
-        //TODO:      MAKE USE OF THE ORES HASHMAP!!!
-        //for (List<Integer> ore : Storm.wConfigs.get(explosion.getWorld().getName()).Natural__Disasters_Meteor_Ore__Chance__Percentages) {
-        // addOres(ores, ore.get(0), ore.get(1));
-        //}
+        ArrayList<IDBlock> orez = new ArrayList<IDBlock>();
+        for (Map.Entry<IDBlock, Integer> en : ores.entrySet()) {
+            addOres(orez, en.getKey(), en.getValue());
+        }
         while (explosion.getBlock().getTypeId() == 0) {
             explosion.add(0, -1, 0);
         }
         explosion.add(0, radius + 1, 0);
-        this.makeSphere(explosion, null, radius, true, true, ores);
+        this.makeSphere(explosion, null, radius, true, true, orez);
         this.makeSphere(explosion, Block.OBSIDIAN.id, radius, false, false, null);
     }
 
     void makeSphere(Location pos, Integer block, double radius,
-                    boolean filled, boolean random, ArrayList<Integer> m) {
+                    boolean filled, boolean random, ArrayList<IDBlock> m) {
         double radius_ = radius + 0.5;
         final int ceilRadiusX, ceilRadiusY, ceilRadiusZ;
         final double invRadiusX, invRadiusY, invRadiusZ;
@@ -297,11 +296,11 @@ public class EntityMeteor extends EntityFireball {
                     }
 
                     for (int i = 0; i < 8; ++i) {
-                        pos.clone().add((i & 4) == 0 ? x : -x,
+                        (random ? chooseRandom(m) : new IDBlock(block.toString())).setBlock(pos.clone().add(
+                                (i & 4) == 0 ? x : -x,
                                 (i & 2) == 0 ? y : -y,
                                 (i & 1) == 0 ? z : -z)
-                                .getBlock()
-                                .setTypeId(random ? chooseRandom(m) : block);
+                                .getBlock());
                     }
                 }
             }
@@ -309,7 +308,7 @@ public class EntityMeteor extends EntityFireball {
 
     }
 
-    private int chooseRandom(ArrayList<Integer> mats) {
+    private IDBlock chooseRandom(ArrayList<IDBlock> mats) {
         return mats.get(Storm.random.nextInt(mats.size()));
     }
 

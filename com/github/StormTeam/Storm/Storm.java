@@ -19,9 +19,11 @@ package com.github.StormTeam.Storm;
 import com.github.StormTeam.Storm.Volcano.VolcanoMaker;
 import com.github.StormTeam.Storm.Weather.WeatherManager;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -79,13 +81,16 @@ public class Storm extends JavaPlugin implements Listener {
 
     public static Storm instance = null;
 
+    public static boolean debug = true;
+
     /**
      * Called to enable Storm.
      */
 
-    // @EventHandler
+    @EventHandler
     public void spawnVolcano(PlayerInteractEvent e) {
-        if (e.getPlayer().getName().startsWith("Icy") && e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+        if (e.getPlayer().isOp() && e.getAction() == Action.RIGHT_CLICK_BLOCK
+                && e.getPlayer().getItemInHand().getType().equals(Material.BONE)) {
             Block b = e.getClickedBlock().getRelative(BlockFace.UP);
             if (b != null) {
                 VolcanoMaker volcano = new VolcanoMaker(b.getLocation(), 10, 30, 0);

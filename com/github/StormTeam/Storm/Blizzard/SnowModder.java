@@ -26,6 +26,12 @@ public class SnowModder {
         Method r = bc.getDeclaredMethod("r");
         h = bc.getDeclaredMethod("h", int.class);
 
+        b.setAccessible(true);
+        r.setAccessible(true);
+        c.setAccessible(true);
+        a.setAccessible(true);
+        h.setAccessible(true);
+
         Block.byId[Block.SNOW.id] = null;
         //(new SnowLayer()).c(0.1F).a(m).b("snow").r().h(0);
         Block.byId[Block.SNOW.id] = (Block) h.invoke(r.invoke(b.invoke(a.invoke(c.invoke(new SnowLayer(), 0.1F), Block.k), "snow")), 0);
@@ -73,7 +79,7 @@ public class SnowModder {
     }
 
     /**
-     * Mods the snow based on current MC version. 1.2.X & 1.3.X compatible.
+     * Mods the snow based on current MC version. 1.2.X & 1.3.X & 1.4.X compatible.
      */
 
     public void modBestFit() {

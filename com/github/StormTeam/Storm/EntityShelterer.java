@@ -46,8 +46,6 @@ public class EntityShelterer {
         try {
             if (Storm.version <= 1.3)
                 vec3DCreate = Vec3D.class.getDeclaredMethod("a", int.class, int.class, int.class);
-            else
-                vec3DCreate = Vec3D.class.getDeclaredMethod("a", double.class, double.class, double.class);
             selector = EntityLiving.class.getDeclaredField("goalSelector");
             register = PathfinderGoalSelector.class.getDeclaredMethod("a", int.class, PathfinderGoal.class);
             selector.setAccessible(true);
@@ -109,7 +107,7 @@ public class EntityShelterer {
             return setup();
         }
 
-        //1.3/1.2 checks if can continue
+        //1.4/1.3/1.2 checks if can continue
         public boolean b() {
             return canEnd();
         }
@@ -152,7 +150,7 @@ public class EntityShelterer {
         }
 
         private void start() {
-            if (isUnderSky() && ((Storm.version == 1.3 && entity.getNavigation().f()) || (Storm.version == 1.2 && entity.getNavigation().e()))) {
+            if (isUnderSky() && (((Storm.version == 1.3 || Storm.version == 1.4) && entity.getNavigation().f()) || (Storm.version == 1.2 && entity.getNavigation().e()))) {
                 entity.getNavigation().a(x, y, z, speed);
                 entity.getNavigation().d(true);
             }
@@ -187,6 +185,7 @@ public class EntityShelterer {
                 x = (Integer) ((Object) path.a);
                 y = (Integer) ((Object) path.b);
                 z = (Integer) ((Object) path.c);
+                Verbose.log("(1.3)Moving entity to " + x + "|" + y + "|" + z + ".");
                 return;
             }
 
@@ -194,20 +193,20 @@ public class EntityShelterer {
             x = (int) path.c;
             y = (int) path.d;
             z = (int) path.e;
+            Verbose.log("(1.4)Moving entity to " + x + "|" + y + "|" + z + ".");
 
         }
 
         private Vec3D getPathToShelter() throws InvocationTargetException, IllegalAccessException {
             for (int i = 0; i < 20; i++) {
                 int px = MathHelper.floor((entity.locX + (double) Storm.random.nextInt(20)) - 10D),
-                        py = MathHelper.floor((entity.boundingBox.b + (double) Storm.random.nextInt(12)) - 6D),
+                        py = MathHelper.floor((entity.boundingBox.b + (double) Storm.random.nextInt(6)) - 6D),
                         pz = MathHelper.floor((entity.locZ + (double) Storm.random.nextInt(20)) - 10D);
                 if (!isUnderSky(world, px, py, pz))
                     if (Storm.version <= 1.3)
                         return (Vec3D) vec3DCreate.invoke(null, px, py, pz);
                     else
-                        return (Vec3D) vec3DCreate.invoke(null, (double) px, (double) py, (double) pz);
-
+                        return world.getVec3DPool().create(px, py, pz);
             }
             return null;
         }

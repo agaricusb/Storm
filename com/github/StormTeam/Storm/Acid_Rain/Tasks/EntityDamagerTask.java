@@ -60,7 +60,7 @@ public class EntityDamagerTask {
                                                 ((LivingEntity) (damagee)).damage(glob.Acid__Rain_Entity_Damage__From__Exposure);
                                             else if (glob.Features_Acid__Rain_Player__Damaging && damagee instanceof Player) {
                                                 Player dam = (Player) damagee;
-                                                if (!dam.getGameMode().equals(GameMode.CREATIVE) && !glob.Acid__Rain_Absorbing__Blocks.contains(dam.getItemInHand().getTypeId())) {
+                                                if (!dam.getGameMode().equals(GameMode.CREATIVE) && !dam.hasPermission("storm.acidrain.immune") && !glob.Acid__Rain_Absorbing__Blocks.contains(dam.getItemInHand().getTypeId())) {
                                                     if (dam.getHealth() > 0) {
                                                         dam.addPotionEffect(hunger, true);
                                                         dam.damage(glob.Acid__Rain_Player_Damage__From__Exposure);

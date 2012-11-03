@@ -39,7 +39,7 @@ public class EntityDamagerTask {
         blindness = new PotionEffect(
                 PotionEffectType.BLINDNESS,
                 glob.Blizzard_Scheduler_Damager__Calculation__Intervals__In__Ticks + 60,
-                glob.Blizzard_Player_Blindness__Amplitude);
+                0);
     }
 
     /**

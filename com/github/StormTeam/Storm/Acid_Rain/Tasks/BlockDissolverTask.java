@@ -59,22 +59,17 @@ public class BlockDissolverTask {
                             public void run() {
                                 try {
                                     for (Block b : ticker.getRandomTickedBlocks()) {
-
                                         Block tran = b.getRelative(BlockFace.DOWN);
-
-                                        if (!Storm.util.isBlockProtected(tran)) {
-                                            if (Storm.util.isRainy(tran.getBiome()) && tran.getTypeId() != 0) {
-                                                for (BlockTransformer t : transformations) {
-                                                    if (t.transform(tran))
-                                                        break;
-                                                }
+                                        if (tran.getTypeId() != 0 && Storm.util.isRainy(tran.getBiome()) && !Storm.util.isBlockProtected(tran)) {
+                                            for (BlockTransformer t : transformations) {
+                                                if (t.transform(tran))
+                                                    break;
                                             }
                                         }
                                     }
                                 } catch (Exception e) {
                                     ErrorLogger.generateErrorLog(e);
                                 }
-
                             }
                         },
                         0,

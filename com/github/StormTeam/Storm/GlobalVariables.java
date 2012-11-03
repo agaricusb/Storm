@@ -127,8 +127,6 @@ public class GlobalVariables extends ReflectConfiguration {
     public String Blizzard_Messages_On__Blizzard__Stop = "The blizzard has stopped!";
     @Comment(_ = "The message to send when a player is damaged by cold.")
     public String Blizzard_Messages_On__Player__Damaged__Cold = "You are freezing!";
-    @Comment(_ = "The amplitude of blindness caused by blizzard.")
-    public int Blizzard_Player_Blindness__Amplitude = 4;
     @Comment(_ = "The list of blocks that can prevent damage by blizzard when the player is close.")
     public List<Integer> Blizzard_Heating__Blocks = Arrays.asList(
             Block.FIRE.id, Block.LAVA.id, Block.STATIONARY_LAVA.id,

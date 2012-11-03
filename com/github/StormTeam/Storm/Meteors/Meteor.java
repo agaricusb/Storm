@@ -107,8 +107,7 @@ public class Meteor {
         try {
             Method a = net.minecraft.server.EntityTypes.class
                     .getDeclaredMethod("a", Class.class, String.class, int.class);
-            a.setAccessible(
-                    true);
+            a.setAccessible(true);
             a.invoke(a, EntityMeteor.class, "StormMeteor", 12);
 
         } catch (Exception e) {

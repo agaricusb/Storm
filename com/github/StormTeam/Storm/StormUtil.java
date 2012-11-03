@@ -93,10 +93,6 @@ public class StormUtil {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        if (explode == null)
-            throw new RuntimeException("EXPLODE IS NULL!");
-        System.out.println(explode);
     }
 
     /**

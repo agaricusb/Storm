@@ -34,7 +34,7 @@ public class IDBlock {
     }
 
     public boolean isBlock(Block b) {
-        return b.getTypeId() == id && data != -1 && b.getData() == data;
+        return b.getTypeId() == id && data == -1 ? true : b.getData() == data;
     }
 
 }
