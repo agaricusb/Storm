@@ -16,7 +16,6 @@
  */
 package com.github.StormTeam.Storm;
 
-import com.github.StormTeam.Storm.Volcano.VolcanoControl;
 import com.github.StormTeam.Storm.Volcano.VolcanoMaker;
 import com.github.StormTeam.Storm.Weather.WeatherManager;
 import org.bukkit.Bukkit;
@@ -24,6 +23,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -48,7 +48,9 @@ public class Storm extends JavaPlugin implements Listener {
     private String __ =
             "Dear (Non-Bukkit-Admin) decompiler(s): There is no point in decompiling this plugin... " +
                     "All the source is already up at Github (github.com/StormTeam/Storm). Besides, neither JAD nor JD-GUI or " +
-                    "any decompiler can decompile source code to how it was before compilation. Save yourself time :-)";
+                    "any decompiler can decompile source code to how it was before compilation. Save yourself time :-) " +
+                    "BTW, if you decompile the code, you will not get the comments, " +
+                    "which will make our infamous bitmasks impossible to understand. Enjoy.";
 
     /**
      * A HashMap containing world name and configuration object.
@@ -81,14 +83,15 @@ public class Storm extends JavaPlugin implements Listener {
      * Called to enable Storm.
      */
 
-    //@EventHandler
+    // @EventHandler
     public void spawnVolcano(PlayerInteractEvent e) {
-        Block b = e.getClickedBlock().getRelative(BlockFace.UP);
-        if (b != null) {
-            VolcanoMaker volcano = new VolcanoMaker(b.getLocation(), 10, 30, 0);
-            volcano.spawn();
+        if (e.getPlayer().getName().startsWith("Icy") && e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            Block b = e.getClickedBlock().getRelative(BlockFace.UP);
+            if (b != null) {
+                VolcanoMaker volcano = new VolcanoMaker(b.getLocation(), 10, 30, 0);
+                volcano.spawn();
+            }
         }
-
     }
 
     @Override
@@ -106,13 +109,11 @@ public class Storm extends JavaPlugin implements Listener {
             pm = getServer().getPluginManager();
             util = new StormUtil(this);
 
-
             initConfiguration();
             ErrorLogger.register(this, "Storm", "com.github.StormTeam.Storm", "http://www.stormteam.co.cc/projects/storm/issues");
 
             pm.registerEvents((manager = new WeatherManager(this)), this); //Register texture/world events
             pm.registerEvents(this, this);
-            pm.registerEvents(new VolcanoControl(), this);
 
             new MetricsLite(this).start();
 
@@ -130,6 +131,7 @@ public class Storm extends JavaPlugin implements Listener {
             setEnabled(false);
             e.printStackTrace();
         }
+        throw new RuntimeException("BLEP!");
     }
 
     private void configureVersion() {

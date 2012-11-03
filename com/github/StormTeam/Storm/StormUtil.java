@@ -93,6 +93,10 @@ public class StormUtil {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        if (explode == null)
+            throw new RuntimeException("EXPLODE IS NULL!");
+        System.out.println(explode);
     }
 
     /**
@@ -313,7 +317,7 @@ public class StormUtil {
 
     public void createExplosion(net.minecraft.server.Entity entityMeteor, double locX, double locY, double locZ, float trailPower, boolean b) {
         try {
-            if (Storm.version >= 1.4)
+            if (Storm.version > 1.3D)
                 explode.invoke(entityMeteor.world, locX, locY, locZ, trailPower, b, true);
             else
                 explode.invoke(entityMeteor.world, locX, locY, locZ, trailPower, b);

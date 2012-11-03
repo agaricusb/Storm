@@ -74,6 +74,7 @@ public class ErrorLogger extends PluginLogger {
         Throwable thrown;
         if ((thrown = record.getThrown()) == null)
             return false;
+
         String ERROR = ExceptionUtils.getStackTrace(thrown), NAME = "", TICKETS = "", ENDL = "";
         for (Map.Entry<String, List<String>> entry : loadMap().entrySet()) {
             try {
@@ -106,7 +107,8 @@ public class ErrorLogger extends PluginLogger {
                     .append("\nPlease report this error to the ").append(NAME).append(" ticket tracker (").append(TICKETS).append(")!");
             try {
                 //One-liner beauty.
-                String FILE_NAME = String.format("%s_%06x.error.log", NAME, new BigInteger(1, Arrays.copyOfRange(MessageDigest.getInstance("MD5").digest(err.toString().getBytes()), 0, 6)));
+                String FILE_NAME = String.format("%s_%s_%s.error.log", NAME, thrown.getClass().getSimpleName(), new BigInteger(1,
+                        Arrays.copyOfRange(MessageDigest.getInstance("MD5").digest(err.toString().getBytes()), 0, 6)).toString().substring(0, 6));
                 File root = new File(PLUGIN.getDataFolder(), "errors");
                 if (root.exists() || root.mkdir()) {
                     File dump = new File(root.getAbsoluteFile(), FILE_NAME);
@@ -119,6 +121,7 @@ public class ErrorLogger extends PluginLogger {
                 }
             } catch (Exception e) {
                 err.append("\nErrors occured while saving to file. Not saved.");
+                e.printStackTrace();
             }
             System.err.println(err.append(ENDL));
             return true;
