@@ -19,6 +19,18 @@ public class SnowModder {
     private Method a;
     private Method h;
 
+    void mod14X() throws Exception {
+        c = bc.getDeclaredMethod("c", float.class);
+        a = bc.getDeclaredMethod("a", StepSound.class);
+        Method b = bc.getDeclaredMethod("b", String.class);
+        Method r = bc.getDeclaredMethod("r");
+        h = bc.getDeclaredMethod("h", int.class);
+
+        Block.byId[Block.SNOW.id] = null;
+        //(new SnowLayer()).c(0.1F).a(m).b("snow").r().h(0);
+        Block.byId[Block.SNOW.id] = (Block) h.invoke(r.invoke(b.invoke(a.invoke(c.invoke(new SnowLayer(), 0.1F), Block.k), "snow")), 0);
+    }
+
     void mod13X() throws Exception {
         Method v = Block.class.getDeclaredMethod("v");
         Method p = bc.getDeclaredMethod("p");
@@ -66,11 +78,18 @@ public class SnowModder {
 
     public void modBestFit() {
         try {
-            if (Storm.version == 1.3) {
-                mod13X();
-            }
-            if (Storm.version == 1.2) {
-                mod12X();
+            switch ((int) (Storm.version * 100)) {
+                case 140:
+                    mod14X();
+                    break;
+                case 130:
+                    mod13X();
+                    break;
+                case 120:
+                    mod12X();
+                    break;
+                default:
+                    throw new UnsupportedOperationException("Minecraft version " + Storm.version + " not supported");
             }
         } catch (Exception e) {
             //1. Doesn't matter if I catch ComputerIsOnFireException, and  
