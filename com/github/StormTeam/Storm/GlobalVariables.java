@@ -101,43 +101,68 @@ public class GlobalVariables extends ReflectConfiguration {
     //Thunder Storms
     @LimitInteger
     @Newline
+    @Comment(_ = "The chance for thunder storm to occur.")
     public int Thunder__Storm_Thunder__Storm__Chance = 4;
+    @Comment(_ = "The base intervals between thunder storm tries to start.")
     public int Thunder__Storm_Thunder__Storm__Base__Interval = 72000;
+    @Comment(_ = "The message to send when thunder storm is started.")
     public String Thunder__Storm_Messages_On__Thunder__Storm__Start = "An electrical storm has started! Get inside for safety!";
+    @Comment(_ = "The message to send when thunder storm is stopped.")
     public String Thunder__Storm_Messages_On__Thunder__Storm__Stop = "Zeus has stopped bowling!";
     @LimitInteger
+    @Comment(_ = "The chance of being stroke by thunder storm.")
     public int Thunder__Storm_Strike__Chance = 5;
+    @Comment(_ = "The delay between strikes, in ticks.")
     public int Thunder__Storm_Scheduler_Striker__Calculation__Intervals__In__Ticks = 10;
     //Blizzards
     @LimitInteger
     @Newline
+    @Comment(_ = "The chance for blizzard to occur.")
     public int Blizzard_Blizzard__Chance = 20;
+    @Comment(_ = "The base intervals between blizzard tries to start.")
     public int Blizzard_Blizzard__Base__Interval = 72000;
+    @Comment(_ = "The message to send when blizzard is started.")
     public String Blizzard_Messages_On__Blizzard__Start = "It has started to snow violently! Seek a warm biome for safety!";
+    @Comment(_ = "The message to send when blizzard is stopped.")
     public String Blizzard_Messages_On__Blizzard__Stop = "The blizzard has stopped!";
+    @Comment(_ = "The message to send when a player is damaged by cold.")
     public String Blizzard_Messages_On__Player__Damaged__Cold = "You are freezing!";
+    @Comment(_ = "The amplitude of blindness caused by blizzard.")
     public int Blizzard_Player_Blindness__Amplitude = 4;
+    @Comment(_ = "The list of blocks that can prevent damage by blizzard when the player is close.")
     public List<Integer> Blizzard_Heating__Blocks = Arrays.asList(
             Block.FIRE.id, Block.LAVA.id, Block.STATIONARY_LAVA.id,
             Block.BURNING_FURNACE.id);
+    @Comment(_ = "The effective radius of blocks that can prevent damage by blizzard.")
     public int Blizzard_Heat__Radius = 2;
+    @Comment(_ = "The amount of damage experienced by players in a blizzard, in hearts.")
     public int Blizzard_Player_Damage__From__Exposure = 2;
+    @Comment(_ = "The amount of damage experienced by entities in a blizzard, in hearts.")
     public int Blizzard_Entity_Damage__From__Exposure = 2;
+    @Comment(_ = "The speed loss experienced by players in a blizzard.")
     public double Blizzard_Player_Speed__Loss__While__In__Snow = 0.4D;
+    @Comment(_ = "The delay between damages by blizzard, in ticks.")
     public int Blizzard_Scheduler_Damager__Calculation__Intervals__In__Ticks = 40;
     //Better Lightning
     @Newline
+    @Comment(_ = "The amount of damage caused by lightning in hearts.")
     public int Lightning_Damage_Damage = 5;
+    @Comment(_ = "The radius when players and entities can be damaged by a lightning strike.")
     public int Lightning_Damage_Damage__Radius = 10;
+    @Comment(_ = "The message to send when zapped by lightning.")
     public String Lightning_Messages_On__Player__Hit = "You were zapped by lightning. Ouch!";
     @LimitInteger
+    @Comment(_ = "The chance of lightning being attracted to a block specified below.")
     public int Lightning_Attraction_Blocks_AttractionChance = 80;
+    @Comment(_ = "The blocks that can attract lightning.")
     public List<Integer> Lightning_Attraction_Blocks_Attractors = Arrays
             .asList(Block.IRON_BLOCK.id, Block.DIAMOND_BLOCK.id, Block.GOLD_BLOCK.id,
                     Block.RAILS.id, Block.CAULDRON.id, Block.DETECTOR_RAIL.id, Block.GOLDEN_RAIL.id,
                     Block.IRON_DOOR_BLOCK.id, Block.IRON_FENCE.id);
     @LimitInteger
+    @Comment(_ = "The chance of lightning being attracted to a player holding the items specified below.")
     public int Lightning_Attraction_Players_AttractionChance = 80;
+    @Comment(_ = "The items that can attract lightning when held.")
     public List<Integer> Lightning_Attraction_Players_Attractors = Arrays
             .asList(Item.IRON_AXE.id, Item.BUCKET.id, Item.CHAINMAIL_BOOTS.id, Item.CHAINMAIL_CHESTPLATE.id, Item.CHAINMAIL_HELMET.id,
                     Item.CHAINMAIL_LEGGINGS.id, Item.IRON_BOOTS.id, Item.IRON_CHESTPLATE.id, Item.IRON_HELMET.id, Item.IRON_LEGGINGS.id,
@@ -147,6 +172,7 @@ public class GlobalVariables extends ReflectConfiguration {
                     Item.DIAMOND_AXE.id, Item.DIAMOND_HOE.id, Item.DIAMOND_PICKAXE.id, Item.DIAMOND_SPADE.id, Item.DIAMOND_SWORD.id,
                     Item.GOLD_AXE.id, Item.GOLD_HOE.id, Item.GOLD_PICKAXE.id, Item.GOLD_SPADE.id, Item.GOLD_SWORD.id,
                     Item.MINECART.id);
+    @Comment(_ = "The blocks to be transformed when melted by lightning.")
     public List<List<String>> Lightning_Melter_Block__Transformations = new ArrayList<List<String>>() {
         {
             add(Arrays.asList("12", "20"));
@@ -157,14 +183,22 @@ public class GlobalVariables extends ReflectConfiguration {
     //-Meteors
     @LimitInteger
     @Newline(num = 2)
+    @Comment(_ = "The chance that meteor will occur.")
     public int Natural__Disasters_Meteor_Chance__To__Spawn = 8;
+    @Comment(_ = "The base intervals between meteor tries to start.")
     public int Natural__Disasters_Meteor_Meteor__Base__Interval = 72000;
+    @Comment(_ = "The message sent when a meteor hits ground. %x, %y, and %z is replaced with coordinates.")
     public String Natural__Disasters_Meteor_Messages_On__Meteor__Crash = "A meteor has exploded at %x, %y, %z.";
+    @Comment(_ = "The message sent when a player is damaged by meteor.")
     public String Natural__Disasters_Meteor_Messages_On__Damaged__By__Shockwave = "You have been flattened by a meteor!";
+    @Comment(_ = "The number of hearts worth of damage that will be dealt when flattened by a meteor")
     public int Natural__Disasters_Meteor_Shockwave_Damage = 10;
+    @Comment(_ = "The radius where players and entities alike will be damaged.")
     public int Natural__Disasters_Meteor_Shockwave_Damage__Radius = 100;
     public boolean Natural__Disasters_Meteor_Do__Winter = true;
+    @Comment(_ = "Will meteor spawn?")
     public boolean Natural__Disasters_Meteor_Meteor__Spawn = true;
+    @Comment(_ = "The ores to deposit and the chances of the ore being deposited.")
     public List<List<Integer>> Natural__Disasters_Meteor_Ore__Chance__Percentages = new ArrayList<List<Integer>>() {
         {
             //block ID, chance
