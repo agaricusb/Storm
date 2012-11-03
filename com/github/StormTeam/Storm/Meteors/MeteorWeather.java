@@ -97,7 +97,7 @@ public class MeteorWeather extends StormWeather {
     }
 
     private void spawnMeteorNaturallyAndRandomly(World world, double x, double z) {
-        net.minecraft.server.World meteoriteWorld = ((CraftWorld) world).getHandle();
+        net.minecraft.server.World meteoriteWorld = ((CraftWorld) bukkitWorld).getHandle();
 
         EntityMeteor meteor = new EntityMeteor(
                 meteoriteWorld,

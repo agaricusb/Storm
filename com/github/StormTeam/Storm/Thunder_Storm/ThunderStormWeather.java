@@ -6,7 +6,6 @@ import com.github.StormTeam.Storm.Storm;
 import com.github.StormTeam.Storm.Thunder_Storm.Tasks.StrikerTask;
 import com.github.StormTeam.Storm.Weather.StormWeather;
 import org.bukkit.Bukkit;
-import org.bukkit.World;
 
 import java.util.Collections;
 import java.util.Set;
@@ -45,11 +44,10 @@ public class ThunderStormWeather extends StormWeather {
             return;
         }
 
-        World temp = Bukkit.getWorld(world);
-        Storm.util.broadcast(glob.Thunder__Storm_Messages_On__Thunder__Storm__Start, world);
+        Storm.util.broadcast(glob.Thunder__Storm_Messages_On__Thunder__Storm__Start, bukkitWorld);
 
         if (glob.Features_Thunder__Storms_Thunder__Striking) {
-            striker = new StrikerTask(storm, temp);
+            striker = new StrikerTask(storm, bukkitWorld);
             striker.run();
         }
 
@@ -68,7 +66,7 @@ public class ThunderStormWeather extends StormWeather {
 
     @Override
     public void end() {
-        Storm.util.broadcast(glob.Thunder__Storm_Messages_On__Thunder__Storm__Stop, world);
+        Storm.util.broadcast(glob.Thunder__Storm_Messages_On__Thunder__Storm__Stop, bukkitWorld);
         striker.stop();
         striker = null; //Remove references
         shelter.stop();

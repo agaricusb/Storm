@@ -10,9 +10,7 @@ import org.bukkit.craftbukkit.CraftWorld;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * An object for returning large lists of pseudorandom blocks at high speeds.
@@ -22,17 +20,9 @@ import java.util.List;
 
 public class BlockTickSelector {
 
-    /**
-     * The WorldServer object gotten from passed World.
-     */
     private final WorldServer world;
-    /**
-     * net.minecraft.server.World methods.
-     */
+    private final World bWorld;
     private Method a, recheckGaps;
-    /**
-     * The chance for a block to be returned.
-     */
     private int chan;
 
     /**
@@ -47,13 +37,23 @@ public class BlockTickSelector {
      * @throws IllegalAccessException
      */
 
+    private Map<String, String> recheckGapsName = new HashMap<String, String>() {{
+        put("1.2", "o");
+        put("1.3", "k");
+        put("1.4", "q");
+    }};
+
     public BlockTickSelector(World world, int selChance)
             throws NoSuchMethodException,
             SecurityException, NoSuchFieldException, InstantiationException, IllegalAccessException {
 
         this.world = ((CraftWorld) world).getHandle();
+        this.bWorld = world;
 
-        this.recheckGaps = Chunk.class.getDeclaredMethod(Storm.version >= 1.3 ? "k" : "o"); //If 1.3.X, method is named "k", else "o".  //In 1.4 its 'q'
+        if (!recheckGapsName.containsKey(Storm.version + "")) {
+            throw new UnsupportedOperationException("BlockTickSelector not updated for MineCraft " + Storm.version);
+        }
+        this.recheckGaps = Chunk.class.getDeclaredMethod(recheckGapsName.get(Storm.version + ""));
         this.recheckGaps.setAccessible(true); //Is private by default
         this.a = net.minecraft.server.World.class.getDeclaredMethod("a", int.class, int.class, Chunk.class);
         this.a.setAccessible(true);
@@ -115,7 +115,7 @@ public class BlockTickSelector {
             recheckGaps.invoke(chunk);
             if (Storm.random.nextInt(100) <= chan) {
                 int x = Storm.random.nextInt(15), z = Storm.random.nextInt(15);
-                doTick.add(world.getWorld().getBlockAt(x + xOffset, world.g(x + xOffset, z + zOffset), z + zOffset));
+                doTick.add(world.getWorld().getBlockAt(x + xOffset, bWorld.getHighestBlockYAt(x + xOffset, z + zOffset), z + zOffset));
             }
         }
         return doTick;

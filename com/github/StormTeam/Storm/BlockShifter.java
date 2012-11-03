@@ -6,11 +6,9 @@ import org.bukkit.block.Block;
 public class BlockShifter {
 
     public static void syncSetBlock(final Block b, final int id) {
-        final int pre = b.getTypeId();
         Bukkit.getScheduler().scheduleSyncDelayedTask(Storm.instance, new Runnable() {
             public void run() {
-                if (pre == b.getTypeId())
-                    b.setTypeId(id);
+                b.setTypeId(id);
             }
         }, 0L);
     }

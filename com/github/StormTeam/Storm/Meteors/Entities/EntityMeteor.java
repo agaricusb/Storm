@@ -20,10 +20,7 @@ package com.github.StormTeam.Storm.Meteors.Entities;
 
 import com.github.StormTeam.Storm.Meteors.Meteor;
 import com.github.StormTeam.Storm.Storm;
-import net.minecraft.server.Block;
-import net.minecraft.server.EntityFireball;
-import net.minecraft.server.MovingObjectPosition;
-import net.minecraft.server.World;
+import net.minecraft.server.*;
 import org.bukkit.Location;
 import org.bukkit.block.Biome;
 import org.bukkit.craftbukkit.CraftWorld;
@@ -117,6 +114,15 @@ public class EntityMeteor extends EntityFireball {
     }
 
     /**
+     * Move method for 1.4.X.
+     */
+    @Override
+    public void j_() {
+        move();
+        super.j_();
+    }
+
+    /**
      * Move method for 1.3.X.
      */
     @Override
@@ -166,7 +172,7 @@ public class EntityMeteor extends EntityFireball {
                 return;
             }
             if (!Storm.util.isBlockProtected(world.getWorld().getBlockAt((int) locX, locY, (int) locZ))) {
-                world.createExplosion(this, locX, this.locY, locZ, trailPower, true);
+                Storm.util.createExplosion(this, locX, this.locY, locZ, trailPower, true);
             }
         } while (false);
         motX *= 1.0F;
@@ -185,7 +191,7 @@ public class EntityMeteor extends EntityFireball {
         if (burrowCount > 0) {
             // Not yet dead, so burrow.
             if (!Storm.util.isBlockProtected(world.getWorld().getBlockAt((int) locX, (int) locY, (int) locZ))) {
-                world.createExplosion(this, locX, locY, locZ, burrowPower, true);
+                Storm.util.createExplosion(this, locX, locY, locZ, burrowPower, true);
             }
             --burrowCount;
             return;
@@ -202,7 +208,7 @@ public class EntityMeteor extends EntityFireball {
     }
 
     private void explode() {
-        world.createExplosion(this, locX, locY, locZ, explosionRadius, true);
+        Storm.util.createExplosion(this, locX, locY, locZ, explosionRadius, true);
 
         Storm.util.damageNearbyPlayers(new Location(this.world.getWorld(),
                 locX, locY, locZ), shockwaveDamageRadius, shockwaveDamage,
@@ -325,5 +331,11 @@ public class EntityMeteor extends EntityFireball {
     @Override
     public float c(float f) {
         return this.brightness;
+    }
+
+    protected void a(NBTTagCompound nbtTagCompound) {
+    }
+
+    protected void b(NBTTagCompound nbtTagCompound) {
     }
 }

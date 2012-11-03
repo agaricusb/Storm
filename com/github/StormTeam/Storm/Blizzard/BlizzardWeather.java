@@ -6,7 +6,6 @@ import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.Storm;
 import com.github.StormTeam.Storm.Weather.StormWeather;
 import org.bukkit.Bukkit;
-import org.bukkit.World;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -46,8 +45,7 @@ public class BlizzardWeather extends StormWeather {
             return;
         }
 
-        World temp = Bukkit.getWorld(world);
-        Storm.util.broadcast(glob.Blizzard_Messages_On__Blizzard__Start, temp);
+        Storm.util.broadcast(glob.Blizzard_Messages_On__Blizzard__Start, bukkitWorld);
 
         if (glob.Features_Blizzards_Slowing__Snow) {
             Blizzard.modder.modBestFit();
@@ -74,8 +72,8 @@ public class BlizzardWeather extends StormWeather {
             if (glob.Features_Blizzards_Slowing__Snow) {
                 Blizzard.modder.reset();
             }
-            Storm.util.broadcast(glob.Blizzard_Messages_On__Blizzard__Stop, world);
-            Storm.util.setRainNoEvent(Bukkit.getWorld(world), false);
+            Storm.util.broadcast(glob.Blizzard_Messages_On__Blizzard__Stop, bukkitWorld);
+            Storm.util.setRainNoEvent(bukkitWorld, false);
             enDamager.stop();
             enDamager = null;
             shelter.stop();

@@ -23,7 +23,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.plugin.PluginManager;
@@ -39,13 +38,17 @@ import java.util.logging.Level;
 
 public class Storm extends JavaPlugin implements Listener {
 
-    @SuppressWarnings("UnusedDeclaration")
     private String _ =
             "Dear BukkitDev administrator(s):" +
                     "Thank you for your time in reviewing this project! If you find anything" +
                     "in it that makes you cry inside, will you please let us know so we can" +
                     "fix/improve it? Aside from horrible formatting, we're working on that :-)" +
                     "Thanks in advance, The-people-who-made-this-plugin";
+
+    private String __ =
+            "Dear (Non-Bukkit-Admin) decompiler(s): There is no point in decompiling this plugin... " +
+                    "All the source is already up at Github (github.com/StormTeam/Storm). Besides, neither JAD nor JD-GUI or " +
+                    "any decompiler can decompile source code to how it was before compilation. Save yourself time :-)";
 
     /**
      * A HashMap containing world name and configuration object.
@@ -78,7 +81,7 @@ public class Storm extends JavaPlugin implements Listener {
      * Called to enable Storm.
      */
 
-    @EventHandler
+    //@EventHandler
     public void spawnVolcano(PlayerInteractEvent e) {
         Block b = e.getClickedBlock().getRelative(BlockFace.UP);
         if (b != null) {
@@ -98,10 +101,12 @@ public class Storm extends JavaPlugin implements Listener {
             }
             instance = this;
 
+            configureVersion();
+
             pm = getServer().getPluginManager();
             util = new StormUtil(this);
 
-            configureVersion();
+
             initConfiguration();
             ErrorLogger.register(this, "Storm", "com.github.StormTeam.Storm", "http://www.stormteam.co.cc/projects/storm/issues");
 
@@ -128,18 +133,7 @@ public class Storm extends JavaPlugin implements Listener {
     }
 
     private void configureVersion() {
-        String version1 = getServer().getVersion();
-        // TODO: change to startsWith if possible
-        if (version1.contains("1.2.")) {
-            version = 1.2;
-        } else {
-            if (version1.contains("1.3.")) {
-                version = 1.3;
-            } else {
-                getLogger().log(Level.SEVERE, "Unsupported MC version detected! Bad things may happen!");
-                return;
-            }
-        }
+        version = Double.parseDouble(Bukkit.getBukkitVersion().substring(0, 3));
         getLogger().log(Level.INFO, "Loading with MC {0}.X compatibility.", version);
     }
 
