@@ -18,5 +18,4 @@ public class Volcano {
             ErrorLogger.generateErrorLog(e);
         }
     }
-
 }

@@ -318,9 +318,9 @@ public class StormUtil {
     public void createExplosion(net.minecraft.server.Entity entityMeteor, double locX, double locY, double locZ, float trailPower, boolean b) {
         try {
             if (Storm.version > 1.3D)
-                explode.invoke(entityMeteor.world, locX, locY, locZ, trailPower, b, true);
+                explode.invoke(entityMeteor.world, entityMeteor, locX, locY, locZ, trailPower, b, true);
             else
-                explode.invoke(entityMeteor.world, locX, locY, locZ, trailPower, b);
+                explode.invoke(entityMeteor.world, entityMeteor, locX, locY, locZ, trailPower, b);
         } catch (Exception e) {
             entityMeteor.world.getWorld().createExplosion(locX, locY, locZ, trailPower);
             ErrorLogger.generateErrorLog(e);

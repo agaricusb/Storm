@@ -18,6 +18,7 @@
 
 package com.github.StormTeam.Storm.Meteors.Entities;
 
+import com.github.StormTeam.Storm.IDBlock;
 import com.github.StormTeam.Storm.Meteors.Meteor;
 import com.github.StormTeam.Storm.Storm;
 import net.minecraft.server.*;
@@ -27,6 +28,7 @@ import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -49,6 +51,8 @@ public class EntityMeteor extends EntityFireball {
     private boolean doSnow = false;
     private int snowRadius;
     private boolean h_lock, h_lock_2, h_lock_3;
+
+    private HashMap<IDBlock, Integer> ores = new HashMap();
 
 
     /**
@@ -102,6 +106,10 @@ public class EntityMeteor extends EntityFireball {
         this.doSnow = snow;
         this.spawnMeteorOnImpact = spawnOnImpact;
         this.radius = radius;
+
+        for (List<String> ore : Storm.wConfigs.get(world.getWorld().getName()).Natural__Disasters_Meteor_Ore__Chance__Percentages) {
+            ores.put(new IDBlock(ore.get(0)), Integer.parseInt(ore.get(1)));
+        }
 
     }
 
@@ -234,9 +242,10 @@ public class EntityMeteor extends EntityFireball {
 
     private void spawnMeteor(Location explosion) {
         ArrayList<Integer> ores = new ArrayList<Integer>();
-        for (List<Integer> ore : Storm.wConfigs.get(explosion.getWorld().getName()).Natural__Disasters_Meteor_Ore__Chance__Percentages) {
-            addOres(ores, ore.get(0), ore.get(1));
-        }
+        //TODO:      MAKE USE OF THE ORES HASHMAP!!!
+        //for (List<Integer> ore : Storm.wConfigs.get(explosion.getWorld().getName()).Natural__Disasters_Meteor_Ore__Chance__Percentages) {
+        // addOres(ores, ore.get(0), ore.get(1));
+        //}
         while (explosion.getBlock().getTypeId() == 0) {
             explosion.add(0, -1, 0);
         }

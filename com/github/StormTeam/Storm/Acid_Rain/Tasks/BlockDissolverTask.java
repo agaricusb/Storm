@@ -1,12 +1,12 @@
 package com.github.StormTeam.Storm.Acid_Rain.Tasks;
 
-import com.github.StormTeam.Storm.BlockTickSelector;
-import com.github.StormTeam.Storm.ErrorLogger;
-import com.github.StormTeam.Storm.GlobalVariables;
-import com.github.StormTeam.Storm.Storm;
+import com.github.StormTeam.Storm.*;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * An object for dissolving blocks during acid rain.
@@ -20,6 +20,8 @@ public class BlockDissolverTask {
     private Storm storm;
     private GlobalVariables glob;
     private BlockTickSelector ticker;
+
+    private List<BlockTransformer> transformations = new ArrayList();
 
     /**
      * Creates a dissolver object for given world.
@@ -37,6 +39,11 @@ public class BlockDissolverTask {
         } catch (Exception e) {
             ErrorLogger.generateErrorLog(e);
         }
+
+        for (List<String> trans : glob.Acid__Rain_Dissolver_Block__Transformations) {
+            transformations.add(new BlockTransformer(new IDBlock(trans.get(0)), new IDBlock(trans.get(1))));
+        }
+
     }
 
     /**
@@ -50,20 +57,17 @@ public class BlockDissolverTask {
                         new Runnable() {
                             @Override
                             public void run() {
-
                                 try {
                                     for (Block b : ticker.getRandomTickedBlocks()) {
 
                                         Block tran = b.getRelative(BlockFace.DOWN);
 
                                         if (!Storm.util.isBlockProtected(tran)) {
-                                            if (Storm.util.isRainy(tran
-                                                    .getBiome())
-                                                    && tran.getTypeId() != 0) {
-                                                Storm.util
-                                                        .transform(
-                                                                tran,
-                                                                glob.Acid__Rain_Dissolver_Block__Transformations);
+                                            if (Storm.util.isRainy(tran.getBiome()) && tran.getTypeId() != 0) {
+                                                for (BlockTransformer t : transformations) {
+                                                    if (t.transform(tran))
+                                                        break;
+                                                }
                                             }
                                         }
                                     }

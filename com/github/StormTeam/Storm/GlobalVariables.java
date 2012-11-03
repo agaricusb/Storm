@@ -196,13 +196,13 @@ public class GlobalVariables extends ReflectConfiguration {
     @Comment(_ = "The radius where players and entities alike will be damaged.")
     public int Natural__Disasters_Meteor_Shockwave_Damage__Radius = 100;
     public boolean Natural__Disasters_Meteor_Do__Winter = true;
-    @Comment(_ = "Will meteor spawn?")
+    @Comment(_ = "Will solid meteor spawn?")
     public boolean Natural__Disasters_Meteor_Meteor__Spawn = true;
-    @Comment(_ = "The ores to deposit and the chances of the ore being deposited.")
-    public List<List<Integer>> Natural__Disasters_Meteor_Ore__Chance__Percentages = new ArrayList<List<Integer>>() {
+    @Comment(_ = "The ores to deposit and the chances of the ores being deposited.")
+    public List<List<String>> Natural__Disasters_Meteor_Ore__Chance__Percentages = new ArrayList<List<String>>() {
         {
             //block ID, chance
-            add(Arrays.asList(5, 100));
+            add(Arrays.asList("5", "100"));
         }
     };
     @LimitInteger

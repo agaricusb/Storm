@@ -41,6 +41,7 @@ import com.github.StormTeam.Storm.ErrorLogger;
 import com.github.StormTeam.Storm.Storm;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.event.HandlerList;
@@ -89,7 +90,7 @@ public class VolcanoMaker {
     public void deserialize(String de) {
         de = de.replace("\n", "");
         System.out.println(de);
-        List<String> split = Arrays.asList(de.split("|"));
+        List<String> split = Arrays.asList(de.split("\\|"));
 
         int x = Integer.parseInt(split.get(0));
         int y = Integer.parseInt(split.get(1));
@@ -157,7 +158,7 @@ public class VolcanoMaker {
         Location location = center.clone();
         location.setY(y);
         synchronized (location) {
-            BlockShifter.syncSetBlock(location.getBlock(), 11);
+            BlockShifter.syncSetBlock(location.getBlock(), Material.LAVA.getId());
             layer++;
         }
     }
