@@ -61,6 +61,7 @@ public class VolcanoMaker {
     public int layer = 0;
     public int volcanoGrowthID = -1;
     public boolean active = true;
+    private int x, y, z;
 
     public VolcanoMaker(Location center, float power, int radius, int layer) {
         this.center = center;
@@ -68,6 +69,9 @@ public class VolcanoMaker {
         this.power = power;
         this.radius = radius;
         this.layer = layer;
+        this.x = center.getBlockX();
+        this.y = center.getBlockY();
+        this.z = center.getBlockZ();
     }
 
     public VolcanoMaker() {
@@ -144,7 +148,7 @@ public class VolcanoMaker {
     }
 
     void generateVolcanoAboveGround() {
-        int height = radius * 2 + center.getBlockY();
+        int height = radius * 2 + y;
         long sleep = 15000;
         for (int i = 0; i < height; ++i) {
             generateLayer(center.getBlockY() + layer);
@@ -157,17 +161,15 @@ public class VolcanoMaker {
         dumpVolcanoes();
         Location location = center.clone();
         location.setY(y);
-        synchronized (location) {
-            BlockShifter.syncSetBlock(location.getBlock(), Material.LAVA.getId());
-            layer++;
-        }
+
+        BlockShifter.syncSetBlock(location.getBlock(), Material.LAVA.getId());
+        layer++;
+
     }
 
     public boolean ownsBlock(Block block) {
-        if (!block.getWorld().equals(world)) {
-            return false;
-        }
-        return Math.sqrt(Math.abs(block.getX() - center.getBlockX()) ^ 2 + Math.abs(block.getZ() - center.getBlockZ()) ^ 2) < this.radius * 2;
+        return block.getWorld().equals(world) &&
+                Math.sqrt(Math.abs(block.getX() - x) ^ 2 + Math.abs(block.getZ() - z) ^ 2) < this.radius * 2;
     }
 
     public void erupt() {

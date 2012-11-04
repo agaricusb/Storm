@@ -45,7 +45,7 @@ public class VolcanoControl implements Listener {
     static public Set<VolcanoMaker> volcanoes = new HashSet<VolcanoMaker>();
     static HashMap<String, List<Integer>> volcanoBlockCache = new HashMap<String, List<Integer>>();
     static Object mutex = new Object();
-    static HashMap<World, List<Chunk>> anchoredChunks = new HashMap();
+    static HashMap<World, List<Chunk>> anchoredChunks = new HashMap<World, List<Chunk>>();
 
     @EventHandler
     public void coolLava(BlockFromToEvent e) {
@@ -136,8 +136,12 @@ public class VolcanoControl implements Listener {
     static void solidify(Block lava, int idTo) {
         int data;
         if ((data = lava.getData()) != 0x9)
-            BlockShifter.syncSetBlockDelayed(lava, idTo, ((data & 0x8) == 0x8 ? 1 : 4 - data / 2) * 20 * 2);
-        if (anchoredChunks.containsKey(lava.getWorld()))
-            anchoredChunks.get(lava.getWorld()).add(lava.getChunk());
+            BlockShifter.syncSetBlockFastDelayed(lava, idTo, ((data & 0x8) == 0x8 ? 1 : 4 - data / 2) * 20 * 2);
+        World lW = lava.getWorld();
+        Chunk lC = lava.getChunk();
+        if (anchoredChunks.containsKey(lW))
+            anchoredChunks.get(lW).add(lC);
+        else
+            anchoredChunks.put(lW, Arrays.asList(lC));
     }
 }

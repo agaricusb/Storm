@@ -136,7 +136,6 @@ public class Storm extends JavaPlugin implements Listener {
             setEnabled(false);
             e.printStackTrace();
         }
-        throw new RuntimeException("BLEP!");
     }
 
     private void configureVersion() {
