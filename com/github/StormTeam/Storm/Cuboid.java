@@ -31,8 +31,7 @@ public class Cuboid {
     private final Object mutex = new Object();
 
     public Cuboid(Location l1, Location l2) {
-        this(l1.getWorld(), Math.min(l1.getBlockX(), l2.getBlockX()), Math.min(l1.getBlockY(), l2.getBlockY()), Math.min(l1.getBlockZ(), l2.getBlockZ()),
-                Math.max(l1.getBlockX(), l2.getBlockX()), Math.max(l1.getBlockY(), l2.getBlockY()), Math.max(l1.getBlockZ(), l2.getBlockZ()));
+        this(l1.getWorld(), l1.getBlockX(), l1.getBlockY(), l1.getBlockZ(), l2.getBlockX(), l2.getBlockY(), l2.getBlockZ());
     }
 
     public Cuboid(World world, int x1, int y1, int z1, int x2, int y2, int z2) {
@@ -128,14 +127,12 @@ public class Cuboid {
         List<Chunk> res = new ArrayList<Chunk>();
 
         World world = getWorld();
-        int x1 = getLowerX() & ~0xF;
-        int x2 = getUpperX() & ~0xF;
-        int z1 = getLowerZ() & ~0xF;
-        int z2 = getUpperZ() & ~0xF;
-        for (int x = x1; x <= x2; x += 16) {
-            for (int z = z1; z <= z2; z += 16) {
+        int x2 = getUpperX() >> 4;
+        int z2 = getUpperZ() >> 4;
+        for (int x = getLowerX() >> 4; x <= x2; ++x) {
+            for (int z = getUpperZ() >> 4; z <= z2; ++z) {
                 synchronized (mutex) {
-                    res.add(world.getChunkAt(x >> 4, z >> 4));
+                    res.add(world.getChunkAt(x, z));
                 }
             }
         }

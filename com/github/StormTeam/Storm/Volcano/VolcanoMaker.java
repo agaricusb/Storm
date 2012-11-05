@@ -16,24 +16,6 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-/*
- * This file is part of Storm.
- *
- * Storm is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of
- * the License, or (at your option) any later version.
- *
- * Storm is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with Storm.  If not, see
- * <http://www.gnu.org/licenses/>.
- */
-
 package com.github.StormTeam.Storm.Volcano;
 
 import com.github.StormTeam.Storm.Cuboid;
@@ -65,6 +47,7 @@ public class VolcanoMaker {
     private int x, y, z;
     public Cuboid area;
     private final Object mutex = new Object();
+    public Set<Integer> explosionIDs = new HashSet<Integer>();
 
     public VolcanoMaker(Location center, float power, int radius, int layer) {
         this.center = center;
@@ -126,6 +109,7 @@ public class VolcanoMaker {
         this.x = center.getBlockX();
         this.y = center.getBlockY();
         this.z = center.getBlockZ();
+        syncExplosion(center, 10F);
         System.out.println(area.toString());
         VolcanoControl.volcanoes.add(this);
     }
@@ -160,6 +144,7 @@ public class VolcanoMaker {
     void generateVolcanoAboveGround() {
         int height = radius * 2 + y;
         long sleep = 15000;
+        erupt();
         for (int i = 0; i < height; ++i) {
             generateLayer(center.getBlockY() + layer);
             sleep(sleep += 100);
@@ -167,10 +152,16 @@ public class VolcanoMaker {
         grow(false);
     }
 
-    void generateLayer(int y) {
+    void generateLayer(int y) {   
         dumpVolcanoes();
         Location location = center.clone();
         location.setY(y);
+        
+        if (location.subtract(0, 1, 0).getBlock().getTypeId() == 0) {
+            layer--;
+            generateLayer(center.getBlockY() + layer);
+            return;        
+        }
 
         synchronized (Storm.mutex) {
             area.syncSetBlockFast(location.getBlock(), Material.LAVA.getId());
@@ -187,9 +178,21 @@ public class VolcanoMaker {
     public void erupt() {
         Bukkit.getScheduler().scheduleSyncRepeatingTask(Storm.instance, new Runnable() {
             public void run() {
-                Location location = center.clone();
-                location.setY(center.getBlockY() + layer);
-                syncExplosion(location, 5f);
+                while (true) {
+                    if (layer < 10)
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException ignored) {}
+                    Location location = center.clone();
+                    double dx = Storm.random.nextGaussian() * 5;
+                    double dy = Storm.random.nextGaussian() * 5;
+                    double dz = Storm.random.nextGaussian() * 5;
+                    location.add(dx, layer + dy, dz);
+                    syncExplosion(location, 15f);
+                    try {
+                        Thread.sleep(5000 / layer);
+                    } catch (InterruptedException ignored) {}
+                }
             }
         }, 1L, 15000L);
     }
@@ -199,7 +202,9 @@ public class VolcanoMaker {
                 new Callable<Void>() {
                     @Override
                     public Void call() {
-                        world.createExplosion(exp, power, true);
+                        Entity dummy = new Entity(((CraftWorld)world).getHandle());
+                        explosionIDs.add(dummy.id);
+                        Storm.util.createExplosion(dummy, exp.getX(), exp.getY(), exp.getZ(), power, true);
                         return null;
                     }
                 }

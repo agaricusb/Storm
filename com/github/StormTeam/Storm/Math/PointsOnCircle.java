@@ -34,7 +34,7 @@ public class PointsOnCircle implements Iterator<Vector>, Iterable<Vector> {
         if (radius == 0) {
             return;
         }
-        this.points = radius * 4;
+        this.points = radius * 8;
         this.delta /= this.points;
     }
 
