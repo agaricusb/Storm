@@ -167,10 +167,16 @@ public class VolcanoMaker {
         grow(false);
     }
 
-    void generateLayer(int y) {
+    void generateLayer(int y) {   
         dumpVolcanoes();
         Location location = center.clone();
         location.setY(y);
+        
+        if (location.subtract(0, 1, 0).getBlock().getTypeId() == 0) {
+            layer--;
+            generateLayer(center.getBlockY() + layer);
+            return;        
+        } 
 
         synchronized (Storm.mutex) {
             area.syncSetBlockFast(location.getBlock(), Material.LAVA.getId());
