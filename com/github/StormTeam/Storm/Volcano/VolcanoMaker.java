@@ -47,6 +47,7 @@ public class VolcanoMaker {
     private int x, y, z;
     public Cuboid area;
     private final Object mutex = new Object();
+    public Set<Integer> explosionIDs = new HashSet<Integer>();
 
     public VolcanoMaker(Location center, float power, int radius, int layer) {
         this.center = center;
@@ -202,8 +203,7 @@ public class VolcanoMaker {
                     @Override
                     public Void call() {
                         Entity dummy = new Entity(((CraftWorld)world).getHandle());
-                        int explosionID = dummy.id;
-                        // TODO Store id somewhere
+                        explosionIDs.add(dummy.id);
                         Storm.util.createExplosion(dummy, exp.getX(), exp.getY(), exp.getZ(), power, true);
                         return null;
                     }
