@@ -193,9 +193,21 @@ public class VolcanoMaker {
     public void erupt() {
         Bukkit.getScheduler().scheduleSyncRepeatingTask(Storm.instance, new Runnable() {
             public void run() {
-                Location location = center.clone();
-                location.setY(center.getBlockY() + layer);
-                syncExplosion(location, 5f);
+                while (true) {
+                    if (layer > 10)
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException ignored) {}
+                    Location location = center.clone();
+                    double dx = Storm.random.nextGaussian() * 5;
+                    double dy = Storm.random.nextGaussian() * 5;
+                    double dz = Storm.random.nextGaussian() * 5;
+                    location.add(dx, layer + dy, dz);
+                    syncExplosion(location, 5f);
+                    try {
+                        Thread.sleep(5000 / layer);
+                    } catch (InterruptedException ignored) {}
+                }
             }
         }, 1L, 15000L);
     }
