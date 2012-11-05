@@ -16,7 +16,7 @@ import java.util.Set;
 
 public class ThunderStormWeather extends StormWeather {
 
-    private GlobalVariables glob;
+    private final GlobalVariables glob;
     private StrikerTask striker;
     private EntityShelterer shelter;
     private int killID;

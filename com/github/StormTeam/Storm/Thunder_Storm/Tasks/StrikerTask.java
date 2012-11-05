@@ -19,10 +19,10 @@ import java.util.ArrayList;
 public class StrikerTask {
 
     private int id;
-    private Storm storm;
-    private GlobalVariables glob;
+    private final Storm storm;
+    private final GlobalVariables glob;
     private BlockTickSelector ticker;
-    private World affectedWorld;
+    private final World affectedWorld;
 
     public StrikerTask(Storm storm, World affectedWorld) {
         this.storm = storm;

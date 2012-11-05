@@ -30,13 +30,13 @@ import java.util.*;
  */
 public class WeatherManager implements Listener {
 
-    private Map<String, Pair<Class<? extends StormWeather>, Map<String, StormWeather>>> registeredWeathers = new HashMap<String, Pair<Class<? extends StormWeather>, Map<String, StormWeather>>>();
-    private Map<String, Set<String>> activeWeather = new HashMap<String, Set<String>>();
-    private Map<String, Map<String, Pair<Integer, WeatherTrigger>>> weatherTriggers = new HashMap<String, Map<String, Pair<Integer, WeatherTrigger>>>();
-    private Storm storm;
+    private final Map<String, Pair<Class<? extends StormWeather>, Map<String, StormWeather>>> registeredWeathers = new HashMap<String, Pair<Class<? extends StormWeather>, Map<String, StormWeather>>>();
+    private final Map<String, Set<String>> activeWeather = new HashMap<String, Set<String>>();
+    private final Map<String, Map<String, Pair<Integer, WeatherTrigger>>> weatherTriggers = new HashMap<String, Map<String, Pair<Integer, WeatherTrigger>>>();
+    private final Storm storm;
     private boolean currentRain, currentThunder;
-    private Map<String, String> worldTextures = new HashMap<String, String>();
-    private Set<Method> onloadMethods = new HashSet();
+    private final Map<String, String> worldTextures = new HashMap<String, String>();
+    private final Set<Method> onloadMethods = new HashSet();
 
     public WeatherManager(Storm storm) {
         this.storm = storm;

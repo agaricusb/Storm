@@ -17,7 +17,7 @@ public class StrikeListener implements Listener {
     /**
      * A LightningUtil method for... utility...
      */
-    private LightningUtils util;
+    private final LightningUtils util;
 
     /**
      * Constructs a StrikeListener object.

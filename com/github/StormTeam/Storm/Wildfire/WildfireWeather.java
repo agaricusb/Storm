@@ -18,9 +18,9 @@ import java.util.Set;
 
 public class WildfireWeather extends StormWeather { //TODO: Make use of getTickedBlock(Chunk) to get better ranges of wildfires 
 
-    private GlobalVariables glob;
+    private final GlobalVariables glob;
     private int killID;
-    private World affectedWorld;
+    private final World affectedWorld;
 
     /**
      * Creates a wildfire weather object for given world.

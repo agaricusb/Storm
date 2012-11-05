@@ -28,11 +28,11 @@ public class Wildfire {
     /**
      * A HashMap containing world names and blocks that are part of a wildfire.
      */
-    public static HashMap<String, Set<org.bukkit.block.Block>> wildfireBlocks = new HashMap<String, Set<org.bukkit.block.Block>>();
+    public static final HashMap<String, Set<org.bukkit.block.Block>> wildfireBlocks = new HashMap<String, Set<org.bukkit.block.Block>>();
     /**
      * A Set of all flammable blocks.
      */
-    public static Set<Integer> flammable = StormUtil.asSet(Block.FENCE.id, Block.WOOD.id, Block.WOOD_STAIRS.id,
+    public static final Set<Integer> flammable = StormUtil.asSet(Block.FENCE.id, Block.WOOD.id, Block.WOOD_STAIRS.id,
             Block.WOODEN_DOOR.id, Block.LEAVES.id, Block.BOOKSHELF.id,
             Block.GRASS.id, Block.WOOL.id);
 

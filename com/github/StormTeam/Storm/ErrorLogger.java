@@ -75,7 +75,16 @@ public class ErrorLogger extends PluginLogger {
         if ((thrown = record.getThrown()) == null)
             return false;
 
-        String ERROR = ExceptionUtils.getStackTrace(thrown), NAME = "", TICKETS = "", ENDL = "";
+        String ERROR = "", NAME = "", TICKETS = "", ENDL = "";
+
+        try {
+            ERROR = ExceptionUtils.getStackTrace(thrown);
+            NAME = "";
+            TICKETS = "";
+            ENDL = "";
+        } catch (Exception e) {
+            return true;
+        }
         for (Map.Entry<String, List<String>> entry : loadMap().entrySet()) {
             try {
                 List<String> data = entry.getValue();

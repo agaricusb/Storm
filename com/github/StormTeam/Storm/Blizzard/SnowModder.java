@@ -14,7 +14,7 @@ import java.lang.reflect.Method;
 
 public class SnowModder {
 
-    private Class<?> bc = Block.class;
+    private final Class<?> bc = Block.class;
     private Method c;
     private Method a;
     private Method h;

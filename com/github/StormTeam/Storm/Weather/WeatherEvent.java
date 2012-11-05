@@ -13,9 +13,9 @@ class WeatherEvent extends Event implements Cancellable {
 
     private static final HandlerList handlers = new HandlerList();
     private boolean isCancelled;
-    private World affectedWorld;
-    private boolean weatherState;
-    private String weatherName;
+    private final World affectedWorld;
+    private final boolean weatherState;
+    private final String weatherName;
 
     /**
      * Constructs a WeatherEvent.

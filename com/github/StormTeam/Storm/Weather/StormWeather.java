@@ -65,7 +65,7 @@ public abstract class StormWeather {
     /**
      * The storm plugin object.
      */
-    protected Storm storm;
+    protected final Storm storm;
 
-    protected World bukkitWorld;
+    protected final World bukkitWorld;
 }

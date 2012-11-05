@@ -57,7 +57,7 @@ public class Storm extends JavaPlugin implements Listener {
     /**
      * A HashMap containing world name and configuration object.
      */
-    public static HashMap<String, GlobalVariables> wConfigs = new HashMap<String, GlobalVariables>();
+    public static final HashMap<String, GlobalVariables> wConfigs = new HashMap<String, GlobalVariables>();
     /**
      * A StormUtil object.
      */
@@ -81,7 +81,9 @@ public class Storm extends JavaPlugin implements Listener {
 
     public static Storm instance = null;
 
-    public static boolean debug = true;
+    public static final boolean debug = false;
+
+    public static final Object mutex = new Object();
 
     /**
      * Called to enable Storm.
@@ -90,7 +92,8 @@ public class Storm extends JavaPlugin implements Listener {
     @EventHandler
     public void spawnVolcano(PlayerInteractEvent e) {
         if (e.getPlayer().isOp() && e.getAction() == Action.RIGHT_CLICK_BLOCK
-                && e.getPlayer().getItemInHand().getType().equals(Material.BONE)) {
+                && e.getPlayer().getItemInHand().getType().equals(Material.BONE)
+                && Storm.wConfigs.get(e.getPlayer().getWorld().getName()).Alpha__Features_Volcanoes_Enabled) {
             Block b = e.getClickedBlock().getRelative(BlockFace.UP);
             if (b != null) {
                 VolcanoMaker volcano = new VolcanoMaker(b.getLocation(), 10, 30, 0);

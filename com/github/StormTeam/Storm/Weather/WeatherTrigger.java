@@ -35,8 +35,8 @@ class WeatherTrigger implements Runnable {
         }
     }
 
-    private WeatherManager manager;
-    private String weather;
-    private String world;
-    private int chance;
+    private final WeatherManager manager;
+    private final String weather;
+    private final String world;
+    private final int chance;
 }

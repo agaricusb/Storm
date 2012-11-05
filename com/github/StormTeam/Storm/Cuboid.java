@@ -139,7 +139,6 @@ public class Cuboid {
                 }
             }
         }
-        Verbose.log("Chunks: " + res);
         return res;
     }
 

@@ -216,9 +216,9 @@ public class GlobalVariables extends ReflectConfiguration {
 //   public List<Integer> Natural__Disasters_Earthquakes_Blocks__Can__Fall = Arrays.asList(Block.STONE.id, Block.COBBLESTONE.id);
 //   public long Natural__Disasters_Earthquake_Scheduler_Recalculation__Intervals__In__Ticks = 72000;
     // Volcanoes
-    public List<Integer> Volcano_Composition = new ArrayList<Integer>() {{
-        for (int i = 0; i < 100; ++i)
-            add(Material.STONE.getId());
+    //public List<Integer> Volcano_Composition = new ArrayList<Integer>() {{
+       // for (int i = 0; i < 100; ++i)
+         //   add(Material.STONE.getId());
         // for (int i = 0; i < 5; ++i)
         //    add(Material.COAL_ORE.getId());
         //for (int i = 0; i < 3; ++i)
@@ -228,8 +228,9 @@ public class GlobalVariables extends ReflectConfiguration {
         //  add(Material.DIAMOND_ORE.getId());
         //  if (Storm.version > 1.2)
         //      add(Material.EMERALD_ORE.getId());
-    }};
+    //}};
     // Texture Packs
+    public boolean Alpha__Features_Volcanoes_Enabled = true;
     @Newline(num = 2)
     public String Textures_Acid__Rain__Texture__Path = "http://dl.dropbox.com/u/67341745/Storm/Acid_Rain.zip";
     public String Textures_Blizzard__Texture__Path = "http://dl.dropbox.com/u/67341745/Storm/Blizzard.zip";

@@ -28,7 +28,7 @@ import java.util.Set;
 
 public class Meteor {
 
-    public static Set<Integer> meteors = new HashSet();
+    public static final Set<Integer> meteors = new HashSet();
 
     /**
      * Enables meteors.
