@@ -108,6 +108,7 @@ public class VolcanoMaker {
         this.x = center.getBlockX();
         this.y = center.getBlockY();
         this.z = center.getBlockZ();
+        syncExplosion(center, 10F);
         System.out.println(area.toString());
         VolcanoControl.volcanoes.add(this);
     }
@@ -142,6 +143,7 @@ public class VolcanoMaker {
     void generateVolcanoAboveGround() {
         int height = radius * 2 + y;
         long sleep = 15000;
+        erupt();
         for (int i = 0; i < height; ++i) {
             generateLayer(center.getBlockY() + layer);
             sleep(sleep += 100);
@@ -158,7 +160,7 @@ public class VolcanoMaker {
             layer--;
             generateLayer(center.getBlockY() + layer);
             return;        
-        } 
+        }
 
         synchronized (Storm.mutex) {
             area.syncSetBlockFast(location.getBlock(), Material.LAVA.getId());
@@ -176,7 +178,7 @@ public class VolcanoMaker {
         Bukkit.getScheduler().scheduleSyncRepeatingTask(Storm.instance, new Runnable() {
             public void run() {
                 while (true) {
-                    if (layer > 10)
+                    if (layer < 10)
                         try {
                             Thread.sleep(1000);
                         } catch (InterruptedException ignored) {}
@@ -185,7 +187,7 @@ public class VolcanoMaker {
                     double dy = Storm.random.nextGaussian() * 5;
                     double dz = Storm.random.nextGaussian() * 5;
                     location.add(dx, layer + dy, dz);
-                    syncExplosion(location, 5f);
+                    syncExplosion(location, 15f);
                     try {
                         Thread.sleep(5000 / layer);
                     } catch (InterruptedException ignored) {}
@@ -199,7 +201,10 @@ public class VolcanoMaker {
                 new Callable<Void>() {
                     @Override
                     public Void call() {
-                        world.createExplosion(exp, power, true);
+                        Entity dummy = new Entity(((CraftWorld)world).getHandle());
+                        int explosionID = dummy.id;
+                        // TODO Store id somewhere
+                        Storm.util.createExplosion(dummy, exp.getX(), exp.getY(), exp.getZ(), power, true);
                         return null;
                     }
                 }
