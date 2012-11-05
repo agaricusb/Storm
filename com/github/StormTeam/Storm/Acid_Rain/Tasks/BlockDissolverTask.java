@@ -17,11 +17,11 @@ import java.util.List;
 public class BlockDissolverTask {
 
     private int id;
-    private Storm storm;
-    private GlobalVariables glob;
+    private final Storm storm;
+    private final GlobalVariables glob;
     private BlockTickSelector ticker;
 
-    private List<BlockTransformer> transformations = new ArrayList();
+    private final List<BlockTransformer> transformations = new ArrayList();
 
     /**
      * Creates a dissolver object for given world.

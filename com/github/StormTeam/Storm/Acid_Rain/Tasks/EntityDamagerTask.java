@@ -23,7 +23,7 @@ public class EntityDamagerTask {
     private final World affectedWorld;
     private final Storm storm;
     private final GlobalVariables glob;
-    private PotionEffect hunger;
+    private final PotionEffect hunger;
 
     /**
      * Creates a damager object for given world.

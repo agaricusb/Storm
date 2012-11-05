@@ -36,7 +36,7 @@
 
 package com.github.StormTeam.Storm.Volcano;
 
-import com.github.StormTeam.Storm.BlockShifter;
+import com.github.StormTeam.Storm.Cuboid;
 import com.github.StormTeam.Storm.ErrorLogger;
 import com.github.StormTeam.Storm.Storm;
 import org.bukkit.Bukkit;
@@ -44,6 +44,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 
@@ -62,6 +63,8 @@ public class VolcanoMaker {
     public int volcanoGrowthID = -1;
     public boolean active = true;
     private int x, y, z;
+    public Cuboid area;
+    private final Object mutex = new Object();
 
     public VolcanoMaker(Location center, float power, int radius, int layer) {
         this.center = center;
@@ -69,9 +72,6 @@ public class VolcanoMaker {
         this.power = power;
         this.radius = radius;
         this.layer = layer;
-        this.x = center.getBlockX();
-        this.y = center.getBlockY();
-        this.z = center.getBlockZ();
     }
 
     public VolcanoMaker() {
@@ -79,13 +79,13 @@ public class VolcanoMaker {
 
     public String serialize() {
         StringBuilder serialized = new StringBuilder();
-        serialized.append("" + (int) center.getX());
-        serialized.append("|" + (int) center.getY());
-        serialized.append("|" + (int) center.getZ());
-        serialized.append("|" + world.getName());
-        serialized.append("|" + (int) radius);
-        serialized.append("|" + (int) layer);
-        serialized.append("|" + active);
+        serialized.append("").append((int) center.getX());
+        serialized.append("|").append((int) center.getY());
+        serialized.append("|").append((int) center.getZ());
+        serialized.append("|").append(world.getName());
+        serialized.append("|").append(radius);
+        serialized.append("|").append(layer);
+        serialized.append("|").append(active);
 
         //  String back = ":45:48:99:world:30:5\n";
         return serialized.toString() + "\n";
@@ -117,6 +117,16 @@ public class VolcanoMaker {
         } catch (Exception e) {
             ErrorLogger.generateErrorLog(e);
         }
+        area = new Cuboid(center, center);
+        area = area.expand(BlockFace.UP, radius).expand(BlockFace.DOWN, radius / 4);
+        area = area.expand(BlockFace.NORTH, radius * 2);
+        area = area.expand(BlockFace.EAST, radius * 2);
+        area = area.expand(BlockFace.SOUTH, radius * 2);
+        area = area.expand(BlockFace.WEST, radius * 2);
+        this.x = center.getBlockX();
+        this.y = center.getBlockY();
+        this.z = center.getBlockZ();
+        System.out.println(area.toString());
         VolcanoControl.volcanoes.add(this);
     }
 
@@ -162,14 +172,16 @@ public class VolcanoMaker {
         Location location = center.clone();
         location.setY(y);
 
-        BlockShifter.syncSetBlock(location.getBlock(), Material.LAVA.getId());
+        synchronized (Storm.mutex) {
+            area.syncSetBlockFast(location.getBlock(), Material.LAVA.getId());
+            area.sendClientChanges();
+        }
         layer++;
-
     }
 
     public boolean ownsBlock(Block block) {
-        return block.getWorld().equals(world) &&
-                Math.sqrt(Math.abs(block.getX() - x) ^ 2 + Math.abs(block.getZ() - z) ^ 2) < this.radius * 2;
+        return block.getWorld().equals(world) && Math.sqrt(Math.pow(Math.abs(block.getX() - x), 2)
+                + Math.pow(Math.abs(block.getZ() - z), 2)) < this.radius * 2;
     }
 
     public void erupt() {

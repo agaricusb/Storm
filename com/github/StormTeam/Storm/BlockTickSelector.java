@@ -25,6 +25,12 @@ public class BlockTickSelector {
     private Method a, recheckGaps;
     private int chan;
 
+    private final Map<String, String> recheckGapsName = new HashMap<String, String>() {{
+        put("1.2", "o");
+        put("1.3", "k");
+        put("1.4", "q");
+    }};
+
     /**
      * Creates a BlockTickSelector for given world with given chance.
      *
@@ -36,12 +42,6 @@ public class BlockTickSelector {
      * @throws InstantiationException
      * @throws IllegalAccessException
      */
-
-    private Map<String, String> recheckGapsName = new HashMap<String, String>() {{
-        put("1.2", "o");
-        put("1.3", "k");
-        put("1.4", "q");
-    }};
 
     public BlockTickSelector(World world, int selChance)
             throws NoSuchMethodException,

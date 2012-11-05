@@ -53,7 +53,7 @@ public class EntityMeteor extends EntityFireball {
     private int snowRadius;
     private boolean h_lock, h_lock_2, h_lock_3;
 
-    private HashMap<IDBlock, Integer> ores = new HashMap();
+    private final HashMap<IDBlock, Integer> ores = new HashMap();
 
 
     /**

@@ -20,21 +20,22 @@ import java.util.Set;
 public class EntityShelterer {
 
     private int id;
-    private World affectedWorld;
-    private Storm storm;
+    private final World affectedWorld;
+    private final Storm storm;
     private Field selector;
     private Method register;
-    private ArrayList<Integer> registered = new ArrayList<Integer>();
+    private final ArrayList<Integer> registered = new ArrayList<Integer>();
     private Set<Biome> filter = new HashSet();
-    private Set<Class<?>> filteredEntities = new HashSet() {{
+    private final Set<Class<?>> filteredEntities = new HashSet() {{
         add(EntityPlayer.class);
         add(EntitySlime.class);
+        add(EntityEnderDragon.class);
         if (Storm.version > 1.3) {
             add(EntityBat.class);
             add(EntityWitch.class);
         }
     }};
-    private String name;
+    private final String name;
     private Method vec3DCreate;
 
 
@@ -86,13 +87,13 @@ public class EntityShelterer {
 
     public class PathfinderGoalFleeSky extends PathfinderGoal {
 
-        private EntityCreature entity;
+        private final EntityCreature entity;
         private double x;
         private double y;
         private double z;
-        private float speed;
-        private net.minecraft.server.World world;
-        private String name;
+        private final float speed;
+        private final net.minecraft.server.World world;
+        private final String name;
 
         public PathfinderGoalFleeSky(EntityCreature creature, float fast, String weather) {
             entity = creature;
@@ -219,5 +220,4 @@ public class EntityShelterer {
             return Storm.util.isLocationUnderSky(new Location(world.getWorld(), x, y, z));
         }
     }
-
 }

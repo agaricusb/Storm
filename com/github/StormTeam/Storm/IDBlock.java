@@ -3,7 +3,8 @@ package com.github.StormTeam.Storm;
 import org.bukkit.block.Block;
 
 public class IDBlock {
-    private int id, data = -1;
+    private final int id;
+    private int data = -1;
 
     public IDBlock(int id, int data) {
         this.id = id;
@@ -20,8 +21,6 @@ public class IDBlock {
         }
     }
 
-    ;
-
     public IDBlock(Block b) {
         this.id = b.getTypeId();
         this.data = b.getData();
@@ -34,7 +33,7 @@ public class IDBlock {
     }
 
     public boolean isBlock(Block b) {
-        return b.getTypeId() == id && data == -1 ? true : b.getData() == data;
+        return b.getTypeId() == id && data == -1 || b.getData() == data;
     }
 
 }

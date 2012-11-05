@@ -7,6 +7,7 @@ import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.CraftChunk;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -16,11 +17,18 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * A class to speed up large block changes in an area
+ * <p/>
+ * Credits to desht for most of this: this is a version trimmed and fitted to Storm.
+ */
+
 public class Cuboid {
 
     public final String worldName;
     public final int x1, y1, z1;
     public final int x2, y2, z2;
+    private final Object mutex = new Object();
 
     public Cuboid(Location l1, Location l2) {
         this(l1.getWorld(), Math.min(l1.getBlockX(), l2.getBlockX()), Math.min(l1.getBlockY(), l2.getBlockY()), Math.min(l1.getBlockZ(), l2.getBlockZ()),
@@ -82,25 +90,23 @@ public class Cuboid {
         return z2;
     }
 
-    public Location getCenter() {
-        return new Location(getWorld(), getLowerX() + (getUpperX() - getLowerX()) / 2,
-                getLowerY() + (getUpperY() - getLowerY()) / 2,
-                getLowerZ() + (getUpperZ() - getLowerZ()) / 2);
-    }
-
-    public List<Block> getCorners() {
-        List<Block> res = new ArrayList<Block>(8);
-        World world = getWorld();
-        res.add(world.getBlockAt(x1, y1, z1));
-        res.add(world.getBlockAt(x1, y1, z2));
-        res.add(world.getBlockAt(x1, y2, z1));
-        res.add(world.getBlockAt(x1, y2, z2));
-        res.add(world.getBlockAt(x2, y1, z1));
-        res.add(world.getBlockAt(x2, y1, z2));
-        res.add(world.getBlockAt(x2, y2, z1));
-        res.add(world.getBlockAt(x2, y2, z2));
-        return res;
-
+    public Cuboid expand(BlockFace dir, int amount) {
+        switch (dir) {
+            case NORTH:
+                return new Cuboid(getWorld(), x1 - amount, y1, z1, x2, y2, z2);
+            case SOUTH:
+                return new Cuboid(getWorld(), x1, y1, z1, x2 + amount, y2, z2);
+            case EAST:
+                return new Cuboid(getWorld(), x1, y1, z1 - amount, x2, y2, z2);
+            case WEST:
+                return new Cuboid(getWorld(), x1, y1, z1, x2, y2, z2 + amount);
+            case DOWN:
+                return new Cuboid(getWorld(), x1, y1 - amount, z1, x2, y2, z2);
+            case UP:
+                return new Cuboid(getWorld(), x1, y1, z1, x2, y2 + amount, z2);
+            default:
+                throw new IllegalArgumentException("invalid direction " + dir);
+        }
     }
 
     public boolean contains(int x, int y, int z) {
@@ -122,37 +128,57 @@ public class Cuboid {
         List<Chunk> res = new ArrayList<Chunk>();
 
         World world = getWorld();
-        int x1 = getLowerX() & ~0xf;
-        int x2 = getUpperX() & ~0xf;
-        int z1 = getLowerZ() & ~0xf;
-        int z2 = getUpperZ() & ~0xf;
+        int x1 = getLowerX() & ~0xF;
+        int x2 = getUpperX() & ~0xF;
+        int z1 = getLowerZ() & ~0xF;
+        int z2 = getUpperZ() & ~0xF;
         for (int x = x1; x <= x2; x += 16) {
             for (int z = z1; z <= z2; z += 16) {
-                res.add(world.getChunkAt(x >> 4, z >> 4));
+                synchronized (mutex) {
+                    res.add(world.getChunkAt(x >> 4, z >> 4));
+                }
             }
         }
+        Verbose.log("Chunks: " + res);
         return res;
     }
 
-    public void initLighting() {
-        for (Chunk c : getChunks()) {
-            ((CraftChunk) c).getHandle().initLighting();
-        }
+
+    public void syncSetBlockFastDelayed(final Block b, final int id, long delay) {
+        final int pre = b.getTypeId();
+        Bukkit.getScheduler().scheduleSyncDelayedTask(Storm.instance, new Runnable() {
+            public void run() {
+                if (pre == b.getTypeId())
+                    syncSetBlockFast(b, id);
+            }
+        }, delay);
+    }
+
+    public void syncSetBlockFast(final Block b, final int id) {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(Storm.instance, new Runnable() {
+            public void run() {
+                setBlockFast(b, id);
+            }
+        }, 0L);
+    }
+
+    public void setBlockFast(Block b, int typeId) {
+        setBlockFast(b, typeId, (byte) 0);
+    }
+
+    public void setBlockFast(Block b, int typeId, byte data) {
+        ((CraftChunk) b.getChunk()).getHandle().a(b.getX() & 15, b.getY(), b.getZ() & 15, typeId, data);
     }
 
     public void sendClientChanges() {
-        int threshold = (Bukkit.getServer().getViewDistance() << 4) + 32;
-        threshold = threshold * threshold;
-
+        int threshold = ((Bukkit.getServer().getViewDistance() << 4) + 32) ^ 2;
         List<ChunkCoordIntPair> pairs = new ArrayList<ChunkCoordIntPair>();
         for (Chunk c : getChunks()) {
             pairs.add(new ChunkCoordIntPair(c.getX(), c.getZ()));
         }
-        int centerX = getLowerX() + getSizeX() / 2,
-                centerZ = getLowerZ() + getSizeZ() / 2;
+        int centerX = getLowerX() + getSizeX() / 2, centerZ = getLowerZ() + getSizeZ() / 2;
         for (Player player : getWorld().getPlayers()) {
-            int px = player.getLocation().getBlockX();
-            int pz = player.getLocation().getBlockZ();
+            int px = player.getLocation().getBlockX(), pz = player.getLocation().getBlockZ();
             if ((px - centerX) * (px - centerX) + (pz - centerZ) * (pz - centerZ) < threshold) {
                 queueChunks(((CraftPlayer) player).getHandle(), pairs);
             }

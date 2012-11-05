@@ -4,8 +4,8 @@ import org.bukkit.block.Block;
 
 public class BlockTransformer {
 
-    private IDBlock from;
-    private IDBlock to;
+    private final IDBlock from;
+    private final IDBlock to;
 
     public BlockTransformer(IDBlock from, IDBlock to) {
         this.from = from;
