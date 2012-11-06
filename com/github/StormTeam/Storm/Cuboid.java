@@ -125,71 +125,70 @@ public class Cuboid {
     }
 
     public List<Chunk> getChunks() {
-        List<Chunk> res = new ArrayList<Chunk>();
 
-        World world = getWorld();
-        int x1 = getLowerX() & ~0xF;
-        int x2 = getUpperX() & ~0xF;
-        int z1 = getLowerZ() & ~0xF;
-        int z2 = getUpperZ() & ~0xF;
-        for (int x = x1; x <= x2; x += 16) {
-            for (int z = z1; z <= z2; z += 16) {
-                if (!world.isChunkLoaded(x, z))
-                    world.loadChunk(x, z);
-                res.add(world.getChunkAt(x, z));
+        final List<Chunk> res = new ArrayList<Chunk>();
+        Bukkit.getScheduler().scheduleSyncDelayedTask(
+                Storm.instance, new Runnable() {
+            public void run() {
+                World world = getWorld();
+                int x1 = getLowerX() & ~0xF;
+                int x2 = getUpperX() & ~0xF;
+                int z1 = getLowerZ() & ~0xF;
+                int z2 = getUpperZ() & ~0xF;
+                for (int x = x1; x <= x2; x += 16) {
+                    for (int z = z1; z <= z2; z += 16) {
+                        if (!world.isChunkLoaded(x, z))
+                            world.loadChunk(x, z);
+                        res.add(world.getChunkAt(x, z));
+                    }
+                }
             }
-        }
+        }, 0L);
         // Verbose.log("Fetched " + res.size() + " chunks.");
         return res;
     }
 
-    public void syncSetBlockFastDelayed(final Block b, final int id, long delay) {
+    public void setBlockFastDelayed(final Block b, final int id, long delay) {
         final int pre = b.getTypeId();
         Bukkit.getScheduler().scheduleSyncDelayedTask(Storm.instance, new Runnable() {
             public void run() {
                 if (pre == b.getTypeId())
-                    syncSetBlockFast(b, id);
+                    setBlockFast(b, id);
             }
         }, delay);
     }
 
-    public void syncSetBlockFast(final Block b, final int id) {
-        Bukkit.getScheduler().scheduleSyncDelayedTask(Storm.instance, new Runnable() {
+    public void setBlockFast(final Block b, final int id, final byte data) {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(
+                Storm.instance, new Runnable() {
             public void run() {
-                setBlockFast(b, id);
+                ((CraftChunk) b.getChunk()).getHandle().a(b.getX() & 15, b.getY(), b.getZ() & 15, id, data);
             }
         }, 0L);
     }
 
-    public void setBlockFast(Block b, int typeId) {
-        setBlockFast(b, typeId, (byte) 0);
-    }
-
-    public void setBlockFast(final Block b, final int typeId,final byte data) {
-        Bukkit.getScheduler().scheduleSyncDelayedTask(
-            Storm.instance, new Runnable() {
-                public void run() {
-                    ((CraftChunk) b.getChunk()).getHandle().a(b.getX() & 15, b.getY(), b.getZ() & 15, typeId, data);
-                }
-            }, 0L
-
-        );
-
+    public void setBlockFast(final Block b, final int id) {
+        setBlockFast(b, id, (byte) 0);
     }
 
     public void sendClientChanges() {
-        int threshold = ((Bukkit.getServer().getViewDistance() << 4) + 32) ^ 2;
-        List<ChunkCoordIntPair> pairs = new ArrayList<ChunkCoordIntPair>();
-        for (Chunk c : getChunks()) {
-            pairs.add(new ChunkCoordIntPair(c.getX(), c.getZ()));
-        }
-        int centerX = getLowerX() + getSizeX() / 2, centerZ = getLowerZ() + getSizeZ() / 2;
-        for (Player player : getWorld().getPlayers()) {
-            int px = player.getLocation().getBlockX(), pz = player.getLocation().getBlockZ();
-            if ((px - centerX) * (px - centerX) + (pz - centerZ) * (pz - centerZ) < threshold) {
-                queueChunks(((CraftPlayer) player).getHandle(), pairs);
+        Bukkit.getScheduler().scheduleSyncDelayedTask(
+                Storm.instance, new Runnable() {
+            public void run() {
+                int threshold = (int) Math.pow(Bukkit.getServer().getViewDistance() << 4 + 32, 2);
+                List<ChunkCoordIntPair> pairs = new ArrayList<ChunkCoordIntPair>();
+                for (Chunk c : getChunks()) {
+                    pairs.add(new ChunkCoordIntPair(c.getX(), c.getZ()));
+                }
+                int centerX = getLowerX() + getSizeX() / 2, centerZ = getLowerZ() + getSizeZ() / 2;
+                for (Player player : getWorld().getPlayers()) {
+                    int px = player.getLocation().getBlockX(), pz = player.getLocation().getBlockZ();
+                    if ((px - centerX) * (px - centerX) + (pz - centerZ) * (pz - centerZ) < threshold) {
+                        queueChunks(((CraftPlayer) player).getHandle(), pairs);
+                    }
+                }
             }
-        }
+        }, 0L);
     }
 
     private void queueChunks(EntityPlayer ep, List<ChunkCoordIntPair> pairs) {

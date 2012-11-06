@@ -135,8 +135,7 @@ public class VolcanoControl implements Listener {
     static void solidify(VolcanoMaker vulc, Block lava, int idTo) {
         int data;
         if ((data = lava.getData()) != 0x9)
-            vulc.area.syncSetBlockFastDelayed(lava, idTo, ((data & 0x8) == 0x8 ? 1 : 4 - data / 2) * 20 * 2);
-
+            vulc.area.setBlockFastDelayed(lava, idTo, ((data & 0x8) == 0x8 ? 1 : 4 - data / 2) * 20 * 2);
     }
 
     static List<Integer> getVolcanoBlock(String world) {

@@ -166,7 +166,7 @@ public class VolcanoMaker {
             grow(false);
             return;
         }
-        area.syncSetBlockFast(set, Material.LAVA.getId());
+        area.setBlockFast(set, Material.LAVA.getId());
         area.sendClientChanges();
         dumpVolcanoes();
     }
