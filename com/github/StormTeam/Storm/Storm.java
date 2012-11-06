@@ -41,14 +41,14 @@ import java.util.logging.Level;
 public class Storm extends JavaPlugin implements Listener {
 
     private String _ =
-            "Dear BukkitDev administrator(s):" +
-                    "Thank you for your time in reviewing this project! If you find anything" +
-                    "in it that makes you cry inside, will you please let us know so we can" +
-                    "fix/improve it? Aside from horrible formatting, we're working on that :-)" +
+            "Dear BukkitDev administrator(s):\n" +
+                    "Thank you for your time in reviewing this project! If you find anything " +
+                    "in it that makes you cry inside, will you please let us know so we can " +
+                    "fix/improve it? Aside from horrible formatting, we're working on that :-)\n" +
                     "Thanks in advance, The-people-who-made-this-plugin";
 
     private String __ =
-            "Dear (Non-Bukkit-Admin) decompiler(s): There is no point in decompiling this plugin... " +
+            "Dear (Non-Bukkit-Admin) decompiler(s):\nThere is no point in decompiling this plugin... " +
                     "All the source is already up at Github (github.com/StormTeam/Storm). Besides, neither JAD nor JD-GUI or " +
                     "any decompiler can decompile source code to how it was before compilation. Save yourself time :-) " +
                     "BTW, if you decompile the code, you will not get the comments, " +
