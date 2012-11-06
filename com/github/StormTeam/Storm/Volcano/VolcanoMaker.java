@@ -21,19 +21,22 @@ package com.github.StormTeam.Storm.Volcano;
 import com.github.StormTeam.Storm.Cuboid;
 import com.github.StormTeam.Storm.ErrorLogger;
 import com.github.StormTeam.Storm.Storm;
+import com.github.StormTeam.Storm.Verbose;
+import net.minecraft.server.EntityTNTPrimed;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
+import java.util.Set;
 
 public class VolcanoMaker {
     public Location center;
@@ -144,30 +147,28 @@ public class VolcanoMaker {
     void generateVolcanoAboveGround() {
         int height = radius * 2 + y;
         long sleep = 15000;
-        erupt();
+       // erupt();
         for (int i = 0; i < height; ++i) {
-            generateLayer(center.getBlockY() + layer);
+            generateLayer();
             sleep(sleep += 100);
         }
         grow(false);
     }
 
-    void generateLayer(int y) {   
-        dumpVolcanoes();
-        Location location = center.clone();
-        location.setY(y);
-        
-        if (location.subtract(0, 1, 0).getBlock().getTypeId() == 0) {
-            layer--;
-            generateLayer(center.getBlockY() + layer);
-            return;        
-        }
+    void generateLayer() {
 
-        synchronized (Storm.mutex) {
-            area.syncSetBlockFast(location.getBlock(), Material.LAVA.getId());
-            area.sendClientChanges();
+        while (world.getBlockTypeIdAt(x, y + layer, z) == 0) {
+            layer--;
         }
         layer++;
+        Block set = center.clone().add(0, layer, 0).getBlock();
+        if (!area.contains(set)) {
+            grow(false);
+            return;
+        }
+        area.syncSetBlockFast(set, Material.LAVA.getId());
+        area.sendClientChanges();
+        dumpVolcanoes();
     }
 
     public boolean ownsBlock(Block block) {
@@ -176,44 +177,34 @@ public class VolcanoMaker {
     }
 
     public void erupt() {
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(Storm.instance, new Runnable() {
+        Bukkit.getScheduler().scheduleAsyncRepeatingTask(Storm.instance, new Runnable() {
             public void run() {
                 while (true) {
                     if (layer < 10)
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException ignored) {}
+                        continue;
                     Location location = center.clone();
                     double dx = Storm.random.nextGaussian() * 5;
                     double dy = Storm.random.nextGaussian() * 5;
                     double dz = Storm.random.nextGaussian() * 5;
                     location.add(dx, layer + dy, dz);
                     syncExplosion(location, 15f);
-                    try {
-                        Thread.sleep(5000 / layer);
-                    } catch (InterruptedException ignored) {}
+
+                    sleep(5000 / layer);
+
                 }
             }
         }, 1L, 15000L);
     }
 
     void syncExplosion(final Location exp, final float power) {
-        Future<Void> callExplosion = Bukkit.getScheduler().callSyncMethod(Storm.instance,
-                new Callable<Void>() {
-                    @Override
-                    public Void call() {
-                        Entity dummy = new Entity(((CraftWorld)world).getHandle());
-                        explosionIDs.add(dummy.id);
-                        Storm.util.createExplosion(dummy, exp.getX(), exp.getY(), exp.getZ(), power, true);
-                        return null;
-                    }
-                }
-        );
-        try {
-            callExplosion.get();
-        } catch (Exception e) {
-            ErrorLogger.generateErrorLog(e);
-        }
+        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Storm.instance, new Runnable() {
+            public void run() {
+                EntityTNTPrimed dummy = new EntityTNTPrimed(((CraftWorld) world).getHandle()); //Entity is abstract, and really, we just need the id...
+                explosionIDs.add(dummy.id);
+                Verbose.log("Adding explosion with associated id: " + dummy.id + " for volcano.");
+                Storm.util.createExplosion(dummy, exp.getX(), exp.getY(), exp.getZ(), power, true);
+            }
+        }, 0L);
     }
 
     public void dumpVolcanoes() {

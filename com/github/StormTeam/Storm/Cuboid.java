@@ -28,7 +28,6 @@ public class Cuboid {
     public final String worldName;
     public final int x1, y1, z1;
     public final int x2, y2, z2;
-    private final Object mutex = new Object();
 
     public Cuboid(Location l1, Location l2) {
         this(l1.getWorld(), l1.getBlockX(), l1.getBlockY(), l1.getBlockZ(), l2.getBlockX(), l2.getBlockY(), l2.getBlockZ());
@@ -42,6 +41,7 @@ public class Cuboid {
         this.y2 = Math.max(y1, y2);
         this.z1 = Math.min(z1, z2);
         this.z2 = Math.max(z1, z2);
+        getChunks(); //Load the chunks
     }
 
     public World getWorld() {
@@ -112,33 +112,36 @@ public class Cuboid {
         return x >= x1 && x <= x2 && y >= y1 && y <= y2 && z >= z1 && z <= z2;
     }
 
+    public boolean contains(Chunk c) {
+        return getChunks().contains(c);
+    }
+
     public boolean contains(Block b) {
         return contains(b.getLocation());
     }
 
     public boolean contains(Location l) {
-        if (l.getWorld() != getWorld()) {
-            return false;
-        }
-        return contains(l.getBlockX(), l.getBlockY(), l.getBlockZ());
+        return l.getWorld() == getWorld() && contains(l.getBlockX(), l.getBlockY(), l.getBlockZ());
     }
 
     public List<Chunk> getChunks() {
         List<Chunk> res = new ArrayList<Chunk>();
 
         World world = getWorld();
-        int x2 = getUpperX() >> 4;
-        int z2 = getUpperZ() >> 4;
-        for (int x = getLowerX() >> 4; x <= x2; ++x) {
-            for (int z = getUpperZ() >> 4; z <= z2; ++z) {
-                synchronized (mutex) {
-                    res.add(world.getChunkAt(x, z));
-                }
+        int x1 = getLowerX() & ~0xF;
+        int x2 = getUpperX() & ~0xF;
+        int z1 = getLowerZ() & ~0xF;
+        int z2 = getUpperZ() & ~0xF;
+        for (int x = x1; x <= x2; x += 16) {
+            for (int z = z1; z <= z2; z += 16) {
+                if (!world.isChunkLoaded(x, z))
+                    world.loadChunk(x, z);
+                res.add(world.getChunkAt(x, z));
             }
         }
+        // Verbose.log("Fetched " + res.size() + " chunks.");
         return res;
     }
-
 
     public void syncSetBlockFastDelayed(final Block b, final int id, long delay) {
         final int pre = b.getTypeId();
@@ -162,8 +165,16 @@ public class Cuboid {
         setBlockFast(b, typeId, (byte) 0);
     }
 
-    public void setBlockFast(Block b, int typeId, byte data) {
-        ((CraftChunk) b.getChunk()).getHandle().a(b.getX() & 15, b.getY(), b.getZ() & 15, typeId, data);
+    public void setBlockFast(final Block b, final int typeId,final byte data) {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(
+            Storm.instance, new Runnable() {
+                public void run() {
+                    ((CraftChunk) b.getChunk()).getHandle().a(b.getX() & 15, b.getY(), b.getZ() & 15, typeId, data);
+                }
+            }, 0L
+
+        );
+
     }
 
     public void sendClientChanges() {
@@ -182,6 +193,7 @@ public class Cuboid {
     }
 
     private void queueChunks(EntityPlayer ep, List<ChunkCoordIntPair> pairs) {
+        Verbose.log("(Cuboid)Queing chunks for " + ep.getName() + ". Chunks: " + pairs);
         Set<ChunkCoordIntPair> queued = new HashSet<ChunkCoordIntPair>();
         for (Object o : ep.chunkCoordIntPairQueue) {
             queued.add((ChunkCoordIntPair) o);
