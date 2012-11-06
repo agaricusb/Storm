@@ -311,14 +311,14 @@ public class StormUtil {
         return playerList;
     }
 
-    public void createExplosion(net.minecraft.server.Entity entityMeteor, double locX, double locY, double locZ, float trailPower, boolean b) {
+    public void createExplosion(net.minecraft.server.Entity entity, double locX, double locY, double locZ, float power, boolean incendiary) {
         try {
             if (Storm.version > 1.3D)
-                explode.invoke(entityMeteor.world, entityMeteor, locX, locY, locZ, trailPower, b, true);
+                explode.invoke(entity.world, entity, locX, locY, locZ, power, incendiary, true);
             else
-                explode.invoke(entityMeteor.world, entityMeteor, locX, locY, locZ, trailPower, b);
+                explode.invoke(entity.world, entity, locX, locY, locZ, power, incendiary);
         } catch (Exception e) {
-            entityMeteor.world.getWorld().createExplosion(locX, locY, locZ, trailPower);
+            entity.world.getWorld().createExplosion(locX, locY, locZ, power);
             ErrorLogger.generateErrorLog(e);
         }
     }
