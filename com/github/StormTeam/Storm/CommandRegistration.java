@@ -22,7 +22,7 @@ public class CommandRegistration {
         this.executor = executor;
     }
 
-    public boolean register(String name, String desc, String[] aliases, String usage, String[] perms, String permMessage) {
+    public boolean register(String desc, String[] aliases, String usage, String[] perms, String permMessage) {
         CommandMap commandMap = getCommandMap();
         if (commandMap == null) {
             return false;
@@ -31,6 +31,7 @@ public class CommandRegistration {
 
         cmd.setPermissions(perms);
         cmd.setPermissionMessage(permMessage);
+
         commandMap.register(plugin.getDescription().getName(), cmd);
 
         return true;

@@ -30,10 +30,6 @@ public class DynamicCommand extends org.bukkit.command.Command implements Plugin
         return owner;
     }
 
-    public Object getRegisteredWith() {
-        return registeredWith;
-    }
-
     public void setPermissions(String[] permissions) {
         this.permissions = permissions;
         if (permissions != null) {
@@ -50,10 +46,6 @@ public class DynamicCommand extends org.bukkit.command.Command implements Plugin
             buffer.append(delimiter).append(str[i]);
         }
         return buffer.toString();
-    }
-
-    public String[] getPermissions() {
-        return permissions;
     }
 
     @Override

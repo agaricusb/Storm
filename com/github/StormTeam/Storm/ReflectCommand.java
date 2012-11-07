@@ -1,5 +1,6 @@
 package com.github.StormTeam.Storm;
 
+import com.google.common.collect.Sets;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -67,26 +68,45 @@ public class ReflectCommand {
     public void register(Class clazz) {
         CommandRegistration register = new CommandRegistration(plugin, executor);
         for (Method m : clazz.getMethods()) {
+            String name = m.getName();
             Command com = null;
             m.getAnnotation(Command.class);
             if (com != null) {
-                //String name, String desc, String[] aliases, String usage, String[] perms
-                register.register(com.name(), com.description(), com.alias(), com.usage(), com.permission(), com.permissionMessage());
+                register.register(com.description(), com.alias(), com.usage(), com.permission(), com.permissionMessage());
+                switch (com.sender()) {
+                    case EVERYONE: {
+                        if (everyoneCommands.containsKey(name))
+                            everyoneCommands.get(m.getName()).add(m);
+                        else
+                            everyoneCommands.put(name, Sets.newHashSet(m));
+                    }
+                    case CONSOLE: {
+                        if (consoleCommands.containsKey(name))
+                            consoleCommands.get(m.getName()).add(m);
+                        else
+                            consoleCommands.put(name, Sets.newHashSet(m));
+                    }
+                    case PLAYER: {
+                        if (playerCommands.containsKey(name))
+                            playerCommands.get(m.getName()).add(m);
+                        else
+                            playerCommands.put(name, Sets.newHashSet(m));
+                    }
+                }
             }
         }
     }
 
     //****Test Commands****
     @Command(name = "acidrain", sender = Command.Sender.EVERYONE, permission = "storm.acidrain.command")
-    public boolean acidRain(ConsoleCommandSender sender, String world, int duration) {
+    public boolean acidRain(ConsoleCommandSender sender, String world, String duration) {
         return false;
     }
 
     @Command(name = "acidrain", permission = "storm.acidrain.command")
-    public boolean acidrain(Player sender, int duration) {
+    public boolean acidrain(Player sender, String duration) {
         return false;
     }
-
 
     @Target(ElementType.METHOD)
     @Retention(RetentionPolicy.RUNTIME)
@@ -104,7 +124,7 @@ public class ReflectCommand {
 
         public String[] permission();
 
-        public String help() default "Sowwy, but there is no help provided for this command!";
+        //public String help() default "Sowwy, but there is no help provided for this command!";
 
         public String permissionMessage() default ChatColor.RED + "You do not have the permission to execute this command!";
 
