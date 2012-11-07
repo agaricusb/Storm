@@ -28,11 +28,9 @@ import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockFromToEvent;
-import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.event.world.WorldUnloadEvent;
 
@@ -44,7 +42,7 @@ import java.nio.charset.Charset;
 import java.util.*;
 
 public class VolcanoControl implements Listener {
-    static public final Set<VolcanoMaker> volcanoes = new HashSet<VolcanoMaker>();
+    static public final Set<VolcanoWorker> volcanoes = new HashSet<VolcanoWorker>();
     static final HashMap<String, List<Integer>> volcanoBlockCache = new HashMap<String, List<Integer>>();
     static final Object mutex = new Object();
     static final Set<Integer> cannotBlow = new HashSet() {{
@@ -57,19 +55,21 @@ public class VolcanoControl implements Listener {
         if (e.isCancelled())
             return;
         Block from = e.getBlock();
-        for (VolcanoMaker volcano : volcanoes) {
-            if ((from.getTypeId() & 0xfe) == 0xa && volcano.active && volcano.area.contains(from) && volcano.ownsBlock(from)) { //Checks if the block is lava and if a volcano owns it
+        for (VolcanoWorker volcano : volcanoes) {
+            if ((from.getTypeId() & 0xfe) == 0xa && volcano.active && volcano.ownsBlock(from)) { //Checks if the block is lava and if a volcano owns it
                 solidify(volcano, from, randomVolcanoBlock(from.getWorld()));
-                if (!volcano.ownsBlock(e.getToBlock())) ;
-                volcano.grow(false); //Reached boundaries
+                if (!volcano.ownsBlock(e.getToBlock()))
+                    volcano.grow(false); //Reached boundaries
             }
         }
     }
 
     @EventHandler
     public void unloadChunk(ChunkUnloadEvent e) {
+        if (e.isCancelled())
+            return;
         Chunk c = e.getChunk();
-        for (VolcanoMaker volcano : volcanoes) {
+        for (VolcanoWorker volcano : volcanoes) {
             if (volcano.area.contains(c)) {
                 e.setCancelled(true);
                 return;
@@ -81,7 +81,7 @@ public class VolcanoControl implements Listener {
     public void unloadWorld(WorldUnloadEvent e) {
         if (e.isCancelled())
             return;
-        for (VolcanoMaker vulk : volcanoes) {
+        for (VolcanoWorker vulk : volcanoes) {
             if (vulk.world.equals(e.getWorld())) {
                 vulk.active = false;
                 vulk.dumpVolcanoes();
@@ -89,50 +89,7 @@ public class VolcanoControl implements Listener {
         }
     }
 
-    // @EventHandler
-    public void explode(EntityExplodeEvent e) {
-        if (e.isCancelled())
-            return;
-        Entity ex = e.getEntity();
-        if (ex == null)
-            return;
-
-        int id = ex.getEntityId();
-        boolean boom = false;
-        VolcanoMaker of = null;
-        for (VolcanoMaker vulc : volcanoes) {
-            if (vulc.explosionIDs.contains(id)) {
-                boom = true;
-                of = vulc;
-                break;
-            }
-        }
-
-        if (!boom)
-            return;
-
-        ArrayList<Block> toProtect = new ArrayList<Block>(), toRemove = new ArrayList<Block>();
-
-        for (Block block : e.blockList())
-            if (Storm.util.isBlockProtected(block))
-                toProtect.add(block);
-            else
-                toRemove.add(block);
-
-        for (Block block : toProtect)
-            e.blockList().remove(block);
-        for (Block block : toRemove) {
-            if (!block.getType().equals(Material.FIRE)) {
-                e.blockList().remove(block);
-                block.setTypeId(0);
-            }
-        }
-
-        if (ex.isDead())
-            of.explosionIDs.remove(id);
-    }
-
-    static void solidify(VolcanoMaker vulc, Block lava, int idTo) {
+    static void solidify(VolcanoWorker vulc, Block lava, int idTo) {
         int data;
         if ((data = lava.getData()) != 0x9)
             vulc.area.setBlockFastDelayed(lava, idTo, ((data & 0x8) == 0x8 ? 1 : 4 - data / 2) * 20 * 2);
@@ -167,8 +124,8 @@ public class VolcanoControl implements Listener {
                         if (!dump.exists())
                             dump.createNewFile();
                         String contents = "";
-                        for (VolcanoMaker vulc : volcanoes) {
-                            contents = contents + vulc.serialize();
+                        for (VolcanoWorker vulc : volcanoes) {
+                            contents = contents + vulc.toString();
                         }
                         BufferedWriter writer = new BufferedWriter(new FileWriter(dump));
                         writer.write(contents);
@@ -189,7 +146,7 @@ public class VolcanoControl implements Listener {
         String contents = Files.toString(file, Charset.defaultCharset());
         if (!StringUtils.isEmpty(contents))
             for (String vulc : Arrays.asList(contents.split("\n"))) {
-                VolcanoMaker maker = new VolcanoMaker();
+                VolcanoWorker maker = new VolcanoWorker();
                 maker.deserialize(vulc);
                 maker.spawn();
                 volcanoes.add(maker);

@@ -1,25 +1,8 @@
-/*
- * This file is part of Storm.
- *
- * Storm is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of
- * the License, or (at your option) any later version.
- *
- * Storm is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with Storm.  If not, see
- * <http://www.gnu.org/licenses/>.
- */
-
 package com.github.StormTeam.Storm;
 
 import net.minecraft.server.ChunkCoordIntPair;
 import net.minecraft.server.EntityPlayer;
+import net.minecraft.server.Packet56MapChunkBulk;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -46,6 +29,8 @@ public class Cuboid {
     public final String worldName;
     public final int x1, y1, z1;
     public final int x2, y2, z2;
+    private Set<ChunkCoordIntPair> chunkCache = new HashSet();
+    int threshold = 0, centerX = 0, centerZ = 0;
 
     public Cuboid(Location l1, Location l2) {
         this(l1.getWorld(), l1.getBlockX(), l1.getBlockY(), l1.getBlockZ(), l2.getBlockX(), l2.getBlockY(), l2.getBlockZ());
@@ -59,7 +44,10 @@ public class Cuboid {
         this.y2 = Math.max(y1, y2);
         this.z1 = Math.min(z1, z2);
         this.z2 = Math.max(z1, z2);
-        getChunks(); //Load the chunks
+        threshold = (int) Math.pow(((Bukkit.getServer().getViewDistance() << 4) + 32), 2);
+        centerX = getLowerX() + getSizeX() / 2;
+        centerZ = getLowerZ() + getSizeZ() / 2;
+        loadChunks();
     }
 
     public World getWorld() {
@@ -122,7 +110,7 @@ public class Cuboid {
             case UP:
                 return new Cuboid(getWorld(), x1, y1, z1, x2, y2 + amount, z2);
             default:
-                throw new IllegalArgumentException("invalid direction " + dir);
+                throw new IllegalArgumentException("Invalid direction " + dir);
         }
     }
 
@@ -130,40 +118,37 @@ public class Cuboid {
         return x >= x1 && x <= x2 && y >= y1 && y <= y2 && z >= z1 && z <= z2;
     }
 
-    public boolean contains(Chunk c) {
-        return getChunks().contains(c);
-    }
-
     public boolean contains(Block b) {
         return contains(b.getLocation());
     }
 
     public boolean contains(Location l) {
-        return l.getWorld() == getWorld() && contains(l.getBlockX(), l.getBlockY(), l.getBlockZ());
+        if (l.getWorld() != getWorld()) {
+            return false;
+        }
+        return contains(l.getBlockX(), l.getBlockY(), l.getBlockZ());
     }
 
-    public List<Chunk> getChunks() {
+    public boolean contains(Chunk chunk) {
+        return chunkCache.contains(new ChunkCoordIntPair(chunk.getX(), chunk.getZ()));
+    }
 
-        final List<Chunk> res = new ArrayList<Chunk>();
-        Bukkit.getScheduler().scheduleSyncDelayedTask(
-                Storm.instance, new Runnable() {
-            public void run() {
-                World world = getWorld();
-                int x1 = getLowerX() & ~0xF;
-                int x2 = getUpperX() & ~0xF;
-                int z1 = getLowerZ() & ~0xF;
-                int z2 = getUpperZ() & ~0xF;
-                for (int x = x1; x <= x2; x += 16) {
-                    for (int z = z1; z <= z2; z += 16) {
-                        if (!world.isChunkLoaded(x, z))
-                            world.loadChunk(x, z);
-                        res.add(world.getChunkAt(x, z));
-                    }
+    public void loadChunks() {
+        World world = getWorld();
+        int x1 = getLowerX() & ~0xF;
+        int x2 = getUpperX() & ~0xF;
+        int z1 = getLowerZ() & ~0xF;
+        int z2 = getUpperZ() & ~0xF;
+        for (int x = x1; x <= x2; x += 16) {
+            for (int z = z1; z <= z2; z += 16) {
+                synchronized (world) {
+                    if (!world.isChunkLoaded(x >> 4, z >> 4))
+                        world.loadChunk(x >> 4, z >> 4);
+                    Chunk q = world.getChunkAt(x >> 4, z >> 4);
+                    chunkCache.add(new ChunkCoordIntPair(q.getX(), q.getZ()));
                 }
             }
-        }, 0L);
-        // Verbose.log("Fetched " + res.size() + " chunks.");
-        return res;
+        }
     }
 
     public void setBlockFastDelayed(final Block b, final int id, long delay) {
@@ -176,49 +161,31 @@ public class Cuboid {
         }, delay);
     }
 
-    public void setBlockFast(final Block b, final int id, final byte data) {
-        Bukkit.getScheduler().scheduleSyncDelayedTask(
-                Storm.instance, new Runnable() {
-            public void run() {
-                ((CraftChunk) b.getChunk()).getHandle().a(b.getX() & 15, b.getY(), b.getZ() & 15, id, data);
-            }
-        }, 0L);
+    public void setBlockFast(Block b, int typeId) {
+        synchronized (b.getWorld()) {
+            setBlockFast(b, typeId, (byte) 0);
+        }
     }
 
-    public void setBlockFast(final Block b, final int id) {
-        setBlockFast(b, id, (byte) 0);
+    public void setBlockFast(Block b, int typeId, byte data) {
+        ((CraftChunk) b.getChunk()).getHandle().a(b.getX() % 16, b.getY(), b.getZ() % 16, typeId, data);
     }
 
     public void sendClientChanges() {
-        Bukkit.getScheduler().scheduleSyncDelayedTask(
-                Storm.instance, new Runnable() {
-            public void run() {
-                int threshold = (Bukkit.getServer().getViewDistance() << 4 + 32) * 2;
-                List<ChunkCoordIntPair> pairs = new ArrayList<ChunkCoordIntPair>();
-                for (Chunk c : getChunks()) {
-                    pairs.add(new ChunkCoordIntPair(c.getX(), c.getZ()));
-                }
-                int centerX = getLowerX() + getSizeX() / 2, centerZ = getLowerZ() + getSizeZ() / 2;
-                for (Player player : getWorld().getPlayers()) {
-                    int px = player.getLocation().getBlockX(), pz = player.getLocation().getBlockZ();
-                    if ((px - centerX) * (px - centerX) + (pz - centerZ) * (pz - centerZ) < threshold) {
-                        queueChunks(((CraftPlayer) player).getHandle(), pairs);
-                    }
-                }
+        for (Player player : getWorld().getPlayers()) {
+            int px = player.getLocation().getBlockX(), pz = player.getLocation().getBlockZ();
+            if ((px - centerX) * (px - centerX) + (pz - centerZ) * (pz - centerZ) < threshold) {
+                queueChunks(((CraftPlayer) player).getHandle(), chunkCache);
             }
-        }, 0L);
+        }
     }
 
-    private void queueChunks(EntityPlayer ep, List<ChunkCoordIntPair> pairs) {
-        Verbose.log("(Cuboid) Queueing chunks for " + ep.getName() + ". Chunks: " + pairs);
-        Set<ChunkCoordIntPair> queued = new HashSet<ChunkCoordIntPair>();
-        for (Object o : ep.chunkCoordIntPairQueue) {
-            queued.add((ChunkCoordIntPair) o);
-        }
-        for (ChunkCoordIntPair pair : pairs) {
-            if (!queued.contains(pair)) {
-                ep.chunkCoordIntPairQueue.add(pair);
-            }
+    private void queueChunks(EntityPlayer ep, Set<ChunkCoordIntPair> pairs) {
+        synchronized (getWorld()) {
+            List<net.minecraft.server.Chunk> nc = new ArrayList<net.minecraft.server.Chunk>();
+            for (ChunkCoordIntPair par : pairs)
+                nc.add(((CraftChunk) getWorld().getChunkAt(par.x, par.z)).getHandle());
+            ep.netServerHandler.sendPacket(new Packet56MapChunkBulk(nc));
         }
     }
 }

@@ -23,6 +23,7 @@ import com.github.StormTeam.Storm.ErrorLogger;
 import com.github.StormTeam.Storm.Storm;
 import com.github.StormTeam.Storm.Verbose;
 import net.minecraft.server.EntityTNTPrimed;
+import org.apache.commons.lang.RandomStringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -38,7 +39,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class VolcanoMaker {
+public class VolcanoWorker {
     public Location center;
     public World world;
     public float power;
@@ -49,10 +50,10 @@ public class VolcanoMaker {
     public boolean active = true;
     private int x, y, z;
     public Cuboid area;
-    private final Object mutex = new Object();
     public Set<Integer> explosionIDs = new HashSet<Integer>();
+    public boolean loaded = false;
 
-    public VolcanoMaker(Location center, float power, int radius, int layer) {
+    public VolcanoWorker(Location center, float power, int radius, int layer) {
         this.center = center;
         this.world = center.getWorld();
         this.power = power;
@@ -60,21 +61,7 @@ public class VolcanoMaker {
         this.layer = layer;
     }
 
-    public VolcanoMaker() {
-    }
-
-    public String serialize() {
-        StringBuilder serialized = new StringBuilder();
-        serialized.append("").append((int) center.getX());
-        serialized.append("|").append((int) center.getY());
-        serialized.append("|").append((int) center.getZ());
-        serialized.append("|").append(world.getName());
-        serialized.append("|").append(radius);
-        serialized.append("|").append(layer);
-        serialized.append("|").append(active);
-
-        //  String back = ":45:48:99:world:30:5\n";
-        return serialized.toString() + "\n";
+    public VolcanoWorker() {
     }
 
     public void deserialize(String de) {
@@ -91,10 +78,11 @@ public class VolcanoMaker {
         radius = Integer.parseInt(split.get(4));
         layer = Integer.parseInt(split.get(5));
         active = Boolean.valueOf(split.get(6));
+
+        loaded=true;
     }
 
     public void spawn() {
-        grow(true);
         try {
             if (controller == null) {
                 controller = new VolcanoControl();
@@ -109,11 +97,12 @@ public class VolcanoMaker {
         area = area.expand(BlockFace.EAST, radius * 2);
         area = area.expand(BlockFace.SOUTH, radius * 2);
         area = area.expand(BlockFace.WEST, radius * 2);
-        this.x = center.getBlockX();
-        this.y = center.getBlockY();
-        this.z = center.getBlockZ();
-        syncExplosion(center, 10F);
-        System.out.println(area.toString());
+        x = center.getBlockX();
+        y = center.getBlockY();
+        z = center.getBlockZ();
+        if (!loaded)
+            syncExplosion(center, 10F);
+        grow(true);
         VolcanoControl.volcanoes.add(this);
     }
 
@@ -147,7 +136,7 @@ public class VolcanoMaker {
     void generateVolcanoAboveGround() {
         int height = radius * 2 + y;
         long sleep = 15000;
-       // erupt();
+        // erupt();
         for (int i = 0; i < height; ++i) {
             generateLayer();
             sleep(sleep += 100);
@@ -172,8 +161,8 @@ public class VolcanoMaker {
     }
 
     public boolean ownsBlock(Block block) {
-        return block.getWorld().equals(world) && Math.sqrt(Math.pow(Math.abs(block.getX() - x), 2)
-                + Math.pow(Math.abs(block.getZ() - z), 2)) < this.radius * 2;
+        return block.getWorld().equals(world) /* && Math.sqrt(Math.pow(Math.abs(block.getX() - x), 2)
+                + Math.pow(Math.abs(block.getZ() - z), 2)) < this.radius * 2 */&& area.contains(block);
     }
 
     public void erupt() {
@@ -213,5 +202,18 @@ public class VolcanoMaker {
         } catch (Exception e) {
             ErrorLogger.generateErrorLog(e);
         }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder serialized = new StringBuilder();
+        serialized.append("").append((int) center.getX());
+        serialized.append("|").append((int) center.getY());
+        serialized.append("|").append((int) center.getZ());
+        serialized.append("|").append(world.getName());
+        serialized.append("|").append(radius);
+        serialized.append("|").append(layer);
+        serialized.append("|").append(active);
+        return serialized.toString() + "\n";
     }
 }

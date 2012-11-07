@@ -16,7 +16,7 @@
  */
 package com.github.StormTeam.Storm;
 
-import com.github.StormTeam.Storm.Volcano.VolcanoMaker;
+import com.github.StormTeam.Storm.Volcano.VolcanoWorker;
 import com.github.StormTeam.Storm.Weather.WeatherManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -96,7 +96,7 @@ public class Storm extends JavaPlugin implements Listener {
                 && Storm.wConfigs.get(e.getPlayer().getWorld().getName()).Alpha__Features_Volcanoes_Enabled) {
             Block b = e.getClickedBlock().getRelative(BlockFace.UP);
             if (b != null) {
-                VolcanoMaker volcano = new VolcanoMaker(b.getLocation(), 10, 30, 0);
+                VolcanoWorker volcano = new VolcanoWorker(b.getLocation(), 10, 30, 0);
                 volcano.spawn();
             }
         }
