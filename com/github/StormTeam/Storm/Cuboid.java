@@ -162,7 +162,7 @@ public class Cuboid {
     }
 
     public void setBlockFast(Block b, int typeId) {
-        synchronized (b.getWorld()) {
+        synchronized (b) {
             setBlockFast(b, typeId, (byte) 0);
         }
     }

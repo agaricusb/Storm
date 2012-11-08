@@ -105,12 +105,6 @@ public class Storm extends JavaPlugin implements Listener {
         }
     }
 
-    @ReflectCommand.Command(name = "derp", alias = "derpyhoe", sender = ReflectCommand.Sender.EVERYONE)
-    public static boolean derp(ConsoleCommandSender sender) {
-        Storm.util.log("DERP!");
-        return true;
-    }
-
     @Override
     public void onEnable() {
         try {

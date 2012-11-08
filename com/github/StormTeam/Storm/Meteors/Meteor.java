@@ -78,8 +78,8 @@ public class Meteor {
     }
 
     @ReflectCommand.Command(
-            name = "wildfire",
-            permission = "storm.wildfire.command",
+            name = "meteor",
+            permission = "storm.meteor.command",
             permissionMessage = "You don't have the permission to make 2012 reality.",
             sender = ReflectCommand.Sender.PLAYER
     )
