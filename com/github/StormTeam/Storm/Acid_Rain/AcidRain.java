@@ -46,6 +46,7 @@ public class AcidRain {
 
     @ReflectCommand.Command(
             name = "acidrain",
+            usage = "/<command> [world]",
             permission = "storm.acidrain.command",
             permissionMessage = "You do not have permission to make green drops fall and murder things!",
             sender = ReflectCommand.Sender.EVERYONE

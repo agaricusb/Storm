@@ -84,9 +84,9 @@ public class Storm extends JavaPlugin implements Listener {
 
     public static final boolean debug = true;
 
-    public static final Object mutex = new Object();
-
     public static ReflectCommand commandRegistrator = null;
+
+    public static boolean isDevBuild = true;
 
     /**
      * Called to enable Storm.
@@ -130,6 +130,7 @@ public class Storm extends JavaPlugin implements Listener {
 
             initConfiguration();
             ErrorLogger.register(this, "Storm", "com.github.StormTeam.Storm", "http://www.stormteam.co.cc/projects/storm/issues");
+            initUpdater();
 
             pm.registerEvents((manager = new WeatherManager(this)), this); //Register texture/world events
             pm.registerEvents(this, this);
@@ -168,5 +169,20 @@ public class Storm extends JavaPlugin implements Listener {
         }
 
         pm.registerEvents(new WorldConfigLoader(this), this); //For late loading worlds loaded by world plugins al a MultiVerse
+    }
+
+    private void initUpdater() {
+        if (true && !isDevBuild) { //TODO Add in conf
+
+            util.log("Checking for a new update...");
+            Updater updater = new Updater(this, "storm", this.getFile(), Updater.UpdateType.DEFAULT, false);
+            if (updater.getResult() != Updater.UpdateResult.NO_UPDATE) {
+                util.log("Update found! Downloading...");
+                util.log(updater.getLatestVersionString() + " will be enabled on reload!");
+
+            } else {
+                util.log("No update found: running latest version.");
+            }
+        }
     }
 }

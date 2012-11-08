@@ -2,6 +2,7 @@ package com.github.StormTeam.Storm.Blizzard;
 
 import com.github.StormTeam.Storm.ErrorLogger;
 import com.github.StormTeam.Storm.GlobalVariables;
+import com.github.StormTeam.Storm.ReflectCommand;
 import com.github.StormTeam.Storm.Storm;
 import com.github.StormTeam.Storm.Weather.Exceptions.WeatherNotFoundException;
 import org.apache.commons.lang.StringUtils;
@@ -72,6 +73,35 @@ public class Blizzard {
             Storm.manager.enableWeatherForWorld("storm_blizzard", name,
                     temp.Blizzard_Blizzard__Chance, temp.Blizzard_Blizzard__Base__Interval);
         }
+    }
+
+    @ReflectCommand.Command(
+            name = "blizzard",
+            usage = "/<command> [world]",
+            permission = "storm.blizzard.command",
+            permissionMessage = "You do not have permission to make green drops fall and murder things!",
+            sender = ReflectCommand.Sender.EVERYONE
+    )
+    public static boolean acidrainConsole(CommandSender sender, String world) {
+        if (blizzard(world)) {
+            sender.sendMessage(ChatColor.RED + "Blizzards are not enabled in specified world or are conflicting with another weather!");
+            return true;
+        }
+        return false;
+    }
+
+    @ReflectCommand.Command(
+            name = "blizzard",
+            permission = "storm.blizzard.command",
+            permissionMessage = "You do not have permission to make green drops fall and murder things!",
+            sender = ReflectCommand.Sender.PLAYER
+    )
+    public static boolean acidrainPlayer(Player sender) {
+        if (blizzard((sender).getWorld().getName())) {
+            sender.sendMessage(ChatColor.RED + "Blizzards are not enabled in specified world or are conflicting with another weather!");
+            return true;
+        }
+        return false;
     }
 
     private static boolean blizzard(String world) {
