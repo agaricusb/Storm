@@ -164,6 +164,7 @@ public class StormUtil {
      * @param world   Bukkit world object
      */
     public void broadcast(String message, World world) {
+        log("-("+world.getName()+")- " + message);
         if (world != null)
             for (Player p : world.getPlayers()) {
                 message(p, message);

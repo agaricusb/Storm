@@ -23,6 +23,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -85,6 +86,8 @@ public class Storm extends JavaPlugin implements Listener {
 
     public static final Object mutex = new Object();
 
+    public static ReflectCommand commandRegistrator = null;
+
     /**
      * Called to enable Storm.
      */
@@ -102,9 +105,17 @@ public class Storm extends JavaPlugin implements Listener {
         }
     }
 
+    @ReflectCommand.Command(name = "derp", alias = "derpyhoe", sender = ReflectCommand.Sender.EVERYONE)
+    public static boolean derp(ConsoleCommandSender sender) {
+        Storm.util.log("DERP!");
+        return true;
+    }
+
     @Override
     public void onEnable() {
         try {
+            commandRegistrator = new ReflectCommand(this);
+
             if (instance != null) {
                 getLogger().log(Level.SEVERE, "Error! Only one instance of Storm may run at once! Storm detected running version: " +
                         instance.getDescription().getVersion() + ". Please disable that version of Storm, and restart your server. Storm disabled.");
@@ -132,7 +143,7 @@ public class Storm extends JavaPlugin implements Listener {
             com.github.StormTeam.Storm.Blizzard.Blizzard.load();
             com.github.StormTeam.Storm.Meteors.Meteor.load();
             com.github.StormTeam.Storm.Thunder_Storm.ThunderStorm.load();
-            com.github.StormTeam.Storm.Volcano.Volcano.load();
+            //com.github.StormTeam.Storm.Volcano.Volcano.load();
 
         } catch (Exception e) {
             getLogger().log(Level.SEVERE, "Storm failed to start.");

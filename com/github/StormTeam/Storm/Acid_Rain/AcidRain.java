@@ -2,14 +2,12 @@ package com.github.StormTeam.Storm.Acid_Rain;
 
 import com.github.StormTeam.Storm.ErrorLogger;
 import com.github.StormTeam.Storm.GlobalVariables;
+import com.github.StormTeam.Storm.ReflectCommand;
 import com.github.StormTeam.Storm.Storm;
 import com.github.StormTeam.Storm.Weather.Exceptions.WeatherNotFoundException;
-import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -34,27 +32,7 @@ public class AcidRain {
         } catch (Exception e) {
             ErrorLogger.generateErrorLog(e);
         }
-        CommandExecutor exec = new CommandExecutor() {
-            @Override
-            public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-                if ((sender instanceof Player)) {
-                    if (acidrain(((Player) sender).getWorld().getName())) {
-                        sender.sendMessage(ChatColor.RED + "Acid rain not enabled in specified world or are conflicting with another weather!");
-                    }
-                } else {
-                    if (args.length > 0 && !StringUtils.isEmpty(args[0])) {
-                        if (acidrain(args[0])) {
-                            sender.sendMessage(ChatColor.RED + "Acid rain not enabled in specified world or are conflicting with another weather!");
-                        }
-                    } else {
-                        sender.sendMessage(ChatColor.RED + "Must specify world when executing from console!");
-                    }
-                }
-                return true;
-            }
-        };
-
-        Storm.instance.getCommand("acidrain").setExecutor(exec);
+        Storm.commandRegistrator.register(AcidRain.class);
     }
 
     private static void loadWorld(World world) throws WeatherNotFoundException {
@@ -66,8 +44,35 @@ public class AcidRain {
         }
     }
 
-    private static boolean acidrain(String world) {
+    @ReflectCommand.Command(
+            name = "acidrain",
+            permission = "storm.acidrain.command",
+            permissionMessage = "You do not have permission to make green drops fall and murder things!",
+            sender = ReflectCommand.Sender.EVERYONE
+    )
+    public static boolean acidrainConsole(CommandSender sender, String world) {
+        if (acidrain(world)) {
+            sender.sendMessage(ChatColor.RED + "Acid rain not enabled in specified world or is conflicting with another weather!");
+            return true;
+        }
+        return false;
+    }
 
+    @ReflectCommand.Command(
+            name = "acidrain",
+            permission = "storm.acidrain.command",
+            permissionMessage = "You do not have permission to make green drops fall and murder things!",
+            sender = ReflectCommand.Sender.PLAYER
+    )
+    public static boolean acidrainPlayer(Player sender) {
+        if (acidrain((sender).getWorld().getName())) {
+            sender.sendMessage(ChatColor.RED + "Acid rain not enabled in specified world or is conflicting with another weather!");
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean acidrain(String world) {
         try {
             if (Storm.manager.getActiveWeathers(world).contains("storm_acidrain")) {
                 Storm.manager.stopWeather("storm_acidrain", world);
