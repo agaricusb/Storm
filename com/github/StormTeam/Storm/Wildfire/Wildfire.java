@@ -1,17 +1,11 @@
 package com.github.StormTeam.Storm.Wildfire;
 
-import com.github.StormTeam.Storm.ErrorLogger;
-import com.github.StormTeam.Storm.GlobalVariables;
-import com.github.StormTeam.Storm.Storm;
-import com.github.StormTeam.Storm.StormUtil;
+import com.github.StormTeam.Storm.*;
 import com.github.StormTeam.Storm.Weather.Exceptions.WeatherNotFoundException;
 import com.github.StormTeam.Storm.Wildfire.Listeners.WildfireListeners;
 import net.minecraft.server.Block;
-import org.apache.commons.lang.StringUtils;
 import org.bukkit.*;
 import org.bukkit.block.BlockFace;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -44,40 +38,16 @@ public class Wildfire {
         try {
             Storm.pm.registerEvents(new WildfireListeners(), Storm.instance);
             Storm.manager.registerWeather(WildfireWeather.class, "storm_wildfire");
+
             for (World w : Bukkit.getWorlds()) {
                 loadWorld(w);
             }
-            Storm.manager.registerWorldLoadHandler(Wildfire.class.getDeclaredMethod("loadWorld", World.class));
 
+            Storm.manager.registerWorldLoadHandler(Wildfire.class.getDeclaredMethod("loadWorld", World.class));
+            Storm.commandRegistrator.register(Wildfire.class);
         } catch (Exception e) {
             ErrorLogger.generateErrorLog(e);
         }
-
-        CommandExecutor exec = new CommandExecutor() {
-            @Override
-            public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-                if ((sender instanceof Player)) {
-                    Player snd = (Player) sender;
-                    GlobalVariables glob = Storm.wConfigs.get(snd.getWorld().getName());
-                    if (glob.Features_Wildfires) {
-                        wildfire(snd.getTargetBlock(null, 0).getLocation());
-                    } else {
-                        sender.sendMessage(ChatColor.RED + "Wildfires not enabled in specified world or are conflicting with another weather!");
-                    }
-                } else {
-                    if (args.length > 0 && !StringUtils.isEmpty(args[0])) {
-                        if (consoleWildfire(args[0])) {
-                            sender.sendMessage(ChatColor.RED + "Wildfires not enabled in specified world or are conflicting with another weather!");
-                        }
-                    } else {
-                        sender.sendMessage(ChatColor.RED + "Must specify world when executing from console!");
-                    }
-                }
-                return true;
-            }
-        };
-
-        Storm.instance.getCommand("wildfire").setExecutor(exec);
     }
 
     private static void loadWorld(World world) throws WeatherNotFoundException {
@@ -90,7 +60,33 @@ public class Wildfire {
         }
     }
 
-    private static boolean consoleWildfire(String world) {
+    @ReflectCommand.Command(
+            name = "wildfire",
+            usage = "/<command> [world]",
+            permission = "storm.wildfire.command",
+            permissionMessage = "You don't have the permission to start a wildfire! No mass destruction for you!",
+            sender = ReflectCommand.Sender.EVERYONE
+    )
+    public static boolean wildfireConsole(CommandSender sender, String world) {
+        if (wildfireConsole(world)) {
+            sender.sendMessage(ChatColor.RED + "Wildfires are not enabled in specified world or are conflicting with another weather!");
+            return true;
+        }
+        return false;
+    }
+
+    @ReflectCommand.Command(
+            name = "wildfire",
+            permission = "storm.wildfire.command",
+            permissionMessage = "You don't have the permission to start a wildfire! No mass destruction for you!",
+            sender = ReflectCommand.Sender.PLAYER
+    )
+    public static boolean wildfirePlayer(Player sender) {
+        wildfire(sender.getTargetBlock(null, 0).getLocation());
+        return true;
+    }
+
+    private static boolean wildfireConsole(String world) {
         try {
             if (Storm.manager.getActiveWeathers(world).contains("storm_wildfire")) {
                 Storm.manager.stopWeather("storm_wildfire", world);

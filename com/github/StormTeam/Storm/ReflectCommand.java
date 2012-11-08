@@ -3,6 +3,7 @@ package com.github.StormTeam.Storm;
 import com.google.common.collect.Sets;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+import org.bukkit.ChatColor;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -139,7 +140,7 @@ public class ReflectCommand {
             if (perms.length > 0)
                 setPermissions(perms);
             if (!StringUtils.isEmpty(permMessage))
-                setPermissionMessage(permMessage);
+                setPermissionMessage(ChatColor.RED + permMessage);
         }
 
         @Override

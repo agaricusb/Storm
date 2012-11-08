@@ -5,12 +5,9 @@ import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.ReflectCommand;
 import com.github.StormTeam.Storm.Storm;
 import com.github.StormTeam.Storm.Weather.Exceptions.WeatherNotFoundException;
-import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -38,32 +35,11 @@ public class Blizzard {
                 loadWorld(w);
             }
             Storm.manager.registerWorldLoadHandler(Blizzard.class.getDeclaredMethod("loadWorld", World.class));
-
+            Storm.commandRegistrator.register(Blizzard.class);
         } catch (Exception e) {
             ErrorLogger.generateErrorLog(e);
         }
 
-        CommandExecutor exec = new CommandExecutor() {
-            @Override
-            public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-                if ((sender instanceof Player)) {
-                    if (blizzard(((Player) sender).getWorld().getName())) {
-                        sender.sendMessage(ChatColor.RED + "Blizzards not enabled in specified world or are conflicting with another weather!");
-                    }
-                } else {
-                    if (args.length > 0 && !StringUtils.isEmpty(args[0])) {
-                        if (blizzard(args[0])) {
-                            sender.sendMessage(ChatColor.RED + "Blizzards not enabled in specified world or are conflicting with another weather!");
-                        }
-                    } else {
-                        sender.sendMessage(ChatColor.RED + "Must specify world when executing from console!");
-                    }
-                }
-                return true;
-            }
-        };
-
-        Storm.instance.getCommand("blizzard").setExecutor(exec);
     }
 
     private static void loadWorld(World world) throws WeatherNotFoundException {
@@ -79,10 +55,10 @@ public class Blizzard {
             name = "blizzard",
             usage = "/<command> [world]",
             permission = "storm.blizzard.command",
-            permissionMessage = "You do not have permission to make green drops fall and murder things!",
+            permissionMessage = "You don't have the permission to freeze player's toes off!",
             sender = ReflectCommand.Sender.EVERYONE
     )
-    public static boolean acidrainConsole(CommandSender sender, String world) {
+    public static boolean blizzardConsole(CommandSender sender, String world) {
         if (blizzard(world)) {
             sender.sendMessage(ChatColor.RED + "Blizzards are not enabled in specified world or are conflicting with another weather!");
             return true;
@@ -93,10 +69,10 @@ public class Blizzard {
     @ReflectCommand.Command(
             name = "blizzard",
             permission = "storm.blizzard.command",
-            permissionMessage = "You do not have permission to make green drops fall and murder things!",
+            permissionMessage = "You don't have the permission to freeze player's toes off!",
             sender = ReflectCommand.Sender.PLAYER
     )
-    public static boolean acidrainPlayer(Player sender) {
+    public static boolean blizzardPlayer(Player sender) {
         if (blizzard((sender).getWorld().getName())) {
             sender.sendMessage(ChatColor.RED + "Blizzards are not enabled in specified world or are conflicting with another weather!");
             return true;

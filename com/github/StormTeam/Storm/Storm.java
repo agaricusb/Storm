@@ -179,7 +179,6 @@ public class Storm extends JavaPlugin implements Listener {
             if (updater.getResult() != Updater.UpdateResult.NO_UPDATE) {
                 util.log("Update found! Downloading...");
                 util.log(updater.getLatestVersionString() + " will be enabled on reload!");
-
             } else {
                 util.log("No update found: running latest version.");
             }

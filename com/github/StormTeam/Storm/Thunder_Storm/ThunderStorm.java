@@ -2,6 +2,7 @@ package com.github.StormTeam.Storm.Thunder_Storm;
 
 import com.github.StormTeam.Storm.ErrorLogger;
 import com.github.StormTeam.Storm.GlobalVariables;
+import com.github.StormTeam.Storm.ReflectCommand;
 import com.github.StormTeam.Storm.Storm;
 import com.github.StormTeam.Storm.Weather.Exceptions.WeatherNotFoundException;
 import org.apache.commons.lang.StringUtils;
@@ -32,32 +33,10 @@ public class ThunderStorm {
                 loadWorld(w);
             }
             Storm.manager.registerWorldLoadHandler(ThunderStorm.class.getDeclaredMethod("loadWorld", World.class));
-
+            Storm.commandRegistrator.register(ThunderStorm.class);
         } catch (Exception e) {
             ErrorLogger.generateErrorLog(e);
         }
-
-        CommandExecutor exec = new CommandExecutor() {
-            @Override
-            public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-                if ((sender instanceof Player)) {
-                    if (thunderstorm(((Player) sender).getWorld().getName())) {
-                        sender.sendMessage(ChatColor.RED + "Thunderstorms not enabled in specified world or are conflicting with another weather!");
-                    }
-                } else {
-                    if (args.length > 0 && !StringUtils.isEmpty(args[0])) {
-                        if (thunderstorm(args[0])) {
-                            sender.sendMessage(ChatColor.RED + "Thunderstorms not enabled in specified world or are conflicting with another weather!");
-                        } else {
-                            sender.sendMessage(ChatColor.RED + "Must specify world when executing from console!");
-                        }
-
-                    }
-                }
-                return true;
-            }
-        };
-        Storm.instance.getCommand("thunderstorm").setExecutor(exec);
     }
 
     private static void loadWorld(World world) throws WeatherNotFoundException {
@@ -67,6 +46,35 @@ public class ThunderStorm {
             Storm.manager.enableWeatherForWorld("storm_thunderstorm", name,
                     temp.Thunder__Storm_Thunder__Storm__Chance, temp.Thunder__Storm_Thunder__Storm__Base__Interval);
         }
+    }
+
+    @ReflectCommand.Command(
+            name = "thunderstorm",
+            usage = "/<command> [world]",
+            permission = "storm.thunderstorm.command",
+            permissionMessage = "You do not have the permission to start a thunder storm!",
+            sender = ReflectCommand.Sender.EVERYONE
+    )
+    public static boolean thunderstormConsole(CommandSender sender, String world) {
+        if (thunderstorm(world)) {
+            sender.sendMessage(ChatColor.RED + "Thunderstorms are not enabled in specified world or are conflicting with another weather!");
+            return true;
+        }
+        return false;
+    }
+
+    @ReflectCommand.Command(
+            name = "thunderstorm",
+            permission = "storm.thunderstorm.command",
+            permissionMessage = "You do not have the permission to start a thunder storm!",
+            sender = ReflectCommand.Sender.PLAYER
+    )
+    public static boolean thunderstormPlayer(Player sender) {
+        if (thunderstorm((sender).getWorld().getName())) {
+            sender.sendMessage(ChatColor.RED + "Thunderstorms are not enabled in specified world or are conflicting with another weather!");
+            return true;
+        }
+        return false;
     }
 
     private static boolean thunderstorm(String world) {

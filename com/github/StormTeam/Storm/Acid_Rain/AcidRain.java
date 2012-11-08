@@ -28,11 +28,11 @@ public class AcidRain {
             for (World w : Bukkit.getWorlds()) {
                 loadWorld(w);
             }
-
+            Storm.manager.registerWorldLoadHandler(AcidRain.class.getDeclaredMethod("loadWorld", World.class));
+            Storm.commandRegistrator.register(AcidRain.class);
         } catch (Exception e) {
             ErrorLogger.generateErrorLog(e);
         }
-        Storm.commandRegistrator.register(AcidRain.class);
     }
 
     private static void loadWorld(World world) throws WeatherNotFoundException {

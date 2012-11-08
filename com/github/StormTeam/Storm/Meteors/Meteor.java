@@ -4,6 +4,7 @@ import com.github.StormTeam.Storm.ErrorLogger;
 import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.Meteors.Entities.EntityMeteor;
 import com.github.StormTeam.Storm.Meteors.Listener.SafeExplosion;
+import com.github.StormTeam.Storm.ReflectCommand;
 import com.github.StormTeam.Storm.Storm;
 import com.github.StormTeam.Storm.Weather.Exceptions.WeatherNotFoundException;
 import org.apache.commons.lang.StringUtils;
@@ -45,39 +46,10 @@ public class Meteor {
                 loadWorld(w);
             }
             Storm.manager.registerWorldLoadHandler(Meteor.class.getDeclaredMethod("loadWorld", World.class));
-
+            Storm.commandRegistrator.register(Meteor.class);
         } catch (Exception e) {
             ErrorLogger.generateErrorLog(e);
         }
-
-        CommandExecutor exec = new CommandExecutor() {
-            @Override
-            public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-                if (sender instanceof Player) {
-                    Player snd = (Player) sender;
-                    GlobalVariables glob = Storm.wConfigs.get(snd.getWorld().getName());
-                    if (glob.Features_Meteor) {
-                        Location senderLocation = snd.getLocation();
-                        trajectoryMeteor(snd.getTargetBlock(null, 0).getLocation(),
-                                senderLocation.toVector().add(senderLocation.getDirection().normalize()).toLocation(senderLocation.getWorld()));
-                    } else {
-                        sender.sendMessage(ChatColor.RED + "Meteors not enabled in specified world or are conflicting with another weather!");
-                    }
-                } else {
-
-                    if (args.length > 0 && !StringUtils.isEmpty(args[0])) {
-                        if (consoleMeteor(args[0])) {
-                            sender.sendMessage(ChatColor.RED + "Meteors not enabled in specified world or are conflicting with another weather!");
-                        }
-                    } else {
-                        sender.sendMessage(ChatColor.RED + "Must specify world when executing from console!");
-                    }
-                }
-                return true;
-            }
-        };
-
-        Storm.instance.getCommand("meteor").setExecutor(exec);
     }
 
     private static void loadWorld(World world) throws WeatherNotFoundException {
@@ -90,7 +62,35 @@ public class Meteor {
         }
     }
 
-    private static boolean consoleMeteor(String world) {
+    @ReflectCommand.Command(
+            name = "meteor",
+            usage = "/<command> [world]",
+            permission = "storm.meteor.command",
+            permissionMessage = "You don't have the permission to make 2012 reality.",
+            sender = ReflectCommand.Sender.EVERYONE
+    )
+    public static boolean wildfireConsole(CommandSender sender, String world) {
+        if (meteorConsole(world)) {
+            sender.sendMessage(ChatColor.RED + "Meteors are not enabled in specified world or are conflicting with another weather!");
+            return true;
+        }
+        return false;
+    }
+
+    @ReflectCommand.Command(
+            name = "wildfire",
+            permission = "storm.wildfire.command",
+            permissionMessage = "You don't have the permission to make 2012 reality.",
+            sender = ReflectCommand.Sender.PLAYER
+    )
+    public static boolean wildfirePlayer(Player sender) {
+        Location senderLocation = sender.getLocation();
+        trajectoryMeteor(sender.getTargetBlock(null, 0).getLocation(),
+                senderLocation.toVector().add(senderLocation.getDirection().normalize()).toLocation(senderLocation.getWorld()));
+        return true;
+    }
+
+    private static boolean meteorConsole(String world) {
         try {
             if (Storm.manager.getActiveWeathers(world).contains("storm_meteor")) {
                 Storm.manager.stopWeather("storm_meteor", world);
@@ -100,18 +100,6 @@ public class Meteor {
             }
         } catch (Exception ex) {
             return true;
-        }
-    }
-
-    private static void patchMeteor() {
-        try {
-            Method a = net.minecraft.server.EntityTypes.class
-                    .getDeclaredMethod("a", Class.class, String.class, int.class);
-            a.setAccessible(true);
-            a.invoke(a, EntityMeteor.class, "StormMeteor", 12);
-
-        } catch (Exception e) {
-            ErrorLogger.generateErrorLog(e);
         }
     }
 
@@ -132,5 +120,15 @@ public class Meteor {
         meteor.setDirection(targetLoc.toVector().subtract(spawnLoc.toVector()));
         meteor.setBounce(false);
         meteor.setIsIncendiary(true);
+    }
+
+    private static void patchMeteor() {
+        try {
+            Method a = net.minecraft.server.EntityTypes.class.getDeclaredMethod("a", Class.class, String.class, int.class);
+            a.setAccessible(true);
+            a.invoke(a, EntityMeteor.class, "StormMeteor", 12);
+        } catch (Exception e) {
+            ErrorLogger.generateErrorLog(e);
+        }
     }
 }
