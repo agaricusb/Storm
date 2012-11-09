@@ -55,7 +55,6 @@ public class StrikeListener implements Listener {
                 strikeLocation = util.hitMetal(strike.getLightning()
                         .getLocation());
                 strike.getLightning().teleport(strikeLocation);
-
             }
         } else {
             if (glob.Features_Lightning_Player__Attraction) {
@@ -73,6 +72,7 @@ public class StrikeListener implements Listener {
             Storm.util.transform(strikeLocation.getBlock(),
                     glob.Lightning_Melter_Block__Transformations);
         }
+        Storm.util.playSoundNearby(strikeLocation, 10F, "mob.enderman.scream" + Storm.random.nextInt(3) + 1, 3F, 1F);
 
     }
 

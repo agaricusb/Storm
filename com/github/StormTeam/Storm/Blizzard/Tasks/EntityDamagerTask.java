@@ -65,6 +65,7 @@ public class EntityDamagerTask {
                                                         dam.addPotionEffect(blindness, true);
                                                         dam.damage(glob.Blizzard_Player_Damage__From__Exposure);
                                                         dam.sendMessage(glob.Blizzard_Messages_On__Player__Damaged__Cold);
+                                                        Storm.util.playSound(dam, "random.breath", 1F, 1F);
                                                     }
                                                 }
                                             }

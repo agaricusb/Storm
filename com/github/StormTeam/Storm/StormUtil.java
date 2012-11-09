@@ -21,11 +21,10 @@ package com.github.StormTeam.Storm;
 import com.bekvon.bukkit.residence.Residence;
 import com.sk89q.worldguard.bukkit.BukkitUtil;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import net.minecraft.server.Packet250CustomPayload;
-import net.minecraft.server.PlayerManager;
-import net.minecraft.server.WorldData;
-import net.minecraft.server.WorldServer;
+import net.minecraft.server.*;
 import org.bukkit.*;
+import org.bukkit.Chunk;
+import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.CraftWorld;
@@ -164,7 +163,7 @@ public class StormUtil {
      * @param world   Bukkit world object
      */
     public void broadcast(String message, World world) {
-        log("("+world.getName().toUpperCase()+") " + message);
+        log("(" + world.getName().toUpperCase() + ") " + message);
         if (world != null)
             for (Player p : world.getPlayers()) {
                 message(p, message);
@@ -233,6 +232,20 @@ public class StormUtil {
             if (!p.hasPermission(permission)) {
                 damagePlayer(p, message, damage);
             }
+        }
+    }
+
+    public void playSound(Player to, String sound, Location loc, float pitch, float volume) {
+        ((CraftPlayer) to).getHandle().netServerHandler.sendPacket(new Packet62NamedSoundEffect(sound, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), pitch, volume));
+    }
+
+    public void playSound(Player to, String sound, float pitch, float volume) {
+        playSound(to, sound, to.getLocation(), pitch, volume);
+    }
+
+    public void playSoundNearby(Location origin, double radius, String sound, float pitch, float volume) {
+        for (Player p : getNearbyPlayers(origin, radius)) {
+            playSound(p, sound, origin, pitch, volume);
         }
     }
 

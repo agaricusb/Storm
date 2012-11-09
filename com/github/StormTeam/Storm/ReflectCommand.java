@@ -36,12 +36,14 @@ public class ReflectCommand {
                         for (Method m : everyoneCommands.get(command.getName()))
                             if (varargs.length >= m.getParameterTypes().length)
                                 retval = m.invoke(null, trim(varargs, m.getParameterTypes().length));
-                    } else if (commandSender instanceof Player) {
+                    }
+                    if (commandSender instanceof Player) {
                         if (playerCommands.containsKey(commandName))
                             for (Method m : playerCommands.get(commandName))
                                 if (varargs.length >= m.getParameterTypes().length)
                                     retval = m.invoke(null, trim(varargs, m.getParameterTypes().length));
-                    } else if (commandSender instanceof ConsoleCommandSender) {
+                    }
+                    if (commandSender instanceof ConsoleCommandSender) {
                         if (consoleCommands.containsKey(commandName))
                             for (Method m : consoleCommands.get(commandName))
                                 if (varargs.length >= m.getParameterTypes().length)
@@ -57,29 +59,34 @@ public class ReflectCommand {
     }
 
     public void register(Class clazz) {
-        Registrator register = new Registrator(plugin, executor);
         for (Method m : clazz.getDeclaredMethods()) {
-            Command com;
-            if ((com = m.getAnnotation(Command.class)) != null) {
-                String name = com.name();
-                List<String> alias = new ArrayList<String>();
-                if (!ArrayUtils.isEmpty(com.alias()))
-                    alias = Arrays.asList(com.alias());
-                alias.add(com.name());
-                register.register(com.name(), alias.toArray(new String[alias.size()]), com.usage(), com.permission(), com.permissionMessage());
-                HashMap<String, Set<Method>> hm;
-                try {
-                    Field map = this.getClass().getDeclaredField(com.sender().name().toLowerCase() + "Commands");
-                    hm = (HashMap) map.get(this);
-                    if (hm.containsKey(name))
-                        hm.get(m.getName()).add(m);
-                    else
-                        hm.put(name, Sets.newHashSet(m));
-                    map.set(this, hm);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+            register(m, m.getAnnotation(Command.class));
+        }
+    }
+
+    public void register(Method m, Command com) {
+        if (com == null)
+            return;
+        Registrator register = new Registrator(plugin, executor);
+
+        String name = com.name();
+        List<String> alias = new ArrayList<String>();
+        alias.add(com.name());
+        if (!ArrayUtils.isEmpty(com.alias()))
+            for (String ob : com.alias())
+                alias.add(ob);
+        register.register(com.name(), alias.toArray(new String[alias.size()]), com.usage(), com.permission(), com.permissionMessage());
+        HashMap<String, Set<Method>> hm;
+        try {
+            Field map = this.getClass().getDeclaredField(com.sender().name().toLowerCase() + "Commands");
+            hm = (HashMap) map.get(this);
+            if (hm.containsKey(name))
+                hm.get(m.getName()).add(m);
+            else
+                hm.put(name, Sets.newHashSet(m));
+            map.set(this, hm);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -90,7 +97,6 @@ public class ReflectCommand {
             pre.add(ob);
         return pre.toArray(new Object[0]);
     }
-
 
     Object[] trim(Object[] input, int newsize) {
         Object result[] = new Object[newsize];

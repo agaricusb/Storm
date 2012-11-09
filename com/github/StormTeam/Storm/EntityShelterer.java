@@ -45,8 +45,8 @@ public class EntityShelterer {
         this.name = name;
         this.filter = biomeFilter;
         try {
-            if (Storm.version <= 1.3)
-                vec3DCreate = Vec3D.class.getDeclaredMethod("a", int.class, int.class, int.class);
+            if (Storm.version == 1.2)
+                vec3DCreate = Vec3D.class.getDeclaredMethod("b", double.class, double.class, double.class);
             selector = EntityLiving.class.getDeclaredField("goalSelector");
             register = PathfinderGoalSelector.class.getDeclaredMethod("a", int.class, PathfinderGoal.class);
             selector.setAccessible(true);

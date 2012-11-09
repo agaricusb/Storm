@@ -162,13 +162,13 @@ public class Cuboid {
     }
 
     public void setBlockFast(Block b, int typeId) {
-        synchronized (b) {
-            setBlockFast(b, typeId, (byte) 0);
-        }
+        setBlockFast(b, typeId, (byte) 0);
     }
 
     public void setBlockFast(Block b, int typeId, byte data) {
-        ((CraftChunk) b.getChunk()).getHandle().a(b.getX() % 16, b.getY(), b.getZ() % 16, typeId, data);
+        synchronized (b) {
+            ((CraftChunk) b.getChunk()).getHandle().a(b.getX() % 16, b.getY(), b.getZ() % 16, typeId, data);
+        }
     }
 
     public void sendClientChanges() {
@@ -185,7 +185,9 @@ public class Cuboid {
             List<net.minecraft.server.Chunk> nc = new ArrayList<net.minecraft.server.Chunk>();
             for (ChunkCoordIntPair par : pairs)
                 nc.add(((CraftChunk) getWorld().getChunkAt(par.x, par.z)).getHandle());
-            ep.netServerHandler.sendPacket(new Packet56MapChunkBulk(nc));
+            synchronized (ep.netServerHandler) {
+                ep.netServerHandler.sendPacket(new Packet56MapChunkBulk(nc));
+            }
         }
     }
 }

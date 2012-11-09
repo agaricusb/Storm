@@ -64,12 +64,13 @@ public class Meteor {
 
     @ReflectCommand.Command(
             name = "meteor",
+            alias = {"meteorite"},
             usage = "/<command> [world]",
             permission = "storm.meteor.command",
             permissionMessage = "You don't have the permission to make 2012 reality.",
             sender = ReflectCommand.Sender.EVERYONE
     )
-    public static boolean wildfireConsole(CommandSender sender, String world) {
+    public static boolean meteorConsole(CommandSender sender, String world) {
         if (meteorConsole(world)) {
             sender.sendMessage(ChatColor.RED + "Meteors are not enabled in specified world or are conflicting with another weather!");
             return true;
@@ -79,11 +80,12 @@ public class Meteor {
 
     @ReflectCommand.Command(
             name = "meteor",
+            alias = {"meteorite"},
             permission = "storm.meteor.command",
             permissionMessage = "You don't have the permission to make 2012 reality.",
             sender = ReflectCommand.Sender.PLAYER
     )
-    public static boolean wildfirePlayer(Player sender) {
+    public static boolean meteorPlayer(Player sender) {
         Location senderLocation = sender.getLocation();
         trajectoryMeteor(sender.getTargetBlock(null, 0).getLocation(),
                 senderLocation.toVector().add(senderLocation.getDirection().normalize()).toLocation(senderLocation.getWorld()));

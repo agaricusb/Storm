@@ -62,8 +62,10 @@ public class BlockDissolverTask {
                                         Block tran = b.getRelative(BlockFace.DOWN);
                                         if (tran.getTypeId() != 0 && Storm.util.isRainy(tran.getBiome()) && !Storm.util.isBlockProtected(tran)) {
                                             for (BlockTransformer t : transformations) {
-                                                if (t.transform(tran))
+                                                if (t.transform(tran)) {
+                                                    Storm.util.playSoundNearby(tran.getLocation(), 5F, "random.fizz", 1F, 1F);
                                                     break;
+                                                }
                                             }
                                         }
                                     }
