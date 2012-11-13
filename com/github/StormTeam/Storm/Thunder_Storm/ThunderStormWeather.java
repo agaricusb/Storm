@@ -53,7 +53,7 @@ public class ThunderStormWeather extends StormWeather {
 
         if (glob.Features_Thunder__Storms_Entity__Shelter__Pathfinding) {
             shelter = new EntityShelterer(storm, world, "storm_thunderstorm", Storm.util.rainBiomes);
-            shelter.run();
+            shelter.start();
         }
 
         //Set the timer to kill

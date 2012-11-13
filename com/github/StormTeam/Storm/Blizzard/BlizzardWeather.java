@@ -57,7 +57,7 @@ public class BlizzardWeather extends StormWeather {
         }
         if (glob.Features_Blizzards_Entity__Shelter__Pathfinding) {
             shelter = new EntityShelterer(storm, world, "storm_blizzard", Storm.util.snowyBiomes);
-            shelter.run();
+            shelter.start();
         }
         killID = Storm.manager.createAutoKillWeatherTask("storm_blizzard", world, 7500 + Storm.random.nextInt(1024));
     }

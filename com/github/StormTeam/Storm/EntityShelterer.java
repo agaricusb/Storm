@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-public class EntityShelterer {
+public class EntityShelterer implements Runnable {
 
     private int id;
     private final World affectedWorld;
@@ -54,31 +54,30 @@ public class EntityShelterer {
         } catch (Exception e) {
             ErrorLogger.generateErrorLog(e);
         }
-
     }
 
+    @Override
     public void run() {
-        id = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(storm, new Runnable() {
-            public void run() {
-                try {
-                    for (Entity en : affectedWorld.getEntities()) {
-                        net.minecraft.server.Entity notchMob = ((CraftEntity) en).getHandle();
-                        if (notchMob instanceof EntityLiving) {
-                            if (!filteredEntities.contains(notchMob.getClass())) {
-                                int eid = en.getEntityId();
-                                if (!registered.contains(eid) && filter.contains(en.getLocation().getBlock().getBiome())) {
-                                    register.invoke(selector.get(notchMob), 1, new PathfinderGoalFleeSky((EntityCreature) notchMob, 0.25F, name));
-                                    registered.add(eid);
-                                }
-                            }
+        try {
+            for (Entity en : affectedWorld.getEntities()) {
+                net.minecraft.server.Entity notchMob = ((CraftEntity) en).getHandle();
+                if (notchMob instanceof EntityLiving) {
+                    if (!filteredEntities.contains(notchMob.getClass())) {
+                        int eid = en.getEntityId();
+                        if (!registered.contains(eid) && filter.contains(en.getLocation().getBlock().getBiome())) {
+                            register.invoke(selector.get(notchMob), 1, new PathfinderGoalFleeSky((EntityCreature) notchMob, 0.25F, name));
+                            registered.add(eid);
                         }
                     }
-                } catch (Exception e) {
-                    ErrorLogger.generateErrorLog(e);
                 }
             }
+        } catch (Exception e) {
+            ErrorLogger.generateErrorLog(e);
         }
-                , 0, 80);
+    }
+
+    public void start() {
+        id = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(storm, this, 0, 80);
     }
 
     public void stop() {
