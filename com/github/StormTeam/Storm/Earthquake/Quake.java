@@ -5,6 +5,7 @@ import com.github.StormTeam.Storm.Earthquake.Listeners.MobListener;
 import com.github.StormTeam.Storm.Earthquake.Tasks.QuakeTask;
 import com.github.StormTeam.Storm.Pair;
 import com.github.StormTeam.Storm.Storm;
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -15,8 +16,7 @@ public class Quake {
 
     private Storm storm;
 
-    @SuppressWarnings("FieldCanBeLocal")
-    private Integer quakeID;
+    public int quakeID;
 
     private String world;
     private Pair<Integer, Integer> point1;
@@ -26,42 +26,42 @@ public class Quake {
     private MobListener mL;
     private BlockListener bL;
 
-    private Integer tID, rLID;
-    private Boolean isLoading = false;
-    private Boolean isRunning = false;
+    private int tID, rLID;
+    private boolean isLoading = false;
+    private boolean isRunning = false;
 
     private void load() {
 
         this.isLoading = true;
 
-        World w = storm.getServer().getWorld(world);
+        World w = Bukkit.getServer().getWorld(world);
         int x = (point1.LEFT + point2.LEFT) / 2;
         int z = (point1.RIGHT + point2.RIGHT) / 2;
         this.epicenter = new Pair<Integer, Integer>(x, z);
 
         // Calculate blocks
-        Chunk c = w.getChunkAt(x, z);
-        Chunk c2 = w.getChunkAt(x + 16, z);
-        Chunk c3 = w.getChunkAt(x - 16, z);
+        Chunk chunkOrigin = w.getChunkAt(x, z);
+        Chunk chunkUp = w.getChunkAt(x + 16, z);
+        Chunk chunkDown = w.getChunkAt(x - 16, z);
 
         storm.getLogger().severe("===== DEBUG =====");
         storm.getLogger().severe("----- Chunk center -----");
-        storm.getLogger().severe("X: " + c.getX());
-        storm.getLogger().severe("Z: " + c.getZ());
+        storm.getLogger().severe("X: " + chunkOrigin.getX());
+        storm.getLogger().severe("Z: " + chunkOrigin.getZ());
         storm.getLogger().severe("----- Chunk left -----");
-        storm.getLogger().severe("X: " + c2.getX());
-        storm.getLogger().severe("Z: " + c2.getZ());
+        storm.getLogger().severe("X: " + chunkUp.getX());
+        storm.getLogger().severe("Z: " + chunkUp.getZ());
         storm.getLogger().severe("----- Chunk right -----");
-        storm.getLogger().severe("X: " + c3.getX());
-        storm.getLogger().severe("Z: " + c3.getZ());
+        storm.getLogger().severe("X: " + chunkDown.getX());
+        storm.getLogger().severe("Z: " + chunkDown.getZ());
 
         // Creepers will not attack player during quake!
         mL = new MobListener(this);
 
         // Register events
-        storm.getServer().getPluginManager().registerEvents(mL, storm);
+        Bukkit.getServer().getPluginManager().registerEvents(mL, storm);
 
-        tID = storm.getServer().getScheduler().scheduleSyncDelayedTask(storm, new Runnable() {
+        tID = Bukkit.getScheduler().scheduleSyncDelayedTask(storm, new Runnable() {
 
             @Override
             public void run() {
@@ -75,14 +75,14 @@ public class Quake {
 
         // Blocks will bounce everywhere in the quake!
         bL = new BlockListener(this, storm);
-        storm.getServer().getPluginManager().registerEvents(bL, storm);
+        Bukkit.getServer().getPluginManager().registerEvents(bL, storm);
 
         storm.getLogger().log(Level.SEVERE, "Quake started at: [" + this.point1.LEFT + " - " + this.point1.RIGHT + "] - [" + this.point2.LEFT + " - " + this.point2.RIGHT + "]");
 
-        tID = storm.getServer().getScheduler().scheduleSyncRepeatingTask(storm, new QuakeTask(this, storm), 0L, 2L);
+        tID = Bukkit.getScheduler().scheduleSyncRepeatingTask(storm, new QuakeTask(this), 0L, 2L);
     }
 
-    public Quake(Storm storm, Integer qID, Location point1, Location point2) {
+    public Quake(Storm storm, int qID, Location point1, Location point2) {
         this.storm = storm;
         this.quakeID = qID;
 
@@ -113,32 +113,28 @@ public class Quake {
     public void stop() {
         this.isLoading = false;
         this.isRunning = false;
-        if (null != mL) {
+        if (mL != null) {
             mL.forget();
         }
 
-        if (null != bL) {
+        if (bL != null) {
             bL.forget();
         }
 
-        if (rLID != null) {
-            storm.getServer().getScheduler().cancelTask(rLID);
-        }
-
-        if (tID != null) {
-            storm.getServer().getScheduler().cancelTask(tID);
+        if (Bukkit.getScheduler().isCurrentlyRunning(tID)) {
+            Bukkit.getScheduler().cancelTask(tID);
         }
     }
 
-    public Boolean isRunning() {
+    public boolean isRunning() {
         return this.isRunning;
     }
 
-    public Boolean isLoading() {
+    public boolean isLoading() {
         return this.isLoading;
     }
 
-    public Boolean isQuaking(Location point) {
+    public boolean isQuaking(Location point) {
         if (!point.getWorld().getName().equals(this.world))
             return false;
 
@@ -156,7 +152,7 @@ public class Quake {
     }
 
     public World getWorld() {
-        return storm.getServer().getWorld(this.world);
+        return Bukkit.getServer().getWorld(this.world);
     }
 
     public Pair<Integer, Integer> getEpicenter() {

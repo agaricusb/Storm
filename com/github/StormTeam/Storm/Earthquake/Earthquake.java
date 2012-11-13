@@ -18,9 +18,9 @@ public class Earthquake {
         Storm.pm.registerEvents(new PlayerListener(storm), storm);
     }
 
-    public static Integer loadQuake(Location one, Location two) {
+    public static int loadQuake(Location one, Location two) {
 
-        Integer id = quakes.size();
+        int id = quakes.size();
         Quake q = new Quake(storm, id, one, two);
 
         quakes.put(id, q);
@@ -29,11 +29,11 @@ public class Earthquake {
 
     }
 
-    public static Boolean isQuaked(Player p) {
+    public static boolean isQuaked(Player p) {
         return isQuaked(p.getLocation());
     }
 
-    public static Boolean isQuaked(Location l) {
+    public static boolean isQuaked(Location l) {
         Iterator<Quake> qI = quakes.values().iterator();
         while (qI.hasNext()) {
             Quake quake = qI.next();

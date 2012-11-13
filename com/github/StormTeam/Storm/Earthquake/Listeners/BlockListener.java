@@ -9,7 +9,6 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -17,11 +16,11 @@ import org.bukkit.util.Vector;
 
 public class BlockListener implements Listener {
 
-    private final Quake q;
+    private final Quake quake;
     private final Storm storm;
 
-    public BlockListener(Quake q, Storm storm) {
-        this.q = q;
+    public BlockListener(Quake quake, Storm storm) {
+        this.quake = quake;
         this.storm = storm;
     }
 
@@ -30,16 +29,14 @@ public class BlockListener implements Listener {
         BlockBreakEvent.getHandlerList().unregister(this);
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    @EventHandler
     public void onBlockPlace(BlockPlaceEvent e) {
         // Don't target creative mode players!
         if (e.getPlayer().getGameMode() == GameMode.CREATIVE)
             return;
 
-        if (!q.isQuaking(e.getBlock().getLocation()))
+        if (!quake.isQuaking(e.getBlock().getLocation()))
             return;
-
-        //e.setCancelled(true);
 
         final Block b = e.getBlock();
         if (Storm.util.isBlockProtected(b))
@@ -48,50 +45,33 @@ public class BlockListener implements Listener {
         if (QuakeUtil.isBounceable(b))
             return;
 
-        final FallingBlock fB = e.getPlayer().getWorld().spawnFallingBlock(b.getLocation(), b.getType(), b.getData());
+        final FallingBlock fB = b.getWorld().spawnFallingBlock(b.getLocation(), b.getType(), b.getData());
         fB.setDropItem(true);
 
         // Avoid block duplication by removing the placed block a tick later
-        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(storm, new Runnable() {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(storm, new Runnable() {
 
             @Override
             public void run() {
-
-                float x = ((float) Storm.random.nextInt(10) - 5F) / 10F;
-                float z = ((float) Storm.random.nextInt(10) - 5F) / 10F;
-
                 b.setType(Material.AIR);
-                fB.setVelocity(new Vector(x, 0.3F, z));
+                fB.setVelocity(new Vector(Math.random() - 0.5, 0.3, Math.random() - 0.5));
             }
         });
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    @EventHandler
     public void onBlockBreak(BlockBreakEvent e) {
         // Don't target creative mode players!
-        if (e.getPlayer().getGameMode() == GameMode.CREATIVE)
+        if (e.getPlayer().getGameMode() == GameMode.CREATIVE || !quake.isQuaking(e.getBlock().getLocation()))
             return;
-
-        if (!q.isQuaking(e.getBlock().getLocation()))
-            return;
-
-        //e.setCancelled(true);
 
         final Block b = e.getBlock();
-        if (Storm.util.isBlockProtected(b))
-            return;
-
-        if (QuakeUtil.isBounceable(b))
+        if (Storm.util.isBlockProtected(b) || QuakeUtil.isBounceable(b))
             return;
 
         FallingBlock fB = e.getPlayer().getWorld().spawnFallingBlock(b.getLocation(), b.getType(), b.getData());
         fB.setDropItem(true);
-
-        float x = ((float) Storm.random.nextInt(10) - 5F) / 10F;
-        float z = ((float) Storm.random.nextInt(10) - 5F) / 10F;
-
-        b.setType(Material.AIR);
-        fB.setVelocity(new Vector(x, 0.3F, z));
+        b.setTypeId(0);
+        fB.setVelocity(new Vector(Math.random() - 0.5, 0.3, Math.random() - 0.5));
     }
-
 }
