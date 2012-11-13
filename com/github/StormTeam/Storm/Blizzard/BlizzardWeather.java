@@ -53,7 +53,7 @@ public class BlizzardWeather extends StormWeather {
 
         if (glob.Features_Blizzards_Entity__Damaging || glob.Features_Blizzards_Player__Damaging) {
             enDamager = new EntityDamagerTask(storm, world);
-            enDamager.run();
+            enDamager.start();
         }
         if (glob.Features_Blizzards_Entity__Shelter__Pathfinding) {
             shelter = new EntityShelterer(storm, world, "storm_blizzard", Storm.util.snowyBiomes);
@@ -79,7 +79,7 @@ public class BlizzardWeather extends StormWeather {
             shelter.stop();
             shelter = null;
             Bukkit.getScheduler().cancelTask(killID);
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
     }
 
