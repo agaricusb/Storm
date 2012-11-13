@@ -1,7 +1,6 @@
 package com.github.StormTeam.Storm.Earthquake.Tasks;
 
 import com.github.StormTeam.Storm.Earthquake.Quake;
-import com.github.StormTeam.Storm.Storm;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
@@ -17,9 +16,8 @@ public class QuakeTask implements Runnable {
     private Quake q;
     private boolean toggle;
 
-    public QuakeTask(Quake q, Storm s) {
+    public QuakeTask(Quake q) {
         this.q = q;
-        Storm s1 = s;
     }
 
 
@@ -39,8 +37,6 @@ public class QuakeTask implements Runnable {
             int z = q.getEpicenter().RIGHT - p.getLocation().getBlockZ() + 1;
 
             int a = 5 / ((x + z) / 2);
-
-            // TODO: try to clean this up, as the else block is never executed
 
             if (toggle) {
                 p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 2, a), true);

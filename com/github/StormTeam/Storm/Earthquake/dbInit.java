@@ -5,7 +5,7 @@ import com.github.StormTeam.Storm.Database.drivers.iDriver;
 
 import java.util.HashMap;
 
-class dbInit {
+public class dbInit {
 
     public dbInit() {
         iDriver db = Database.Obtain().getEngine();
