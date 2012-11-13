@@ -21,9 +21,6 @@ package com.github.StormTeam.Storm.Volcano;
 import com.github.StormTeam.Storm.Storm;
 import com.github.StormTeam.Storm.Weather.StormWeather;
 
-import java.util.Collections;
-import java.util.Set;
-
 public class VolcanoWeather extends StormWeather {
     /**
      * Constructor. DO NOT CHANGE ARGUMENTS.
@@ -43,15 +40,5 @@ public class VolcanoWeather extends StormWeather {
     @Override
     public void end() {
         //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public String getTexture() {
-        return null;
-    }
-
-    @Override
-    public Set getConflicts() {
-        return Collections.EMPTY_SET;
     }
 }

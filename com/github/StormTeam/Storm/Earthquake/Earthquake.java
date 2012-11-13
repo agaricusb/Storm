@@ -30,7 +30,7 @@ public class Earthquake {
 
     public static boolean isQuaked(Location location) {
         for (Quake quake : quakes) {
-            if (quake == null || (!quake.isLoading() && !quake.isRunning()))
+            if (quake == null || (!quake.isLoading && !quake.isRunning))
                 continue;
             if (quake.isQuaking(location))
                 return true;

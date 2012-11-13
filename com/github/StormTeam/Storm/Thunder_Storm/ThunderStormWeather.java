@@ -7,9 +7,6 @@ import com.github.StormTeam.Storm.Thunder_Storm.Tasks.StrikerTask;
 import com.github.StormTeam.Storm.Weather.StormWeather;
 import org.bukkit.Bukkit;
 
-import java.util.Collections;
-import java.util.Set;
-
 /**
  * A thunder storm weather object.
  */
@@ -72,27 +69,5 @@ public class ThunderStormWeather extends StormWeather {
         shelter.stop();
         shelter = null;
         Bukkit.getScheduler().cancelTask(killID);
-    }
-
-    /**
-     * Returns the texture to be used during this event.
-     *
-     * @return The path to the texture
-     */
-
-    @Override
-    public String getTexture() {
-        return null;
-    }
-
-    /**
-     * Thunder storms don't conflict anything.
-     *
-     * @return Collections.EMPTY_SET; an empty set
-     */
-
-    @Override
-    public Set<String> getConflicts() {
-        return Collections.EMPTY_SET;
     }
 }

@@ -9,9 +9,6 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 
-import java.util.Collections;
-import java.util.Set;
-
 /**
  * A wildfire weather object.
  */
@@ -82,27 +79,5 @@ public class WildfireWeather extends StormWeather { //TODO: Make use of getTicke
     @Override
     public void end() {
         Bukkit.getScheduler().cancelTask(killID);
-    }
-
-    /**
-     * Returns the texture to be used during this event.
-     *
-     * @return The path to the texture
-     */
-
-    @Override
-    public String getTexture() {
-        return null;
-    }
-
-    /**
-     * Wildfires don't conflict anything.
-     *
-     * @return Collections.EMPTY_SET; an empty set
-     */
-
-    @Override
-    public Set<String> getConflicts() {
-        return Collections.EMPTY_SET;
     }
 }

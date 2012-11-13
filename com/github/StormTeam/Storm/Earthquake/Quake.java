@@ -5,6 +5,7 @@ import com.github.StormTeam.Storm.Earthquake.Listeners.MobListener;
 import com.github.StormTeam.Storm.Earthquake.Tasks.QuakeTask;
 import com.github.StormTeam.Storm.Pair;
 import com.github.StormTeam.Storm.Storm;
+import com.github.StormTeam.Storm.Verbose;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -26,13 +27,13 @@ public class Quake {
     private MobListener mL;
     private BlockListener bL;
 
-    private int tID, rLID;
-    private boolean isLoading = false;
-    private boolean isRunning = false;
+    private int tID;
+    public boolean isLoading = false;
+    public boolean isRunning = false;
 
     private void load() {
 
-        this.isLoading = true;
+        isLoading = true;
 
         World w = Bukkit.getServer().getWorld(world);
         int x = (point1.LEFT + point2.LEFT) / 2;
@@ -55,12 +56,6 @@ public class Quake {
         storm.getLogger().severe("X: " + chunkDown.getX());
         storm.getLogger().severe("Z: " + chunkDown.getZ());
 
-        // Creepers will not attack player during quake!
-        mL = new MobListener(this);
-
-        // Register events
-        Bukkit.getServer().getPluginManager().registerEvents(mL, storm);
-
         tID = Bukkit.getScheduler().scheduleSyncDelayedTask(storm, new Runnable() {
 
             @Override
@@ -76,6 +71,8 @@ public class Quake {
         // Blocks will bounce everywhere in the quake!
         bL = new BlockListener(this, storm);
         Bukkit.getServer().getPluginManager().registerEvents(bL, storm);
+        mL = new MobListener(this);
+        Bukkit.getServer().getPluginManager().registerEvents(mL, storm);
 
         storm.getLogger().log(Level.SEVERE, "Quake started at: [" + this.point1.LEFT + " - " + this.point1.RIGHT + "] - [" + this.point2.LEFT + " - " + this.point2.RIGHT + "]");
 
@@ -97,7 +94,7 @@ public class Quake {
             this.point1 = new Pair<Integer, Integer>(minX, minZ);
             this.point2 = new Pair<Integer, Integer>(maxX, maxZ);
 
-            storm.getLogger().log(Level.SEVERE, "Quake loading at: [" + this.point1.LEFT + " - " + this.point1.RIGHT + "] - [" + this.point2.LEFT + " - " + this.point2.RIGHT + "]");
+            Verbose.log(Level.SEVERE, "Quake loading at: [" + this.point1.LEFT + " - " + this.point1.RIGHT + "] - [" + this.point2.LEFT + " - " + this.point2.RIGHT + "]");
             this.load();
         } else {
             throw new RuntimeException("World " + w + " and World " + w2 + " do not match!");
@@ -105,14 +102,14 @@ public class Quake {
     }
 
     void start() {
-        this.isLoading = false;
-        this.isRunning = true;
-        this.go();
+        isLoading = false;
+        isRunning = true;
+        go();
     }
 
     public void stop() {
-        this.isLoading = false;
-        this.isRunning = false;
+        isLoading = false;
+        isRunning = false;
         if (mL != null) {
             mL.forget();
         }
@@ -124,14 +121,6 @@ public class Quake {
         if (Bukkit.getScheduler().isCurrentlyRunning(tID)) {
             Bukkit.getScheduler().cancelTask(tID);
         }
-    }
-
-    public boolean isRunning() {
-        return this.isRunning;
-    }
-
-    public boolean isLoading() {
-        return this.isLoading;
     }
 
     public boolean isQuaking(Location point) {
@@ -152,7 +141,7 @@ public class Quake {
     }
 
     public World getWorld() {
-        return Bukkit.getServer().getWorld(this.world);
+        return Bukkit.getServer().getWorld(world);
     }
 
     public Pair<Integer, Integer> getEpicenter() {
