@@ -14,14 +14,14 @@ import java.util.List;
  * @author Tudor
  */
 
-public class BlockDissolverTask {
+public class BlockDissolverTask implements Runnable {
 
     private int id;
     private final Storm storm;
     private final GlobalVariables glob;
     private BlockTickSelector ticker;
 
-    private final List<BlockTransformer> transformations = new ArrayList();
+    private final List<BlockTransformer> transformations = new ArrayList<BlockTransformer>();
 
     /**
      * Creates a dissolver object for given world.
@@ -46,34 +46,33 @@ public class BlockDissolverTask {
 
     }
 
+    @Override
+    public void run() {
+        try {
+            for (Block b : ticker.getRandomTickedBlocks()) {
+                Block tran = b.getRelative(BlockFace.DOWN);
+                if (tran.getTypeId() != 0 && Storm.util.isRainy(tran.getBiome()) && !Storm.util.isBlockProtected(tran)) {
+                    for (BlockTransformer t : transformations) {
+                        if (t.transform(tran)) {
+                            Storm.util.playSoundNearby(tran.getLocation(), 5F, "random.fizz", 1F, 1F);
+                            break;
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            ErrorLogger.generateErrorLog(e);
+        }
+    }
+
     /**
      * Starts the task.
      */
-
-    public void run() {
+    public void start() {
         id = Bukkit.getScheduler()
                 .scheduleSyncRepeatingTask(
                         storm,
-                        new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    for (Block b : ticker.getRandomTickedBlocks()) {
-                                        Block tran = b.getRelative(BlockFace.DOWN);
-                                        if (tran.getTypeId() != 0 && Storm.util.isRainy(tran.getBiome()) && !Storm.util.isBlockProtected(tran)) {
-                                            for (BlockTransformer t : transformations) {
-                                                if (t.transform(tran)) {
-                                                    Storm.util.playSoundNearby(tran.getLocation(), 5F, "random.fizz", 1F, 1F);
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                    }
-                                } catch (Exception e) {
-                                    ErrorLogger.generateErrorLog(e);
-                                }
-                            }
-                        },
+                        this,
                         0,
                         glob.Acid__Rain_Scheduler_Dissolver__Calculation__Intervals__In__Ticks);
 
