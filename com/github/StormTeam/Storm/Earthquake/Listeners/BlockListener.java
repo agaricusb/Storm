@@ -1,7 +1,7 @@
 package com.github.StormTeam.Storm.Earthquake.Listeners;
 
+import com.github.StormTeam.Storm.Earthquake.Earthquake;
 import com.github.StormTeam.Storm.Earthquake.Quake;
-import com.github.StormTeam.Storm.Earthquake.QuakeUtil;
 import com.github.StormTeam.Storm.Storm;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -42,7 +42,7 @@ public class BlockListener implements Listener {
         if (Storm.util.isBlockProtected(b))
             return;
 
-        if (QuakeUtil.isBounceable(b))
+        if (Earthquake.isBounceable(b))
             return;
 
         final FallingBlock fB = b.getWorld().spawnFallingBlock(b.getLocation(), b.getType(), b.getData());
@@ -66,7 +66,7 @@ public class BlockListener implements Listener {
             return;
 
         final Block b = e.getBlock();
-        if (Storm.util.isBlockProtected(b) || QuakeUtil.isBounceable(b))
+        if (Storm.util.isBlockProtected(b) || Earthquake.isBounceable(b))
             return;
 
         FallingBlock fB = e.getPlayer().getWorld().spawnFallingBlock(b.getLocation(), b.getType(), b.getData());
