@@ -37,7 +37,9 @@ public abstract class StormWeather {
      *
      * @return URL to texture if there is a texture, else null.
      */
-    public abstract String getTexture();
+    public String getTexture() {
+        return null;
+    }
 
     /**
      * Gets a Set<String> of conflicting weathers.
@@ -45,7 +47,9 @@ public abstract class StormWeather {
      * @return A Set<String> of conflicting weathers.
      */
     @SuppressWarnings("UnusedDeclaration")
-    public abstract Set getConflicts();
+    public Set getConflicts() {
+        return Collection.EMPTY_SET;    
+    }
 
     /**
      * Set to true to enable minecraft rain mode.
