@@ -38,8 +38,7 @@ public class EntityDamagerTask {
         glob = Storm.wConfigs.get(affectedWorld);
         blindness = new PotionEffect(
                 PotionEffectType.BLINDNESS,
-                glob.Blizzard_Scheduler_Damager__Calculation__Intervals__In__Ticks + 60,
-                0);
+                glob.Blizzard_Scheduler_Damager__Calculation__Intervals__In__Ticks + 60, 0);
     }
 
     /**
@@ -62,10 +61,10 @@ public class EntityDamagerTask {
                                                 Player dam = (Player) damagee;
                                                 if (!dam.getGameMode().equals(GameMode.CREATIVE) && !dam.hasPermission("storm.blizzard.immune") && !glob.Blizzard_Heating__Blocks.contains(dam.getItemInHand().getTypeId())) {
                                                     if (dam.getHealth() > 0) {
+                                                        Storm.util.playSound(dam, "random.breath", 1F, 1F);
                                                         dam.addPotionEffect(blindness, true);
                                                         dam.damage(glob.Blizzard_Player_Damage__From__Exposure);
                                                         dam.sendMessage(glob.Blizzard_Messages_On__Player__Damaged__Cold);
-                                                        Storm.util.playSound(dam, "random.breath", 1F, 1F);
                                                     }
                                                 }
                                             }

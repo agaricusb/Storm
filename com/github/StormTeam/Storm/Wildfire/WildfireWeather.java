@@ -58,9 +58,8 @@ public class WildfireWeather extends StormWeather { //TODO: Make use of getTicke
 
             if (!Storm.util.isBlockProtected(toBurn)
                     && Storm.util.isForest(toBurn.getBiome())
-                    && Wildfire.flammable.contains(toBurn.getTypeId())) {
+                    && Storm.wConfigs.get(toBurn.getWorld().getName()).Natural__Disasters_Wildfires_Flammable__Blocks.contains(toBurn.getTypeId()))
                 break;
-            }
 
             toBurn = toBurn.getLocation().add(0, 1, 0).getBlock();
 

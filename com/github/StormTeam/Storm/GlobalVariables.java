@@ -20,7 +20,6 @@ package com.github.StormTeam.Storm;
 
 import net.minecraft.server.Block;
 import net.minecraft.server.Item;
-import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
@@ -211,23 +210,26 @@ public class GlobalVariables extends ReflectConfiguration {
     public int Natural__Disasters_Wildfires_Scan__Radius = 2;
     public String Natural__Disasters_Wildfires_Messages_On__Start = "A wildfire has been spotted around %x, %y, %z!";
     public int Natural__Disasters_Wildfires_Maximum__Fires = 100;
+    public List<Integer> Natural__Disasters_Wildfires_Flammable__Blocks = Arrays.asList(Block.FENCE.id, Block.WOOD.id, Block.WOOD_STAIRS.id,
+            Block.WOODEN_DOOR.id, Block.LEAVES.id, Block.BOOKSHELF.id,
+            Block.GRASS.id, Block.WOOL.id);
     //   public int Natural__Disasters_Earthquakes_Chance__To__Spawn = 1;
 //   public String Natural__Disasters_Earthquakes_Message__On__Earthquake__Start = "The ground beneath you begins quaking! Run mortal, run!";
 //   public List<Integer> Natural__Disasters_Earthquakes_Blocks__Can__Fall = Arrays.asList(Block.STONE.id, Block.COBBLESTONE.id);
 //   public long Natural__Disasters_Earthquake_Scheduler_Recalculation__Intervals__In__Ticks = 72000;
     // Volcanoes
     //public List<Integer> Volcano_Composition = new ArrayList<Integer>() {{
-       // for (int i = 0; i < 100; ++i)
-         //   add(Material.STONE.getId());
-        // for (int i = 0; i < 5; ++i)
-        //    add(Material.COAL_ORE.getId());
-        //for (int i = 0; i < 3; ++i)
-        //    add(Material.IRON_ORE.getId());
-        // for (int i = 0; i < 2; ++i)
-        //     add(Material.GOLD_ORE.getId());
-        //  add(Material.DIAMOND_ORE.getId());
-        //  if (Storm.version > 1.2)
-        //      add(Material.EMERALD_ORE.getId());
+    // for (int i = 0; i < 100; ++i)
+    //   add(Material.STONE.getId());
+    // for (int i = 0; i < 5; ++i)
+    //    add(Material.COAL_ORE.getId());
+    //for (int i = 0; i < 3; ++i)
+    //    add(Material.IRON_ORE.getId());
+    // for (int i = 0; i < 2; ++i)
+    //     add(Material.GOLD_ORE.getId());
+    //  add(Material.DIAMOND_ORE.getId());
+    //  if (Storm.version > 1.2)
+    //      add(Material.EMERALD_ORE.getId());
     //}};
     // Texture Packs
     public boolean Alpha__Features_Volcanoes_Enabled = true;

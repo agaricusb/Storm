@@ -96,6 +96,7 @@ public class ErrorLogger extends PluginLogger {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                return true;
             }
         }
         if (NAME == null || TICKETS == null || ENDL == null)
@@ -135,6 +136,7 @@ public class ErrorLogger extends PluginLogger {
             System.err.println(err.append(ENDL));
             return true;
         } catch (Exception e) {
+            e.printStackTrace();
             return true;
         }
     }

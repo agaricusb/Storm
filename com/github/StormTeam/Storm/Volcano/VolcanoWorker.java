@@ -23,7 +23,6 @@ import com.github.StormTeam.Storm.ErrorLogger;
 import com.github.StormTeam.Storm.Storm;
 import com.github.StormTeam.Storm.Verbose;
 import net.minecraft.server.EntityTNTPrimed;
-import org.apache.commons.lang.RandomStringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -42,7 +41,6 @@ import java.util.Set;
 public class VolcanoWorker {
     public Location center;
     public World world;
-    public float power;
     public int radius;
     public Listener controller = null;
     public int layer = 0;
@@ -53,10 +51,9 @@ public class VolcanoWorker {
     public Set<Integer> explosionIDs = new HashSet<Integer>();
     public boolean loaded = false;
 
-    public VolcanoWorker(Location center, float power, int radius, int layer) {
+    public VolcanoWorker(Location center, int radius, int layer) {
         this.center = center;
         this.world = center.getWorld();
-        this.power = power;
         this.radius = radius;
         this.layer = layer;
     }
@@ -66,7 +63,7 @@ public class VolcanoWorker {
 
     public void deserialize(String de) {
         de = de.replace("\n", "");
-        System.out.println(de);
+        Verbose.log(de);
         List<String> split = Arrays.asList(de.split("\\|"));
 
         int x = Integer.parseInt(split.get(0));
@@ -79,7 +76,7 @@ public class VolcanoWorker {
         layer = Integer.parseInt(split.get(5));
         active = Boolean.valueOf(split.get(6));
 
-        loaded=true;
+        loaded = true;
     }
 
     public void spawn() {
@@ -162,7 +159,7 @@ public class VolcanoWorker {
 
     public boolean ownsBlock(Block block) {
         return block.getWorld().equals(world) /* && Math.sqrt(Math.pow(Math.abs(block.getX() - x), 2)
-                + Math.pow(Math.abs(block.getZ() - z), 2)) < this.radius * 2 */&& area.contains(block);
+                + Math.pow(Math.abs(block.getZ() - z), 2)) < this.radius * 2 */ && area.contains(block);
     }
 
     public void erupt() {

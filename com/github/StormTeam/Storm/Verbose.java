@@ -22,13 +22,13 @@ import java.util.logging.Level;
 
 public class Verbose {
 
-    public static void log(Level lev, String mes) {
+    public static void log(Level lev, Object mes) {
         if (Storm.debug)
-            Storm.util.log(lev, mes);
+            Storm.util.log(lev, mes + "");
     }
 
-    public static void log(String mes) {
+    public static void log(Object mes) {
         if (Storm.debug)
-            Storm.util.log(mes);
+            Storm.util.log(mes + "");
     }
 }

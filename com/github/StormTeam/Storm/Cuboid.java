@@ -45,8 +45,8 @@ public class Cuboid {
         this.z1 = Math.min(z1, z2);
         this.z2 = Math.max(z1, z2);
         threshold = (int) Math.pow(((Bukkit.getServer().getViewDistance() << 4) + 32), 2);
-        centerX = getLowerX() + getSizeX() / 2;
-        centerZ = getLowerZ() + getSizeZ() / 2;
+        centerX = getLowerX() + getSizeX() >> 1;
+        centerZ = getLowerZ() + getSizeZ() >> 1;
         loadChunks();
     }
 
@@ -57,7 +57,6 @@ public class Cuboid {
         }
         return world;
     }
-
 
     public int getSizeX() {
         return (x2 - x1) + 1;
@@ -109,9 +108,8 @@ public class Cuboid {
                 return new Cuboid(getWorld(), x1, y1 - amount, z1, x2, y2, z2);
             case UP:
                 return new Cuboid(getWorld(), x1, y1, z1, x2, y2 + amount, z2);
-            default:
-                throw new IllegalArgumentException("Invalid direction " + dir);
         }
+        return null;
     }
 
     public boolean contains(int x, int y, int z) {
@@ -135,16 +133,13 @@ public class Cuboid {
 
     public void loadChunks() {
         World world = getWorld();
-        int x1 = getLowerX() & ~0xF;
-        int x2 = getUpperX() & ~0xF;
-        int z1 = getLowerZ() & ~0xF;
-        int z2 = getUpperZ() & ~0xF;
-        for (int x = x1; x <= x2; x += 16) {
-            for (int z = z1; z <= z2; z += 16) {
+        for (int x = (getLowerX() & ~0xF); x <= (getUpperX() & ~0xF); x += 16) {
+            for (int z = (getLowerZ() & ~0xF); z <= (getUpperZ() & ~0xF); z += 16) {
                 synchronized (world) {
-                    if (!world.isChunkLoaded(x >> 4, z >> 4))
-                        world.loadChunk(x >> 4, z >> 4);
-                    Chunk q = world.getChunkAt(x >> 4, z >> 4);
+                    int xShifted = x >> 4, zShifted = z >> 4;
+                    if (!world.isChunkLoaded(xShifted, zShifted))
+                        world.loadChunk(xShifted, zShifted);
+                    Chunk q = world.getChunkAt(xShifted, zShifted);
                     chunkCache.add(new ChunkCoordIntPair(q.getX(), q.getZ()));
                 }
             }
@@ -166,18 +161,13 @@ public class Cuboid {
     }
 
     public void setBlockFast(Block b, int typeId, byte data) {
-        synchronized (b) {
-            ((CraftChunk) b.getChunk()).getHandle().a(b.getX() % 16, b.getY(), b.getZ() % 16, typeId, data);
-        }
+        ((CraftChunk) b.getChunk()).getHandle().a(b.getX() & 15, b.getY(), b.getZ() & 15, typeId, data); //%16
     }
 
     public void sendClientChanges() {
-        for (Player player : getWorld().getPlayers()) {
-            int px = player.getLocation().getBlockX(), pz = player.getLocation().getBlockZ();
-            if ((px - centerX) * (px - centerX) + (pz - centerZ) * (pz - centerZ) < threshold) {
+        for (Player player : getWorld().getPlayers())
+            if (Math.pow((player.getLocation().getBlockX() - centerX), 2) + Math.pow((player.getLocation().getBlockZ() - centerZ), 2) < threshold)
                 queueChunks(((CraftPlayer) player).getHandle(), chunkCache);
-            }
-        }
     }
 
     private void queueChunks(EntityPlayer ep, Set<ChunkCoordIntPair> pairs) {

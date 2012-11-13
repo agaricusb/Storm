@@ -2,8 +2,8 @@ package com.github.StormTeam.Storm.Wildfire.Listeners;
 
 import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.Storm;
-import com.github.StormTeam.Storm.Wildfire.Wildfire;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
@@ -42,18 +42,14 @@ public class WildfireListeners implements Listener {
             return;
         }
         GlobalVariables glob = Storm.wConfigs.get(name);
-
         if (getWFBlocks(name).size() < glob.Natural__Disasters_Wildfires_Maximum__Fires) {
             int radiuski = glob.Natural__Disasters_Wildfires_Scan__Radius;
             for (int x = -radiuski; x <= radiuski; ++x) {
                 for (int y = -radiuski; y <= radiuski; ++y) {
                     for (int z = -radiuski; z <= radiuski; ++z) {
                         if (getWFBlocks(name).contains(
-                                new Location(world, x + ox, y
-                                        + oy, z + oz)
-                                        .getBlock())) {
-                            scanForIgnitables(loc, world, radiuski,
-                                    glob.Natural__Disasters_Wildfires_Spread__Limit);
+                                new Location(world, x + ox, y + oy, z + oz).getBlock())) {
+                            scanForIgnitables(loc, world, radiuski, glob.Natural__Disasters_Wildfires_Spread__Limit);
                             return;
                         }
                     }
@@ -83,9 +79,8 @@ public class WildfireListeners implements Listener {
                 for (int z = -radiuski; z <= radiuski; ++z) {
                     block = w.getBlockAt(loc.getBlockX() + x, loc.getBlockX() + y, loc.getBlockX() + z);
 
-                    if (block.getTypeId() != 0) {
+                    if (block.getTypeId() != 0)
                         continue;
-                    }
 
                     // Tries to burn all blocks with one face touching `block` and `block` itself
                     for (int i = -1; i < 6; ++i) {
@@ -105,13 +100,12 @@ public class WildfireListeners implements Listener {
 
     void burn(final Block toBurn) {
         if (canBurn(toBurn)) {
-            return;
+            toBurn.setType(Material.FIRE);
+            getWFBlocks(toBurn.getWorld().getName()).add(toBurn);
         }
-
-        getWFBlocks(toBurn.getWorld().getName()).add(toBurn);
     }
 
     boolean canBurn(Block toCheck) {
-        return !Wildfire.flammable.contains(toCheck.getTypeId());
+        return Storm.wConfigs.get(toCheck.getWorld().getName()).Natural__Disasters_Wildfires_Flammable__Blocks.contains(toCheck.getTypeId());
     }
 }

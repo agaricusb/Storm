@@ -23,7 +23,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -99,16 +99,27 @@ public class Storm extends JavaPlugin implements Listener {
                 && Storm.wConfigs.get(e.getPlayer().getWorld().getName()).Alpha__Features_Volcanoes_Enabled) {
             Block b = e.getClickedBlock().getRelative(BlockFace.UP);
             if (b != null) {
-                VolcanoWorker volcano = new VolcanoWorker(b.getLocation(), 10, 30, 0);
+                VolcanoWorker volcano = new VolcanoWorker(b.getLocation(), 10, 30);
                 volcano.spawn();
             }
         }
+    }
+
+    @ReflectCommand.Command(name = "sound", usage = "/<command> [sound]")
+    public static boolean sound(Player p, String sound, String pitch, String volume) {
+        try {
+            Storm.util.playSound(p, sound, Float.parseFloat(pitch), Float.parseFloat(volume));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return true;
     }
 
     @Override
     public void onEnable() {
         try {
             commandRegistrator = new ReflectCommand(this);
+            ErrorLogger.register(this, "Storm", "com.github.StormTeam.Storm", "http://www.stormteam.co.cc/projects/storm/issues");
 
             if (instance != null) {
                 getLogger().log(Level.SEVERE, "Error! Only one instance of Storm may run at once! Storm detected running version: " +
@@ -116,6 +127,7 @@ public class Storm extends JavaPlugin implements Listener {
                 setEnabled(false);
             }
             instance = this;
+            commandRegistrator.register(this.getClass());
 
             configureVersion();
 
@@ -123,13 +135,12 @@ public class Storm extends JavaPlugin implements Listener {
             util = new StormUtil(this);
 
             initConfiguration();
-            ErrorLogger.register(this, "Storm", "com.github.StormTeam.Storm", "http://www.stormteam.co.cc/projects/storm/issues");
             initUpdater();
 
             pm.registerEvents((manager = new WeatherManager(this)), this); //Register texture/world events
             pm.registerEvents(this, this);
 
-            new MetricsLite(this).start();
+            initGraphs(new Metrics(this));
 
             //For the modular builder later on
             com.github.StormTeam.Storm.Acid_Rain.AcidRain.load();
@@ -138,7 +149,7 @@ public class Storm extends JavaPlugin implements Listener {
             com.github.StormTeam.Storm.Blizzard.Blizzard.load();
             com.github.StormTeam.Storm.Meteors.Meteor.load();
             com.github.StormTeam.Storm.Thunder_Storm.ThunderStorm.load();
-            //com.github.StormTeam.Storm.Volcano.Volcano.load();
+            com.github.StormTeam.Storm.Volcano.Volcano.load();
 
         } catch (Exception e) {
             getLogger().log(Level.SEVERE, "Storm failed to start.");
@@ -176,6 +187,84 @@ public class Storm extends JavaPlugin implements Listener {
             } else {
                 util.log("No update found: running latest version.");
             }
+        }
+    }
+
+    private void initGraphs(Metrics met) {
+        try {
+            Metrics.Graph graph = met.createGraph("Weathers Enabled");
+
+            for (GlobalVariables gb : wConfigs.values()) {
+                if (gb.Features_Acid__Rain_Dissolving__Blocks || gb.Features_Acid__Rain_Player__Damaging || gb.Features_Acid__Rain_Entity__Damaging || gb.Features_Acid__Rain_Entity__Shelter__Pathfinding) {
+                    graph.addPlotter(new Metrics.Plotter("Acid Rain") {
+                        @Override
+                        public int getValue() {
+                            return 1;
+                        }
+                    });
+                    break;
+                }
+            }
+
+            for (GlobalVariables gb : wConfigs.values()) {
+                if (gb.Features_Blizzards_Player__Damaging || gb.Features_Blizzards_Entity__Damaging || gb.Features_Blizzards_Entity__Shelter__Pathfinding || gb.Features_Blizzards_Slowing__Snow) {
+                    graph.addPlotter(new Metrics.Plotter("Blizzard") {
+                        @Override
+                        public int getValue() {
+                            return 1;
+                        }
+                    });
+                    break;
+                }
+            }
+
+            for (GlobalVariables gb : wConfigs.values()) {
+                if (gb.Features_Meteor) {
+                    graph.addPlotter(new Metrics.Plotter("Meteor") {
+                        public int getValue() {
+                            return 1;
+                        }
+                    });
+                    break;
+                }
+            }
+
+            for (GlobalVariables gb : wConfigs.values()) {
+                if (gb.Features_Wildfires) {
+                    graph.addPlotter(new Metrics.Plotter("Wildfire") {
+                        public int getValue() {
+                            return 1;
+                        }
+                    });
+                    break;
+                }
+            }
+
+            for (GlobalVariables gb : wConfigs.values()) {
+                if (gb.Features_Thunder__Storms_Thunder__Striking || gb.Features_Thunder__Storms_Entity__Shelter__Pathfinding) {
+                    graph.addPlotter(new Metrics.Plotter("Thunder Storm") {
+                        public int getValue() {
+                            return 1;
+                        }
+                    });
+                    break;
+                }
+            }
+
+            met.addCustomData(new Metrics.Plotter("Servers Forcing Texture Packs") {
+                public int getValue() {
+                    for (GlobalVariables gb : wConfigs.values()) {
+                        if (gb.Features_Force__Weather__Textures) {
+                            return 1;
+                        }
+                    }
+                    return 0;
+                }
+            });
+
+            met.start();
+        } catch (Exception e) {
+            ErrorLogger.generateErrorLog(e);
         }
     }
 }

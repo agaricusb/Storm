@@ -1,9 +1,11 @@
 package com.github.StormTeam.Storm.Wildfire;
 
-import com.github.StormTeam.Storm.*;
+import com.github.StormTeam.Storm.ErrorLogger;
+import com.github.StormTeam.Storm.GlobalVariables;
+import com.github.StormTeam.Storm.ReflectCommand;
+import com.github.StormTeam.Storm.Storm;
 import com.github.StormTeam.Storm.Weather.Exceptions.WeatherNotFoundException;
 import com.github.StormTeam.Storm.Wildfire.Listeners.WildfireListeners;
-import net.minecraft.server.Block;
 import org.bukkit.*;
 import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
@@ -23,12 +25,6 @@ public class Wildfire {
      * A HashMap containing world names and blocks that are part of a wildfire.
      */
     public static final HashMap<String, Set<org.bukkit.block.Block>> wildfireBlocks = new HashMap<String, Set<org.bukkit.block.Block>>();
-    /**
-     * A Set of all flammable blocks.
-     */
-    public static final Set<Integer> flammable = StormUtil.asSet(Block.FENCE.id, Block.WOOD.id, Block.WOOD_STAIRS.id,
-            Block.WOODEN_DOOR.id, Block.LEAVES.id, Block.BOOKSHELF.id,
-            Block.GRASS.id, Block.WOOL.id);
 
     /**
      * Enables wildfires.
