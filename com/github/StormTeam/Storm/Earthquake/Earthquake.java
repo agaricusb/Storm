@@ -15,7 +15,7 @@ public class Earthquake {
 
     public static void load(Storm storm) {
         Earthquake.storm = storm;
-        Storm.pm.registerEvents(new PlayerListener(storm), storm);
+        Storm.pm.registerEvents(new PlayerListener(), storm);
     }
 
     public static int loadQuake(Location one, Location two) {
