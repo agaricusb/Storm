@@ -26,10 +26,12 @@ public class Quake {
 
     private MobListener mL;
     private BlockListener bL;
+    private QuakeTask quaker;
 
-    private int tID;
     public boolean isLoading = false;
     public boolean isRunning = false;
+
+    public int radius = 50;
 
     private void load() {
 
@@ -55,15 +57,7 @@ public class Quake {
         storm.getLogger().severe("----- Chunk right -----");
         storm.getLogger().severe("X: " + chunkDown.getX());
         storm.getLogger().severe("Z: " + chunkDown.getZ());
-
-        tID = Bukkit.getScheduler().scheduleSyncDelayedTask(storm, new Runnable() {
-
-            @Override
-            public void run() {
-                start();
-            }
-
-        }, 20L);//18000L);
+        start();
     }
 
     private void go() {
@@ -74,9 +68,9 @@ public class Quake {
         mL = new MobListener(this);
         Bukkit.getServer().getPluginManager().registerEvents(mL, storm);
 
-        storm.getLogger().log(Level.SEVERE, "Quake started at: [" + this.point1.LEFT + " - " + this.point1.RIGHT + "] - [" + this.point2.LEFT + " - " + this.point2.RIGHT + "]");
+        Verbose.log(Level.SEVERE, "Quake started at: [" + this.point1.LEFT + " - " + this.point1.RIGHT + "] - [" + this.point2.LEFT + " - " + this.point2.RIGHT + "]");
 
-        tID = Bukkit.getScheduler().scheduleSyncRepeatingTask(storm, new QuakeTask(this), 0L, 2L);
+        quaker = new QuakeTask(this);
     }
 
     public Quake(Storm storm, int qID, Location point1, Location point2) {
@@ -95,7 +89,7 @@ public class Quake {
             this.point2 = new Pair<Integer, Integer>(maxX, maxZ);
 
             Verbose.log(Level.SEVERE, "Quake loading at: [" + this.point1.LEFT + " - " + this.point1.RIGHT + "] - [" + this.point2.LEFT + " - " + this.point2.RIGHT + "]");
-            this.load();
+            load();
         } else {
             throw new RuntimeException("World " + w + " and World " + w2 + " do not match!");
         }
@@ -118,26 +112,12 @@ public class Quake {
             bL.forget();
         }
 
-        if (Bukkit.getScheduler().isCurrentlyRunning(tID)) {
-            Bukkit.getScheduler().cancelTask(tID);
-        }
+        if (quaker != null)
+            quaker.stop();
     }
 
     public boolean isQuaking(Location point) {
-        if (!point.getWorld().getName().equals(this.world))
-            return false;
-
-        /*storm.getLogger().severe("========= DEBUG ========");
-          storm.getLogger().severe("loc x: " + point.getBlockX());
-          storm.getLogger().severe("loc z: " + point.getBlockZ());
-          storm.getLogger().severe("quake min x: " + point1.LEFT);
-          storm.getLogger().severe("quake min z: " + point1.RIGHT);
-          storm.getLogger().severe("quake max x: " + point2.LEFT);
-          storm.getLogger().severe("quake max z: " + point2.RIGHT);*/
-
-
-        return (point.getBlockX() >= point1.LEFT && point.getBlockZ() >= point1.RIGHT
-                && point.getBlockX() <= point2.LEFT && point.getBlockZ() <= point2.RIGHT);
+        return point.getWorld().getName().equals(this.world) && Math.sqrt(Math.pow(epicenter.LEFT - point.getBlockX(), 2) + (Math.pow(epicenter.RIGHT - point.getBlockZ(), 2))) <= radius;
     }
 
     public World getWorld() {

@@ -17,7 +17,7 @@ import org.bukkit.potion.PotionEffectType;
  * @author Tudor
  */
 
-public class EntityDamagerTask {
+public class EntityDamagerTask implements Runnable {
 
     private int id;
     private final World affectedWorld;
@@ -36,47 +36,37 @@ public class EntityDamagerTask {
         this.storm = storm;
         this.affectedWorld = Bukkit.getWorld(affectedWorld);
         glob = Storm.wConfigs.get(affectedWorld);
-        hunger = new PotionEffect(
-                PotionEffectType.POISON,
-                glob.Acid__Rain_Scheduler_Damager__Calculation__Intervals__In__Ticks + 60,
-                1);
+        hunger = new PotionEffect(PotionEffectType.POISON, glob.Acid__Rain_Scheduler_Damager__Calculation__Intervals__In__Ticks + 60, 1);
+    }
+
+    @Override
+    public void run() {
+        for (Entity damagee : affectedWorld.getEntities()) {
+            if (Storm.util.isEntityUnderSky(damagee) && Storm.util.isRainy(damagee.getLocation().getBlock().getBiome())) {
+                if (Storm.util.isLocationNearBlock(damagee.getLocation(), glob.Acid__Rain_Absorbing__Blocks, glob.Acid__Rain_Absorbing__Radius)) {
+                    if (glob.Features_Acid__Rain_Entity__Damaging && damagee instanceof LivingEntity && !(damagee instanceof Player))
+                        ((LivingEntity) (damagee)).damage(glob.Acid__Rain_Entity_Damage__From__Exposure);
+                    else if (glob.Features_Acid__Rain_Player__Damaging && damagee instanceof Player) {
+                        Player dam = (Player) damagee;
+                        if (!dam.getGameMode().equals(GameMode.CREATIVE) && !dam.hasPermission("storm.acidrain.immune") && !glob.Acid__Rain_Absorbing__Blocks.contains(dam.getItemInHand().getTypeId())) {
+                            if (dam.getHealth() > 0) {
+                                dam.addPotionEffect(hunger, true);
+                                dam.damage(glob.Acid__Rain_Player_Damage__From__Exposure);
+                                dam.sendMessage(glob.Acid__Rain_Messages_On__Player__Damaged__By__Acid__Rain);
+                                Storm.util.playSound(dam, "random.fizz", 3F, 1F);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**
      * Starts the task.
      */
-
-    public void run() {
-        id = Bukkit.getScheduler()
-                .scheduleSyncRepeatingTask(
-                        storm,
-                        new Runnable() {
-                            @Override
-                            public void run() {
-                                for (Entity damagee : affectedWorld.getEntities()) {
-                                    if (Storm.util.isEntityUnderSky(damagee) && Storm.util.isRainy(damagee.getLocation().getBlock().getBiome())) {
-                                        if (Storm.util.isLocationNearBlock(damagee.getLocation(), glob.Acid__Rain_Absorbing__Blocks, glob.Acid__Rain_Absorbing__Radius)) {
-                                            if (glob.Features_Acid__Rain_Entity__Damaging && damagee instanceof LivingEntity && !(damagee instanceof Player))
-                                                ((LivingEntity) (damagee)).damage(glob.Acid__Rain_Entity_Damage__From__Exposure);
-                                            else if (glob.Features_Acid__Rain_Player__Damaging && damagee instanceof Player) {
-                                                Player dam = (Player) damagee;
-                                                if (!dam.getGameMode().equals(GameMode.CREATIVE) && !dam.hasPermission("storm.acidrain.immune") && !glob.Acid__Rain_Absorbing__Blocks.contains(dam.getItemInHand().getTypeId())) {
-                                                    if (dam.getHealth() > 0) {
-                                                        Storm.util.playSound(dam, "random.fizz", 3F, 1F);
-                                                        dam.addPotionEffect(hunger, true);
-                                                        dam.damage(glob.Acid__Rain_Player_Damage__From__Exposure);
-                                                        dam.sendMessage(glob.Acid__Rain_Messages_On__Player__Damaged__By__Acid__Rain);
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        glob.Acid__Rain_Scheduler_Damager__Calculation__Intervals__In__Ticks,
-                        glob.Acid__Rain_Scheduler_Damager__Calculation__Intervals__In__Ticks);
-
+    public void start() {
+        id = Bukkit.getScheduler().scheduleSyncRepeatingTask(storm, this, glob.Acid__Rain_Scheduler_Damager__Calculation__Intervals__In__Ticks, glob.Acid__Rain_Scheduler_Damager__Calculation__Intervals__In__Ticks);
     }
 
     /**

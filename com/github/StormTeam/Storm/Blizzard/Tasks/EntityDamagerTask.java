@@ -17,7 +17,7 @@ import org.bukkit.potion.PotionEffectType;
  * @author Tudor
  */
 
-public class EntityDamagerTask {
+public class EntityDamagerTask implements Runnable {
 
     private int id;
     private final World affectedWorld;
@@ -38,41 +38,41 @@ public class EntityDamagerTask {
         glob = Storm.wConfigs.get(affectedWorld);
         blindness = new PotionEffect(
                 PotionEffectType.BLINDNESS,
-                glob.Blizzard_Scheduler_Damager__Calculation__Intervals__In__Ticks + 60, 0);
+                glob.Blizzard_Scheduler_Damager__Calculation__Intervals__In__Ticks + 60,
+                0);
+    }
+
+    @Override
+    public void run() {
+        for (Entity damagee : affectedWorld.getEntities()) {
+            if (Storm.util.isEntityUnderSky(damagee) && Storm.util.isSnowy(damagee.getLocation().getBlock().getBiome())) {
+                if (Storm.util.isLocationNearBlock(damagee.getLocation(), glob.Blizzard_Heating__Blocks, glob.Blizzard_Heat__Radius)) {
+                    if (glob.Features_Blizzards_Entity__Damaging && damagee instanceof LivingEntity && !(damagee instanceof Player))
+                        ((LivingEntity) (damagee)).damage(glob.Blizzard_Entity_Damage__From__Exposure);
+                    else if (glob.Features_Blizzards_Player__Damaging && damagee instanceof Player) {
+                        Player dam = (Player) damagee;
+                        if (!dam.getGameMode().equals(GameMode.CREATIVE) && !dam.hasPermission("storm.blizzard.immune") && !glob.Blizzard_Heating__Blocks.contains(dam.getItemInHand().getTypeId())) {
+                            if (dam.getHealth() > 0) {
+                                dam.addPotionEffect(blindness, true);
+                                dam.damage(glob.Blizzard_Player_Damage__From__Exposure);
+                                dam.sendMessage(glob.Blizzard_Messages_On__Player__Damaged__Cold);
+                                Storm.util.playSound(dam, "random.breath", 1F, 1F);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**
      * Starts the task.
      */
-
-    public void run() {
+    public void start() {
         id = Bukkit.getScheduler()
                 .scheduleSyncRepeatingTask(
                         storm,
-                        new Runnable() {
-                            @Override
-                            public void run() {
-                                for (Entity damagee : affectedWorld.getEntities()) {
-                                    if (Storm.util.isEntityUnderSky(damagee) && Storm.util.isSnowy(damagee.getLocation().getBlock().getBiome())) {
-                                        if (Storm.util.isLocationNearBlock(damagee.getLocation(), glob.Blizzard_Heating__Blocks, glob.Blizzard_Heat__Radius)) {
-                                            if (glob.Features_Blizzards_Entity__Damaging && damagee instanceof LivingEntity && !(damagee instanceof Player))
-                                                ((LivingEntity) (damagee)).damage(glob.Blizzard_Entity_Damage__From__Exposure);
-                                            else if (glob.Features_Blizzards_Player__Damaging && damagee instanceof Player) {
-                                                Player dam = (Player) damagee;
-                                                if (!dam.getGameMode().equals(GameMode.CREATIVE) && !dam.hasPermission("storm.blizzard.immune") && !glob.Blizzard_Heating__Blocks.contains(dam.getItemInHand().getTypeId())) {
-                                                    if (dam.getHealth() > 0) {
-                                                        Storm.util.playSound(dam, "random.breath", 1F, 1F);
-                                                        dam.addPotionEffect(blindness, true);
-                                                        dam.damage(glob.Blizzard_Player_Damage__From__Exposure);
-                                                        dam.sendMessage(glob.Blizzard_Messages_On__Player__Damaged__Cold);
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        },
+                        this,
                         glob.Blizzard_Scheduler_Damager__Calculation__Intervals__In__Ticks,
                         glob.Blizzard_Scheduler_Damager__Calculation__Intervals__In__Ticks);
 

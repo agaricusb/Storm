@@ -16,18 +16,11 @@
  */
 package com.github.StormTeam.Storm;
 
-import com.github.StormTeam.Storm.Volcano.VolcanoWorker;
 import com.github.StormTeam.Storm.Weather.WeatherManager;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -82,28 +75,11 @@ public class Storm extends JavaPlugin implements Listener {
 
     public static Storm instance = null;
 
-    public static final boolean debug = true;
+    public static final boolean debug = false;
 
     public static ReflectCommand commandRegistrator = null;
 
     public static boolean isDevBuild = true;
-
-    /**
-     * Called to enable Storm.
-     */
-
-    @EventHandler
-    public void spawnVolcano(PlayerInteractEvent e) {
-        if (e.getPlayer().isOp() && e.getAction() == Action.RIGHT_CLICK_BLOCK
-                && e.getPlayer().getItemInHand().getType().equals(Material.BONE)
-                && Storm.wConfigs.get(e.getPlayer().getWorld().getName()).Alpha__Features_Volcanoes_Enabled) {
-            Block b = e.getClickedBlock().getRelative(BlockFace.UP);
-            if (b != null) {
-                VolcanoWorker volcano = new VolcanoWorker(b.getLocation(), 10, 30);
-                volcano.spawn();
-            }
-        }
-    }
 
     @ReflectCommand.Command(name = "sound", usage = "/<command> [sound]")
     public static boolean sound(Player p, String sound, String pitch, String volume) {
@@ -114,6 +90,10 @@ public class Storm extends JavaPlugin implements Listener {
         }
         return true;
     }
+
+    /**
+     * Called to enable Storm.
+     */
 
     @Override
     public void onEnable() {
@@ -150,6 +130,7 @@ public class Storm extends JavaPlugin implements Listener {
             com.github.StormTeam.Storm.Meteors.Meteor.load();
             com.github.StormTeam.Storm.Thunder_Storm.ThunderStorm.load();
             com.github.StormTeam.Storm.Volcano.Volcano.load();
+            com.github.StormTeam.Storm.Earthquake.Earthquake.load();
 
         } catch (Exception e) {
             getLogger().log(Level.SEVERE, "Storm failed to start.");

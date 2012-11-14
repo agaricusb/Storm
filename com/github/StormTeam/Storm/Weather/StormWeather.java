@@ -4,6 +4,7 @@ import com.github.StormTeam.Storm.Storm;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
+import java.util.Collections;
 import java.util.Set;
 
 /**
@@ -48,7 +49,7 @@ public abstract class StormWeather {
      */
     @SuppressWarnings("UnusedDeclaration")
     public Set getConflicts() {
-        return Collection.EMPTY_SET;    
+        return Collections.EMPTY_SET;
     }
 
     /**

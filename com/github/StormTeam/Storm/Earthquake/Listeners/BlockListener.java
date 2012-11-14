@@ -5,10 +5,10 @@ import com.github.StormTeam.Storm.Earthquake.Quake;
 import com.github.StormTeam.Storm.Storm;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -25,36 +25,28 @@ public class BlockListener implements Listener {
     }
 
     public void forget() {
-        BlockPlaceEvent.getHandlerList().unregister(this);
-        BlockBreakEvent.getHandlerList().unregister(this);
+        HandlerList.unregisterAll(this);
     }
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent e) {
         // Don't target creative mode players!
-        if (e.getPlayer().getGameMode() == GameMode.CREATIVE)
-            return;
-
-        if (!quake.isQuaking(e.getBlock().getLocation()))
+        if (e.getPlayer().getGameMode() == GameMode.CREATIVE || !quake.isQuaking(e.getBlock().getLocation()))
             return;
 
         final Block b = e.getBlock();
-        if (Storm.util.isBlockProtected(b))
+        if (Storm.util.isBlockProtected(b) || Earthquake.isBounceable(b))
             return;
-
-        if (Earthquake.isBounceable(b))
-            return;
-
-        final FallingBlock fB = b.getWorld().spawnFallingBlock(b.getLocation(), b.getType(), b.getData());
-        fB.setDropItem(true);
 
         // Avoid block duplication by removing the placed block a tick later
         Bukkit.getScheduler().scheduleSyncDelayedTask(storm, new Runnable() {
 
             @Override
             public void run() {
-                b.setType(Material.AIR);
+                FallingBlock fB = b.getWorld().spawnFallingBlock(b.getLocation(), b.getType(), b.getData());
+                fB.setDropItem(true);
                 fB.setVelocity(new Vector(Math.random() - 0.5, 0.3, Math.random() - 0.5));
+                b.setTypeId(0);
             }
         });
     }

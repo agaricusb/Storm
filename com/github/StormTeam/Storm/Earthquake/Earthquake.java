@@ -1,6 +1,6 @@
 package com.github.StormTeam.Storm.Earthquake;
 
-import com.github.StormTeam.Storm.Earthquake.Listeners.PlayerListener;
+import com.github.StormTeam.Storm.ReflectCommand;
 import com.github.StormTeam.Storm.Storm;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -11,16 +11,33 @@ import java.util.List;
 
 public class Earthquake {
 
-    private static Storm storm;
     static List<Quake> quakes = new ArrayList<Quake>();
 
-    public static void load(Storm storm) {
-        Earthquake.storm = storm;
-        Storm.pm.registerEvents(new PlayerListener(), storm);
+    public static void load() {
+        Storm.commandRegistrator.register(Earthquake.class);
+    }
+
+    @ReflectCommand.Command(
+            name = "earthquake",
+            alias = "quake",
+            permission = "storm.earthquake.command"
+    )
+    public static boolean quake(Player sender) {
+        Location l = sender.getLocation().clone();
+        Location elk = l.clone();
+        l.add(40, 0, 40);
+        if (!Earthquake.isQuaked(l)) {
+            elk.subtract(40, 0, 40);
+            if (!isQuaked(elk)) {
+                loadQuake(l, elk);
+                return true;
+            }
+        }
+        return false;
     }
 
     public static int loadQuake(Location one, Location two) {
-        quakes.add(new Quake(storm, quakes.size(), one, two));
+        quakes.add(new Quake(Storm.instance, quakes.size(), one, two));
         return quakes.size() - 1;
     }
 

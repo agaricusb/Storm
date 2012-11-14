@@ -16,7 +16,7 @@ import org.bukkit.block.BlockFace;
 
 import java.util.ArrayList;
 
-public class StrikerTask {
+public class StrikerTask implements Runnable {
 
     private int id;
     private final Storm storm;
@@ -29,37 +29,29 @@ public class StrikerTask {
         this.glob = Storm.wConfigs.get(affectedWorld.getName());
         this.affectedWorld = affectedWorld;
         try {
-            ticker = new BlockTickSelector(affectedWorld,
-                    glob.Thunder__Storm_Strike__Chance);
+            ticker = new BlockTickSelector(affectedWorld, glob.Thunder__Storm_Strike__Chance);
         } catch (Exception e) {
             ErrorLogger.generateErrorLog(e);
         }
     }
 
+    @Override
     public void run() {
+        try {
+            ArrayList<Block> blocks = ticker.getRandomTickedBlocks();
+            for (Block b : blocks) {
+                Block tran = b.getRelative(BlockFace.DOWN);
+                if (Storm.util.isRainy(tran.getBiome())) {
+                    affectedWorld.strikeLightning(tran.getLocation());
+                }
+            }
+        } catch (Exception e) {
+            ErrorLogger.generateErrorLog(e);
+        }
+    }
 
-        id = Bukkit.getScheduler()
-                .scheduleSyncRepeatingTask(
-                        storm,
-                        new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    ArrayList<Block> bloks = ticker.getRandomTickedBlocks();
-                                    for (Block b : bloks) {
-                                        Block tran = b.getRelative(BlockFace.DOWN);
-                                        if (Storm.util.isRainy(tran.getBiome())) {
-                                            affectedWorld.strikeLightning(tran.getLocation());
-                                        }
-                                    }
-                                } catch (Exception e) {
-                                    ErrorLogger.generateErrorLog(e);
-                                }
-                            }
-                        },
-                        0,
-                        glob.Thunder__Storm_Scheduler_Striker__Calculation__Intervals__In__Ticks);
-
+    public void start() {
+        id = Bukkit.getScheduler().scheduleSyncRepeatingTask(storm, this, 0, glob.Thunder__Storm_Scheduler_Striker__Calculation__Intervals__In__Ticks);
     }
 
     public void stop() {

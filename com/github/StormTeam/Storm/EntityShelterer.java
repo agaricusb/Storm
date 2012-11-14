@@ -14,11 +14,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-public class EntityShelterer {
+public class EntityShelterer implements Runnable {
 
     private int id;
     private final World affectedWorld;
@@ -39,36 +38,15 @@ public class EntityShelterer {
     private final String name;
     private Method vec3DCreate;
 
-    private HashMap<Double, String> pathXNames = new HashMap<Double, String>() {{
-        put(1.2, "a");
-        put(1.3, "a");
-        put(1.4, "c");
-    }};
-    private HashMap<Double, String> pathYNames = new HashMap<Double, String>() {{
-        put(1.2, "b");
-        put(1.3, "b");
-        put(1.4, "d");
-    }};
-    private HashMap<Double, String> pathZNames = new HashMap<Double, String>() {{
-        put(1.2, "c");
-        put(1.3, "c");
-        put(1.4, "d");
-    }};
-
-    private Field pathX, pathY, pathZ;
-
 
     public EntityShelterer(Storm storm, String affectedWorld, String name, Set<Biome> biomeFilter) {
         this.storm = storm;
         this.affectedWorld = Bukkit.getWorld(affectedWorld);
         this.name = name;
-        filter = biomeFilter;
+        this.filter = biomeFilter;
         try {
-            pathX = Vec3D.class.getDeclaredField(pathXNames.get(Storm.version));
-            pathY = Vec3D.class.getDeclaredField(pathYNames.get(Storm.version));
-            pathZ = Vec3D.class.getDeclaredField(pathZNames.get(Storm.version));
-            if (Storm.version <= 1.3)
-                vec3DCreate = Vec3D.class.getDeclaredMethod("a", double.class, double.class, double.class);
+            if (Storm.version == 1.2)
+                vec3DCreate = Vec3D.class.getDeclaredMethod("b", double.class, double.class, double.class);
             selector = EntityLiving.class.getDeclaredField("goalSelector");
             register = PathfinderGoalSelector.class.getDeclaredMethod("a", int.class, PathfinderGoal.class);
             selector.setAccessible(true);
@@ -76,30 +54,30 @@ public class EntityShelterer {
         } catch (Exception e) {
             ErrorLogger.generateErrorLog(e);
         }
-
     }
 
+    @Override
     public void run() {
-        id = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(storm, new Runnable() {
-            public void run() {
-                try {
-                    for (Entity en : affectedWorld.getEntities()) {
-                        net.minecraft.server.Entity notchMob = ((CraftEntity) en).getHandle();
-                        if (notchMob instanceof EntityLiving) {
-                            if (!filteredEntities.contains(notchMob.getClass())) {
-                                int eid = en.getEntityId();
-                                if (!registered.contains(eid) && filter.contains(en.getLocation().getBlock().getBiome())) {
-                                    register.invoke(selector.get(notchMob), 1, new PathfinderGoalFleeSky((EntityCreature) notchMob, 0.25F, name));
-                                    registered.add(eid);
-                                }
-                            }
+        try {
+            for (Entity en : affectedWorld.getEntities()) {
+                net.minecraft.server.Entity notchMob = ((CraftEntity) en).getHandle();
+                if (notchMob instanceof EntityLiving) {
+                    if (!filteredEntities.contains(notchMob.getClass())) {
+                        int eid = en.getEntityId();
+                        if (!registered.contains(eid) && filter.contains(en.getLocation().getBlock().getBiome())) {
+                            register.invoke(selector.get(notchMob), 1, new PathfinderGoalFleeSky((EntityCreature) notchMob, 0.25F, name));
+                            registered.add(eid);
                         }
                     }
-                } catch (Exception e) {
-                    ErrorLogger.generateErrorLog(e);
                 }
             }
-        }, 0, 80);
+        } catch (Exception e) {
+            ErrorLogger.generateErrorLog(e);
+        }
+    }
+
+    public void start() {
+        id = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(storm, this, 0, 80);
     }
 
     public void stop() {
@@ -202,22 +180,26 @@ public class EntityShelterer {
         }
 
         private void setup(Vec3D path) {
-            try {
-                if (Storm.version <= 1.3) {
-                    x = (Double) pathX.get(path);
-                    y = (Double) pathY.get(path);
-                    z = (Double) pathZ.get(path);
-                    Verbose.log("(1.3)Moving entity to " + path.toString() + ".");
-                    return;
-                }
-            } catch (Exception e) {
-                ErrorLogger.generateErrorLog(e);
+
+            if (Storm.version <= 1.3) {
+                x = (Integer) ((Object) path.a);
+                y = (Integer) ((Object) path.b);
+                z = (Integer) ((Object) path.c);
+                Verbose.log("(1.3)Moving entity to " + x + "|" + y + "|" + z + ".");
+                return;
             }
+
+            //NASTY!
+            x = (int) path.c;
+            y = (int) path.d;
+            z = (int) path.e;
+            Verbose.log("(1.4)Moving entity to " + x + "|" + y + "|" + z + ".");
+
         }
 
         private Vec3D getPathToShelter() throws InvocationTargetException, IllegalAccessException {
             for (int i = 0; i < 20; i++) {
-                double px = MathHelper.floor((entity.locX + (double) Storm.random.nextInt(20)) - 10D),
+                int px = MathHelper.floor((entity.locX + (double) Storm.random.nextInt(20)) - 10D),
                         py = MathHelper.floor((entity.boundingBox.b + (double) Storm.random.nextInt(6)) - 6D),
                         pz = MathHelper.floor((entity.locZ + (double) Storm.random.nextInt(20)) - 10D);
                 if (!isUnderSky(world, px, py, pz))

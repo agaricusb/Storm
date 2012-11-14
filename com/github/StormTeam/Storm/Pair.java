@@ -1,5 +1,8 @@
 package com.github.StormTeam.Storm;
 
+import org.bukkit.Location;
+import org.bukkit.World;
+
 /**
  * An object for the Pair data type.
  *
@@ -26,6 +29,10 @@ public class Pair<Left, Right> {
     public Pair(Left left, Right right) {
         this.LEFT = left;
         this.RIGHT = right;
+    }
+
+    public static Location toLocation(World world, int y, Pair<Integer, Integer> par) {
+        return new Location(world, par.LEFT, y, par.RIGHT);
     }
 
 }

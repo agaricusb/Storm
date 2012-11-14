@@ -50,17 +50,17 @@ public class AcidRainWeather extends StormWeather {
 
         if (glob.Features_Acid__Rain_Entity__Damaging || glob.Features_Blizzards_Player__Damaging) {
             enDamager = new EntityDamagerTask(storm, world);
-            enDamager.run();
+            enDamager.start();
         }
 
         if (glob.Features_Acid__Rain_Dissolving__Blocks) {
             dissolver = new BlockDissolverTask(storm, world);
-            dissolver.run();
+            dissolver.start();
         }
 
         if (glob.Features_Acid__Rain_Entity__Shelter__Pathfinding) {
             shelter = new EntityShelterer(storm, world, "storm_acidrain", Storm.util.rainBiomes);
-            shelter.run();
+            shelter.start();
         }
 
         killID = Storm.manager.createAutoKillWeatherTask("storm_acidrain", world, 7500 + Storm.random.nextInt(1024));
