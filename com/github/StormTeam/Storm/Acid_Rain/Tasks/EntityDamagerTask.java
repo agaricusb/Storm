@@ -45,7 +45,7 @@ public class EntityDamagerTask implements Runnable {
             if (Storm.util.isEntityUnderSky(damagee) && Storm.util.isRainy(damagee.getLocation().getBlock().getBiome())) {
                 if (Storm.util.isLocationNearBlock(damagee.getLocation(), glob.Acid__Rain_Absorbing__Blocks, glob.Acid__Rain_Absorbing__Radius)) {
                     if (glob.Features_Acid__Rain_Entity__Damaging && damagee instanceof LivingEntity && !(damagee instanceof Player))
-                        ((LivingEntity) (damagee)).damage(glob.Acid__Rain_Entity_Damage__From__Exposure);
+                        damagee.damage(glob.Acid__Rain_Entity_Damage__From__Exposure);
                     else if (glob.Features_Acid__Rain_Player__Damaging && damagee instanceof Player) {
                         Player dam = (Player) damagee;
                         if (!dam.getGameMode().equals(GameMode.CREATIVE) && !dam.hasPermission("storm.acidrain.immune") && !glob.Acid__Rain_Absorbing__Blocks.contains(dam.getItemInHand().getTypeId())) {
