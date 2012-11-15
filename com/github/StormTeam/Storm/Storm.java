@@ -75,7 +75,7 @@ public class Storm extends JavaPlugin implements Listener {
 
     public static Storm instance = null;
 
-    public static final boolean debug = false;
+    public static final boolean debug = true;
 
     public static ReflectCommand commandRegistrator = null;
 
