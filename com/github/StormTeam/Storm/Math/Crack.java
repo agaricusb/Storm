@@ -25,6 +25,7 @@ import org.bukkit.util.Vector;
 
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.NoSuchElementException;
 
 public class Crack implements Iterable<Location>, Iterator<Location> {
     class Worker {
@@ -106,7 +107,7 @@ public class Crack implements Iterable<Location>, Iterator<Location> {
         if (cache.size() > 0)
             return cache.pop().toLocation(world);
         if (!hasNext())
-            return null;
+            throw new NoSuchElementException();
         return next();
     }
 
