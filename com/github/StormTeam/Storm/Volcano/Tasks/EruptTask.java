@@ -1,23 +1,16 @@
 package com.github.StormTeam.Storm.Volcano.Tasks;
 
-import org.bukkit.entity.FallingBlock;
+import com.github.StormTeam.Storm.BlockTickSelector;
+import com.github.StormTeam.Storm.GlobalVariables;
+import com.github.StormTeam.Storm.Storm;
+import com.github.StormTeam.Storm.Volcano.VolcanoWorker;
+import org.bukkit.Bukkit;
+import org.bukkit.World;
 
 /**
  *
  * @author xiaomao
  */
-
-import com.github.StormTeam.Storm.BlockTickSelector;
-import com.github.StormTeam.Storm.ErrorLogger;
-import com.github.StormTeam.Storm.GlobalVariables;
-import com.github.StormTeam.Storm.Storm;
-import org.bukkit.Bukkit;
-import org.bukkit.World;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.util.Vector;
-
-import java.util.ArrayList;
 
 public class EruptTask implements Runnable {
 
@@ -37,8 +30,8 @@ public class EruptTask implements Runnable {
 
     @Override
     public void run() {
-        FallingBlock block = volcano.world.spawnFallingBlock(volcano.center, 10, 0);
-        block.setVelocity(new Vector(Math.random() - 0.5, 0.3, Math.random() - 0.5));
+        // FallingBlock block = volcano.world.spawnFallingBlock(volcano.center, 10, 0);
+        //block.setVelocity(new Vector(Math.random() - 0.5, 0.3, Math.random() - 0.5));
     }
 
     public void start() {

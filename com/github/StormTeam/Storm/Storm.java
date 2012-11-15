@@ -16,9 +16,12 @@
  */
 package com.github.StormTeam.Storm;
 
+import com.github.StormTeam.Storm.Math.Crack;
 import com.github.StormTeam.Storm.Weather.WeatherManager;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
@@ -85,6 +88,29 @@ public class Storm extends JavaPlugin implements Listener {
     public static boolean sound(Player p, String sound, String pitch, String volume) {
         try {
             Storm.util.playSound(p, sound, Float.parseFloat(pitch), Float.parseFloat(volume));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+    @ReflectCommand.Command(name = "crack", usage = "/<command> [sound]")
+    public static boolean crack(Player p) {
+        try {
+            //(int size, int x, int y, int z, int maxWidth, int maxDepth)
+            int radius = 64;
+            Location pLoc = p.getTargetBlock(null, 200).getLocation();
+            Crack cracker = new Crack(pLoc.getWorld(), 64, pLoc.getBlockX(), pLoc.getBlockY(), pLoc.getBlockZ(), 20, 80);
+            Cuboid area = new Cuboid(pLoc, pLoc);
+            area = area.expand(BlockFace.UP, radius).expand(BlockFace.DOWN, radius / 4);
+            area = area.expand(BlockFace.NORTH, radius * 2);
+            area = area.expand(BlockFace.EAST, radius * 2);
+            area = area.expand(BlockFace.SOUTH, radius * 2);
+            area = area.expand(BlockFace.WEST, radius * 2);
+            while (cracker.hasNext()) {
+                area.setBlockFast(cracker.next().getBlock(), 0);
+            }
+            area.sendClientChanges();
         } catch (Exception e) {
             e.printStackTrace();
         }
