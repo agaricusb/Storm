@@ -50,7 +50,7 @@ public class Crack implements Iterable<Location>, Iterator<Location> {
             if (i > size)
                 return null;
             x += Storm.random.nextInt(2) - 1;
-            int k = maxWidth + 2 - Math.abs(mean - i) / (mean / maxWidth);
+            int k = maxWidth + 2 - Math.abs(mean - i) / (mean / maxWidth + 1);
             LinkedList<Vector> out = new LinkedList<Vector>();
             int min = x - MathUtils.gauss(k, 1), max = x + MathUtils.gauss(k, 1);
             for (int j = min; j < max; ++j) {
