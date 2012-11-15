@@ -30,8 +30,8 @@ public class QuakeTask implements Runnable {
             if (p.getGameMode() == GameMode.CREATIVE || !quake.isQuaking(p.getLocation()))
                 continue;
 
-            int a = 5 / (1 + (quake.getEpicenter().LEFT - p.getLocation().getBlockX() + 1) +
-                    (quake.getEpicenter().RIGHT - p.getLocation().getBlockZ() + 1) / 2);
+            int a = 5 / (2 + Math.abs(quake.getEpicenter().LEFT - p.getLocation().getBlockX()) +
+                    Math.abs(quake.getEpicenter().RIGHT - p.getLocation().getBlockZ()) / 2);
 
             if (toggle) {
                 p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 2, a), true);
