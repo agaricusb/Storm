@@ -54,10 +54,10 @@ public class Crack implements Iterable<Location>, Iterator<Location> {
             LinkedList<Vector> out = new LinkedList<Vector>();
             int min = x - MathUtils.gauss(k, 1), max = x + MathUtils.gauss(k, 1);
             for (int j = min; j < max; ++j) {
-                final int dz = maxDepth - Math.abs(j);
-                out.add(new Vector(x + j, y, z + dz));
+                final int dy = maxDepth - Math.abs(j);
+                out.add(new Vector(x + j, y + dy, z));
             }
-            ++y;
+            ++z;
             ++i;
             return out;
         }
