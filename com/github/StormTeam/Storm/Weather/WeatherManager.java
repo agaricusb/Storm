@@ -154,6 +154,7 @@ public class WeatherManager implements Listener {
      * @param weather weather name
      * @return whether the weather is registered
      */
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean isWeatherRegistered(String weather) {
         synchronized (this) {
             return !registeredWeathers.containsKey(weather);

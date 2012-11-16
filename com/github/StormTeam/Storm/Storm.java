@@ -81,6 +81,7 @@ public class Storm extends JavaPlugin implements Listener {
 
     public static boolean isDevBuild = true;
 
+    @SuppressWarnings("SameReturnValue")
     @ReflectCommand.Command(name = "sound", usage = "/<command> [sound]")
     public static boolean sound(Player p, String sound, String pitch, String volume) {
         try {
@@ -158,7 +159,7 @@ public class Storm extends JavaPlugin implements Listener {
     }
 
     private void initUpdater() {
-        if (true && !isDevBuild) { //TODO Add in conf
+        if (!isDevBuild) { //TODO Add in conf
 
             util.log("Checking for a new update...");
             Updater updater = new Updater(this, "storm", this.getFile(), Updater.UpdateType.DEFAULT, false);

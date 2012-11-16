@@ -7,13 +7,10 @@ import com.github.StormTeam.Storm.Meteors.Listener.SafeExplosion;
 import com.github.StormTeam.Storm.ReflectCommand;
 import com.github.StormTeam.Storm.Storm;
 import com.github.StormTeam.Storm.Weather.Exceptions.WeatherNotFoundException;
-import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.entity.Fireball;
@@ -78,6 +75,7 @@ public class Meteor {
         return false;
     }
 
+    @SuppressWarnings("SameReturnValue")
     @ReflectCommand.Command(
             name = "meteor",
             alias = {"meteorite"},

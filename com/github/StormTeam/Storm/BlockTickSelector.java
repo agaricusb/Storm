@@ -25,6 +25,7 @@ public class BlockTickSelector {
     private Method a, recheckGaps;
     private int chan;
 
+    @SuppressWarnings("FieldCanBeLocal")
     private final Map<String, String> recheckGapsName = new HashMap<String, String>() {{
         put("1.2", "o");
         put("1.3", "k");
@@ -45,7 +46,7 @@ public class BlockTickSelector {
 
     public BlockTickSelector(World world, int selChance)
             throws NoSuchMethodException,
-            SecurityException, NoSuchFieldException, InstantiationException, IllegalAccessException {
+            SecurityException {
 
         this.world = ((CraftWorld) world).getHandle();
         this.bWorld = world;
@@ -61,7 +62,7 @@ public class BlockTickSelector {
 
     }
 
-    ArrayList<ChunkCoordIntPair> getRandomTickedChunks() throws InvocationTargetException, IllegalAccessException {
+    ArrayList<ChunkCoordIntPair> getRandomTickedChunks() {
 
         ArrayList<ChunkCoordIntPair> doTick = new ArrayList<ChunkCoordIntPair>();
 

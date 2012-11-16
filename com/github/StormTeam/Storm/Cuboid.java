@@ -28,7 +28,7 @@ public class Cuboid {
     public final String worldName;
     public final int x1, y1, z1;
     public final int x2, y2, z2;
-    private Set<ChunkCoordIntPair> chunkCache = new HashSet();
+    private Set<ChunkCoordIntPair> chunkCache = new HashSet<ChunkCoordIntPair>();
     int threshold = 0, centerX = 0, centerZ = 0;
     private final Object mutex = new Object();
 
@@ -194,6 +194,7 @@ public class Cuboid {
         }
         for (ChunkCoordIntPair pair : pairs) {
             if (!queued.contains(pair)) {
+                //noinspection unchecked
                 ep.chunkCoordIntPairQueue.add(pair);
             }
         }

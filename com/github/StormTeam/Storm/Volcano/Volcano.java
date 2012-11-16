@@ -11,6 +11,7 @@ import java.io.File;
 public class Volcano {
     public static File vulkanos;
 
+    @SuppressWarnings("SameReturnValue")
     @ReflectCommand.Command(
             name = "volcano",
             alias = {"firemountain", "vulkano"},
@@ -24,6 +25,7 @@ public class Volcano {
         return true;
     }
 
+    @SuppressWarnings("SameReturnValue")
     @ReflectCommand.Command(
             name = "volcano",
             alias = {"firemountain", "vulkano"},

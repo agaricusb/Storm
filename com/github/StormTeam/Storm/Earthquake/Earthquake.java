@@ -118,12 +118,14 @@ public class Earthquake {
         }
     }
 
+    @SuppressWarnings("SameReturnValue")
     @ReflectCommand.Command(name = "crack", usage = "/<command>")
     public static boolean crack(Player p) {
         crack(p.getTargetBlock(null, 200).getLocation(), 90, 10, 60);
         return true;
     }
 
+    @SuppressWarnings("SameReturnValue")
     @ReflectCommand.Command(name = "crack", usage = "/<command>")
     public static boolean crack(Player p, String length, String width, String depth) {
         crack(p.getTargetBlock(null, 200).getLocation(), Integer.parseInt(length), Integer.parseInt(width), Integer.parseInt(depth));
