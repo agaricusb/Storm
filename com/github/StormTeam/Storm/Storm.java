@@ -25,7 +25,6 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
-import java.util.Random;
 import java.util.logging.Level;
 
 /**
@@ -59,7 +58,8 @@ public class Storm extends JavaPlugin implements Listener {
     /**
      * A global Random object, to avoid needless construction.
      */
-    public static final Random random = new Random();
+    //public static final java.util.Random random = new java.util.Random();
+    public static final com.github.StormTeam.Storm.Math.Random random = new com.github.StormTeam.Storm.Math.Random();
     /**
      * The server's plugin manager, to avoid fetching each use.
      */
