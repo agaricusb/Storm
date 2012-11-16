@@ -71,6 +71,18 @@ public class Quake {
         Verbose.log(Level.SEVERE, "Quake started at: [" + this.point1.LEFT + " - " + this.point1.RIGHT + "] - [" + this.point2.LEFT + " - " + this.point2.RIGHT + "]");
 
         quaker = new QuakeTask(this);
+
+        // Get cracking!
+        Bukkit.getScheduler().scheduleAsyncDelayedTask(storm, new Runnable() {
+            @Override
+            public void run() {
+                int x = (point1.LEFT + point2.LEFT) / 2;
+                int y = 80;
+                int z = point1.RIGHT;
+                int length = point2.RIGHT - point1.RIGHT;
+                Earthquake.crack(new Location(Bukkit.getWorld(world), x, y, z), length, 20, y - 10);
+            }
+        }, 10);
     }
 
     public Quake(Storm storm, int qID, Location point1, Location point2) {

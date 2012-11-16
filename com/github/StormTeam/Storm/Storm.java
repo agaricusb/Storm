@@ -16,22 +16,15 @@
  */
 package com.github.StormTeam.Storm;
 
-import com.github.StormTeam.Storm.Math.Cracker;
 import com.github.StormTeam.Storm.Weather.WeatherManager;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.util.BlockIterator;
-import org.bukkit.util.Vector;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.logging.Level;
 
 /**
@@ -96,60 +89,6 @@ public class Storm extends JavaPlugin implements Listener {
             e.printStackTrace();
         }
         return true;
-    }
-
-    @ReflectCommand.Command(name = "crack", usage = "/<command>")
-    public static boolean crack(Player p) {
-        //int size, int x, int y, int z, int maxWidth, int maxDepth)
-        realcrack(p.getTargetBlock(null, 200).getLocation(), 90, 10, 60);
-        return true;
-    }
-
-    @ReflectCommand.Command(name = "crack", usage = "/<command>")
-    public static boolean crack(Player p, String length, String width, String depth) {
-        //int size, int x, int y, int z, int maxWidth, int maxDepth)
-        realcrack(p.getTargetBlock(null, 200).getLocation(), Integer.parseInt(length), Integer.parseInt(width), Integer.parseInt(depth));
-        return true;
-    }
-
-    public static void realcrack(Location l, int length, int width, int depth) {
-        Cuboid area = new Cuboid(l, l);
-        area = area.expand(BlockFace.UP, 256).expand(BlockFace.DOWN, 256);
-        area = area.expand(BlockFace.NORTH, length);
-        area = area.expand(BlockFace.EAST, length);
-        area = area.expand(BlockFace.SOUTH, length);
-        area = area.expand(BlockFace.WEST, length);
-
-        Cracker cracker = new Cracker(length, l.getBlockX(), l.getBlockY(), l.getBlockZ(), width, depth);
-
-        cracker.plot();
-        World w = l.getWorld();
-        for (int i = 0; ; ++i) {
-            Verbose.log("Cracking layer " + i);
-            List<Vector> layer = cracker.get(i);
-            if (layer.size() == 0)
-                break;
-            for (Vector block : layer) {
-                BlockIterator bi = new BlockIterator(w, block, new Vector(0, 1, 0), 0, (256 - block.getBlockY()));
-                while (bi.hasNext()) {
-                    Block toinspect = bi.next();
-                    int id = toinspect.getTypeId();
-                    if (id != 0 && id != 7)
-                        area.setBlockFast(toinspect, 0);
-                    if (id == 8 || id == 9) {
-                        toinspect.setTypeId(9, true);
-                        continue;
-                    }
-                    if (id == 10 || id == 11) {
-                        toinspect.setTypeId(10, true);
-                        continue;
-                    }
-                }
-            }
-            Storm.util.playSoundNearby(l, length * width + 500, "ambient.weather.thunder", 3F, Storm.random.nextInt(3) + 1);
-            area.sendClientChanges();
-            area.loadChunks();
-        }
     }
 
     /**
