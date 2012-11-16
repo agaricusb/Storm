@@ -18,6 +18,7 @@
 
 package com.github.StormTeam.Storm.Math;
 
+import com.github.StormTeam.Storm.Storm;
 import org.bukkit.util.Vector;
 
 import java.util.Iterator;
@@ -67,5 +68,18 @@ public class PointsOnCircle implements Iterator<Vector>, Iterable<Vector> {
     @Override
     public Iterator<Vector> iterator() {
         return this;
+    }
+
+    final static double TWOPI = Math.PI * 2;
+
+    public static Vector random() {
+        return random(1);
+    }
+
+    public static Vector random(double r) {
+        double t = TWOPI * Storm.random.nextDouble();
+        double u = Storm.random.nextDouble() + Storm.random.nextDouble();
+        r *= u > 1 ? 2 - u : u;
+        return new Vector(r * Math.cos(t), 0, r * Math.sin(t));
     }
 }
