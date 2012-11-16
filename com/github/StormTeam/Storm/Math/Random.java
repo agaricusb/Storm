@@ -226,7 +226,7 @@ public class Random extends java.util.Random {
      * @param low  Low bound
      * @param high High bound
      * @param mode Mode
-     * @return
+     * @return A number from the triangular distribution specified
      */
     public double triangular(int low, int high, int mode) {
         double u = nextDouble();
@@ -270,9 +270,9 @@ public class Random extends java.util.Random {
      * normal distribution with mean mu and standard deviation sigma.
      * mu can have any value, and sigma must be greater than zero.
      *
-     * @param mu
-     * @param sigma
-     * @return
+     * @param mu    Mean
+     * @param sigma Standard deviation
+     * @return A number from the log normal distribution specified
      */
     public double logNormal(double mu, double sigma) {
         return Math.exp(gauss(mu, sigma));
@@ -331,5 +331,77 @@ public class Random extends java.util.Random {
                 theta = (mu % TWOPI) - Math.acos(f);
         }
         return theta;
+    }
+
+
+    final double LOG4 = Math.log(4);
+    final double SG_MAGICCONST = 1.0 + Math.log(4.5);
+
+    /**
+     * Gamma distribution.  Not the gamma function!
+     * Conditions on the parameters are alpha > 0 and beta > 0.
+     * <p/>
+     * The probability distribution function is:
+     * pdf(x) = (x ** (alpha - 1) * math.exp(-x / beta)) / (math.gamma(alpha) * beta ** alpha)
+     *
+     * @param alpha Alpha
+     * @param beta  Beta
+     * @return A number from the gamma distribution specified
+     */
+    public double gamma(double alpha, double beta) {
+        if (alpha <= 0.0 || beta <= 0.0)
+            throw new IllegalArgumentException("gamma: alpha and beta must be > 0.0");
+
+        if (alpha > 1.0) {
+            // Uses R.C.H. Cheng, "The generation of Gamma
+            // variables with non-integral shape parameters",
+            // Applied Statistics, (1977), 26, No. 1, p71-74
+
+            double ainv = Math.sqrt(2.0 * alpha - 1.0);
+            double bbb = alpha - LOG4;
+            double ccc = alpha + ainv;
+            double u1, u2, v, x, z, r;
+
+            while (true) {
+                u1 = random();
+                if (!(1e-7 < u1 && u1 < .9999999))
+                    continue;
+                u2 = 1.0 - random();
+                v = Math.log(u1 / (1.0 - u1)) / ainv;
+                x = alpha * Math.exp(v);
+                z = u1 * u1 * u2;
+                r = bbb + ccc * v - x;
+                if (r + SG_MAGICCONST - 4.5 * z >= 0.0 || r >= Math.log(z))
+                    return x * beta;
+            }
+        } else if (alpha == 1.0) {
+            // exponential(1)
+            double u;
+            u = random();
+            while (u <= 1e-7)
+                u = random();
+            return -Math.log(u) * beta;
+        } else {
+            // alpha is between 0 and 1 (exclusive)
+            // Uses ALGORITHM GS of Statistical Computing -Kennedy & Gentle
+
+            double u, b, p, x, u1;
+            while (true) {
+                u = random();
+                b = (Math.E + alpha) / Math.E;
+                p = b * u;
+                if (p <= 1.0)
+                    x = Math.pow(p, (1.0 / alpha));
+                else
+                    x = -Math.log((b - p) / alpha);
+                u1 = random();
+                if (p > 1.0) {
+                    if (u1 <= Math.pow(x, (alpha - 1.0)))
+                        break;
+                } else if (u1 <= Math.exp(-x))
+                    break;
+            }
+            return x * beta;
+        }
     }
 }
