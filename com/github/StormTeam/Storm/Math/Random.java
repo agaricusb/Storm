@@ -205,25 +205,6 @@ public class Random extends java.util.Random {
     boolean hasGaussNext;
     final double TWOPI = Math.PI * 2;
 
-    public double gauss() {
-        // Java.util.random's implementation is better for this
-        /*double current = gaussNext;
-        hasGaussNext = false;
-        if (!hasGaussNext) {
-            double x2pi = nextDouble() * TWOPI;
-            double g2rad = Math.sqrt(-2.0 * Math.log(1.0 - random()));
-            current = Math.cos(x2pi) * g2rad;
-            gaussNext = Math.sin(x2pi) * g2rad;
-            hasGaussNext = true;
-        }
-        return current;*/
-        return nextGaussian();
-    }
-
-    public double gauss(double mu, double sigma) {
-        return mu + sigma * nextGaussian();
-    }
-
     /**
      * Get a random number in the range [min, max) or [min, max] depending on rounding.
      *
@@ -258,5 +239,97 @@ public class Random extends java.util.Random {
             high = k;
         }
         return low + (high - low) * Math.sqrt(u * c);
+    }
+
+    /**
+     * Gaussian distribution, mean is 0 and standard deviation is 1.
+     * <p/>
+     * mu is the mean, and sigma is the standard deviation.
+     *
+     * @return A double in Gaussian distribution
+     */
+    public double gauss() {
+        return nextGaussian();
+    }
+
+    /**
+     * Gaussian distribution, with user-specified mean and standard deviation.
+     * <p/>
+     * mu is the mean, and sigma is the standard deviation.
+     *
+     * @return A double in Gaussian distribution
+     */
+    public double gauss(double mu, double sigma) {
+        return mu + sigma * nextGaussian();
+    }
+
+    /**
+     * Log normal distribution.
+     * <p/>
+     * If you take the natural logarithm of this distribution, you'll get a
+     * normal distribution with mean mu and standard deviation sigma.
+     * mu can have any value, and sigma must be greater than zero.
+     *
+     * @param mu
+     * @param sigma
+     * @return
+     */
+    public double logNormal(double mu, double sigma) {
+        return Math.exp(gauss(mu, sigma));
+    }
+
+    /**
+     * Exponential distribution.
+     * <p/>
+     * lambda is 1.0 divided by the desired mean.  It should be
+     * nonzero. Returned values range from 0 to positive infinity
+     * if lambda is positive, and from negative infinity to 0
+     * if lambda is negative.
+     *
+     * @param lambda A non-zero value
+     */
+    public double exponential(double lambda) {
+        return -Math.log(1.0 - random()) / lambda;
+    }
+
+    /**
+     * Circular data distribution.
+     * <p/>
+     * If kappa is equal to zero, this distribution reduces
+     * to a uniform random angle over the range 0 to 2*pi.
+     *
+     * @param mu    the mean angle, expressed in radians between 0 and 2*pi.
+     * @param kappa the concentration parameter, which must be greater than or
+     *              equal to zero.
+     * @return A number from the circular data distribution specified
+     */
+    public double circularData(double mu, double kappa) {
+        if (kappa <= 1e-6)
+            return TWOPI * nextDouble();
+
+        double a = 1.0 + Math.sqrt(1.0 + 4.0 * kappa * kappa);
+        double b = (a - Math.sqrt(2.0 * a)) / (2.0 * kappa);
+        double r = (1.0 + b * b) / (2.0 * b);
+        double u1, u2, u3, f, c, z, theta = 0;
+
+        while (true) {
+            u1 = nextDouble();
+
+            z = Math.cos(Math.PI * u1);
+            f = (1.0 + r * z) / (r + z);
+            c = kappa * (r - f);
+
+            u2 = nextDouble();
+
+            if (u2 < c * (2.0 - c) || u2 <= c * Math.exp(1.0 - c))
+                break;
+
+            u3 = nextDouble();
+            if (u3 > 0.5)
+                theta = (mu % TWOPI) + Math.acos(f);
+            else
+                theta = (mu % TWOPI) - Math.acos(f);
+        }
+        return theta;
     }
 }
