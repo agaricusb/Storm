@@ -45,6 +45,7 @@ public class Crack implements Iterable<Location>, Iterator<Location> {
             this.z = z;
             this.maxWidth = maxWidth;
             this.maxDepth = maxDepth;
+            this.mean = size / 2;
         }
 
         int intGauss(int mu, int sigma) {
