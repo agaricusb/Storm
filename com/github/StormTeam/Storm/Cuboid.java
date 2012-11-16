@@ -2,6 +2,7 @@ package com.github.StormTeam.Storm;
 
 import net.minecraft.server.ChunkCoordIntPair;
 import net.minecraft.server.EntityPlayer;
+import net.minecraft.server.Packet51MapChunk;
 import net.minecraft.server.Packet56MapChunkBulk;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -172,11 +173,18 @@ public class Cuboid {
 
     private void queueChunks(EntityPlayer ep, Set<ChunkCoordIntPair> pairs) {
         synchronized (getWorld()) {
-            List<net.minecraft.server.Chunk> nc = new ArrayList<net.minecraft.server.Chunk>();
-            for (ChunkCoordIntPair par : pairs)
-                nc.add(((CraftChunk) getWorld().getChunkAt(par.x, par.z)).getHandle());
-            synchronized (ep.netServerHandler) {
-                ep.netServerHandler.sendPacket(new Packet56MapChunkBulk(nc));
+            if (pairs.size() > 5) {
+                List<net.minecraft.server.Chunk> nc = new ArrayList<net.minecraft.server.Chunk>();
+                for (ChunkCoordIntPair par : pairs)
+                    nc.add(((CraftChunk) getWorld().getChunkAt(par.x, par.z)).getHandle());
+                synchronized (ep.netServerHandler) {
+                    ep.netServerHandler.sendPacket(new Packet56MapChunkBulk(nc));
+                }
+            } else {
+                for (ChunkCoordIntPair par : pairs)
+                    synchronized (ep.netServerHandler) {
+                        ep.netServerHandler.sendPacket(new Packet51MapChunk(((CraftChunk) getWorld().getChunkAt(par.x, par.z)).getHandle(), true, 1));
+                    }
             }
         }
     }

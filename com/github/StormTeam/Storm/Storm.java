@@ -21,11 +21,14 @@ import com.github.StormTeam.Storm.Weather.WeatherManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.util.BlockIterator;
+import org.bukkit.util.Vector;
 
 import java.util.HashMap;
 import java.util.Random;
@@ -94,23 +97,36 @@ public class Storm extends JavaPlugin implements Listener {
         return true;
     }
 
-    @ReflectCommand.Command(name = "crack", usage = "/<command> [sound]")
+    @ReflectCommand.Command(name = "crack", usage = "/<command>")
     public static boolean crack(Player p) {
         try {
             //(int size, int x, int y, int z, int maxWidth, int maxDepth)
-            int radius = 64;
+            int radius = 90;
             Location pLoc = p.getTargetBlock(null, 200).getLocation();
-            Crack cracker = new Crack(pLoc.getWorld(), 64, pLoc.getBlockX(), pLoc.getBlockY(), pLoc.getBlockZ(), 20, 80);
             Cuboid area = new Cuboid(pLoc, pLoc);
-            area = area.expand(BlockFace.UP, radius).expand(BlockFace.DOWN, radius / 4);
-            area = area.expand(BlockFace.NORTH, radius * 2);
-            area = area.expand(BlockFace.EAST, radius * 2);
-            area = area.expand(BlockFace.SOUTH, radius * 2);
-            area = area.expand(BlockFace.WEST, radius * 2);
-            while (cracker.hasNext()) {
-                area.setBlockFast(cracker.next().getBlock(), 0);
+            area = area.expand(BlockFace.UP, 256).expand(BlockFace.DOWN, 256);
+            area = area.expand(BlockFace.NORTH, radius);
+            area = area.expand(BlockFace.EAST, radius);
+            area = area.expand(BlockFace.SOUTH, radius);
+            area = area.expand(BlockFace.WEST, radius);
+
+            Crack cracker = new Crack(radius, pLoc.getBlockX(), pLoc.getBlockY(), pLoc.getBlockZ(), 10, 60);
+
+            World w = pLoc.getWorld();
+            int i = 0;
+            for (Vector block : cracker) {
+                BlockIterator bi = new BlockIterator(w, block, new Vector(0, 1, 0), 0, (256 - block.getBlockY()));
+                while (bi.hasNext()) {
+                    Block toinspect = bi.next();
+                    int id = toinspect.getTypeId();
+                    if (toinspect.isLiquid())
+                        toinspect.setTypeId(0);
+                    if (id != 0 && id != 7)
+                        area.setBlockFast(toinspect, 0);
+                }
             }
             area.sendClientChanges();
+
         } catch (Exception e) {
             e.printStackTrace();
         }

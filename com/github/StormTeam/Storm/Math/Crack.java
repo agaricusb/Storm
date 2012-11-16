@@ -19,99 +19,91 @@
 package com.github.StormTeam.Storm.Math;
 
 import com.github.StormTeam.Storm.Storm;
-import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.util.Vector;
 
-import java.util.Iterator;
+import java.io.File;
+import java.sql.*;
 import java.util.LinkedList;
+import java.util.List;
 
-public class Crack implements Iterable<Location>, Iterator<Location> {
-    class Worker {
-        int mean;
-        int size;
-        int i = 0;
-        int x;
-        int y;
-        int z;
-        int maxWidth;
-        int maxDepth;
+import static com.github.StormTeam.Storm.Storm.random;
 
-        public Worker(int size, int x, int y, int z, int maxWidth, int maxDepth) {
-            this.size = size;
-            this.x = x;
-            this.y = y;
-            this.z = z;
-            this.maxWidth = maxWidth;
-            this.maxDepth = maxDepth;
+public class Cracker {
+    Connection connection;
+    PreparedStatement insert;
+    PreparedStatement select;
+    private final int size;
+    private final int mean;
+    private final int halfDepth;
+    private int x;
+    private int y;
+    private int z;
+    private final int maxWidth;
+    private final int maxDepth;
+
+    public Cracker(int size, int x, int y, int z, int maxWidth, int maxDepth) {
+        this.size = size;
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.maxWidth = maxWidth;
+        this.maxDepth = maxDepth;
+        this.mean = size / 2;
+        this.halfDepth = maxDepth / 2;
+        try {
+            Class.forName("org.sqlite.JDBC");
+            connection = DriverManager.getConnection("jdbc:sqlite:" + File.createTempFile("StormCrack", ".db").getAbsolutePath());
+            Statement statement = connection.createStatement();
+            statement.executeUpdate("CREATE TABLE points (id INT PRIMARY KEY AUTOINCREMENT, x INT, y INT, z INT, dx INT)");
+            statement.executeUpdate("CREATE INDEX dz ON points (dx)");
+            insert = connection.prepareStatement("INSERT INTO (x, y, z, dx) points VALUES (?, ?, ?, ?)");
+            select = connection.prepareStatement("SELECT x, y, z FROM points WHERE dx = ?");
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
         }
+    }
 
-        public LinkedList<Vector> next() {
-            if (i > size)
-                return null;
-            x += Storm.random.nextInt(2) - 1;
-            int k = maxWidth + 2 - Math.abs(mean - i) / (mean / maxWidth + 1);
-            LinkedList<Vector> out = new LinkedList<Vector>();
-            int min = x - MathUtils.gauss(k, 1), max = x + MathUtils.gauss(k, 1);
-            for (int j = min; j < max; ++j) {
-                final int dy = maxDepth - Math.abs(j);
-                out.add(new Vector(x + j, y + dy, z));
+    int intGauss(int mu, int sigma) {
+        int out = (int) Storm.random.gauss(mu, sigma);
+        return out > 0 ? out : 1;
+    }
+
+    public void plot() {
+        try {
+            for (int i = 0; i < size; ++i) {
+                x += Storm.random.nextInt(3) - 1;
+                ++z;
+                insert.setInt(2, z);
+                int k = maxWidth + 2 - Math.abs(mean - i) / (mean / maxWidth);
+                int min = -intGauss(k, 1), max = intGauss(k, 1);
+                for (int dx = min; dx < max; ++dx) {
+                    ///////////////////// Force the value to stay within half depth
+                    int dy = Math.abs(dx) * halfDepth / (dx < 0 ? -min : max);
+                    dy = maxDepth - (int) (dy * random.gauss(1, 0.25));
+                    insert.setInt(0, x + dx);
+                    insert.setInt(1, y - dy);
+                    insert.setInt(3, Math.abs(dx));
+                    insert.executeUpdate();
+                }
             }
-            ++z;
-            ++i;
-            return out;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
-    Worker worker;
-    LinkedList<Vector> cache = new LinkedList<Vector>();
-    boolean done = false;
-    final World world;
-
-    public Crack(World world, int size, int x, int y, int z) {
-        this(world, size, x, y, z, 20, 64);
-    }
-
-    public Crack(World world, int size, int x, int y, int z, int maxWidth, int maxDepth) {
-        this.world = world;
-        worker = new Worker(size, x, y, z, maxWidth, maxDepth);
-    }
-
-    @Override
-    public Iterator<Location> iterator() {
-        return this;
-    }
-
-    boolean getAnother() {
-        if (done)
-            return false;
-        cache = worker.next();
-        if (cache == null)
-            done = true;
-        return !done;
-    }
-
-    @Override
-    public boolean hasNext() {
-        if (done)
-            return false;
-        if (cache.size() > 0)
-            return true;
-        getAnother();
-        return hasNext();
-    }
-
-    @Override
-    public Location next() {
-        if (cache.size() > 0)
-            return cache.pop().toLocation(world);
-        if (!hasNext())
-            return null;
-        return next();
-    }
-
-    @Override
-    public void remove() {
-        throw new UnsupportedOperationException();
+    public List<Vector> get(int dx) {
+        try {
+            select.setInt(0, dx);
+            ResultSet result = select.executeQuery();
+            List<Vector> out = new LinkedList<Vector>();
+            while (result.next())
+                out.add(new Vector(result.getInt("x"), result.getInt("y"), result.getInt("z")));
+            return out;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
     }
 }
