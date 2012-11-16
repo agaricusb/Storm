@@ -223,4 +223,40 @@ public class Random extends java.util.Random {
     public double gauss(double mu, double sigma) {
         return mu + sigma * nextGaussian();
     }
+
+    /**
+     * Get a random number in the range [min, max) or [min, max] depending on rounding.
+     *
+     * @param min Low bound
+     * @param max High bound
+     * @return A uniformly distributed double
+     */
+    public double uniform(double min, double max) {
+        return min + (max - min) * nextDouble();
+    }
+
+    /**
+     * Triangular distribution.
+     * <p/>
+     * Continuous distribution bounded by given lower and upper limits,
+     * and having a given mode value in-between.
+     * http://en.wikipedia.org/wiki/Triangular_distribution
+     *
+     * @param low  Low bound
+     * @param high High bound
+     * @param mode Mode
+     * @return
+     */
+    public double triangular(int low, int high, int mode) {
+        double u = nextDouble();
+        double c = (mode - low) / (high - low);
+        if (u > c) {
+            u = 1.0 - u;
+            c = 1.0 - c;
+            int k = low;
+            low = high;
+            high = k;
+        }
+        return low + (high - low) * Math.sqrt(u * c);
+    }
 }
