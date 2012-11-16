@@ -128,9 +128,7 @@ public class ReflectConfiguration {
         synchronized (this) {
             File worldFolder = new File(plugin.getDataFolder() + File.separator + "worlds");
             if (!worldFolder.exists()) {
-                if (!worldFolder.mkdir()) {
-                    ErrorLogger.generateErrorLog(new RuntimeException("Failed to create configuration directory!"));
-                }
+                worldFolder.mkdir();
             }
             File worldFile = new File(worldFolder.getAbsoluteFile(), File.separator + name + ".yml");
             YamlConfiguration worlds = YamlConfiguration.loadConfiguration(worldFile);

@@ -21,7 +21,6 @@ package com.github.StormTeam.Storm.Math;
 import com.github.StormTeam.Storm.Storm;
 import org.bukkit.util.Vector;
 
-import java.io.File;
 import java.sql.*;
 import java.util.LinkedList;
 import java.util.List;
@@ -52,11 +51,12 @@ public class Cracker {
         this.halfDepth = maxDepth / 2;
         try {
             Class.forName("org.sqlite.JDBC");
-            connection = DriverManager.getConnection("jdbc:sqlite:" + File.createTempFile("StormCrack", ".db").getAbsolutePath());
+            //  connection = DriverManager.getConnection("jdbc:sqlite:" + File.createTempFile("StormCrack", ".db").getAbsolutePath());
+            connection = DriverManager.getConnection("jdbc:sqlite::memory:");
             Statement statement = connection.createStatement();
-            statement.executeUpdate("CREATE TABLE points (id INT PRIMARY KEY AUTOINCREMENT, x INT, y INT, z INT, dx INT)");
+            statement.executeUpdate("CREATE TABLE points (id INTEGER PRIMARY KEY AUTOINCREMENT, x INTEGER, y INTEGER, z INTEGER, dx INTEGER)");
             statement.executeUpdate("CREATE INDEX dz ON points (dx)");
-            insert = connection.prepareStatement("INSERT INTO (x, y, z, dx) points VALUES (?, ?, ?, ?)");
+            insert = connection.prepareStatement("INSERT INTO points (x, y, z, dx) VALUES (?, ?, ?, ?)");
             select = connection.prepareStatement("SELECT x, y, z FROM points WHERE dx = ?");
         } catch (Exception e) {
             e.printStackTrace();
@@ -74,18 +74,19 @@ public class Cracker {
             for (int i = 0; i < size; ++i) {
                 x += Storm.random.nextInt(3) - 1;
                 ++z;
-                insert.setInt(2, z);
+                insert.setInt(3, z);
                 int k = maxWidth + 2 - Math.abs(mean - i) / (mean / maxWidth);
                 int min = -intGauss(k, 1), max = intGauss(k, 1);
                 for (int dx = min; dx < max; ++dx) {
                     ///////////////////// Force the value to stay within half depth
                     int dy = Math.abs(dx) * halfDepth / (dx < 0 ? -min : max);
                     dy = maxDepth - (int) (dy * random.gauss(1, 0.25));
-                    insert.setInt(0, x + dx);
-                    insert.setInt(1, y - dy);
-                    insert.setInt(3, Math.abs(dx));
-                    insert.executeUpdate();
+                    insert.setInt(1, x + dx);
+                    insert.setInt(2, y - dy);
+                    insert.setInt(4, Math.abs(dx));
+                    insert.addBatch();
                 }
+                insert.executeBatch();
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -95,7 +96,7 @@ public class Cracker {
 
     public List<Vector> get(int dx) {
         try {
-            select.setInt(0, dx);
+            select.setInt(1, dx);
             ResultSet result = select.executeQuery();
             List<Vector> out = new LinkedList<Vector>();
             while (result.next())

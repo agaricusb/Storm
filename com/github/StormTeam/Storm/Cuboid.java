@@ -2,8 +2,6 @@ package com.github.StormTeam.Storm;
 
 import net.minecraft.server.ChunkCoordIntPair;
 import net.minecraft.server.EntityPlayer;
-import net.minecraft.server.Packet51MapChunk;
-import net.minecraft.server.Packet56MapChunkBulk;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -32,6 +30,7 @@ public class Cuboid {
     public final int x2, y2, z2;
     private Set<ChunkCoordIntPair> chunkCache = new HashSet();
     int threshold = 0, centerX = 0, centerZ = 0;
+    private final Object mutex = new Object();
 
     public Cuboid(Location l1, Location l2) {
         this(l1.getWorld(), l1.getBlockX(), l1.getBlockY(), l1.getBlockZ(), l2.getBlockX(), l2.getBlockY(), l2.getBlockZ());
@@ -140,8 +139,12 @@ public class Cuboid {
                     int xShifted = x >> 4, zShifted = z >> 4;
                     if (!world.isChunkLoaded(xShifted, zShifted))
                         world.loadChunk(xShifted, zShifted);
+                    else
+                        world.refreshChunk(xShifted, zShifted);
                     Chunk q = world.getChunkAt(xShifted, zShifted);
-                    chunkCache.add(new ChunkCoordIntPair(q.getX(), q.getZ()));
+                    ChunkCoordIntPair cc = new ChunkCoordIntPair(q.getX(), q.getZ());
+                    if (!chunkCache.contains(cc))
+                        chunkCache.add(cc);
                 }
             }
         }
@@ -166,25 +169,32 @@ public class Cuboid {
     }
 
     public void sendClientChanges() {
-        for (Player player : getWorld().getPlayers())
-            if (Math.pow((player.getLocation().getBlockX() - centerX), 2) + Math.pow((player.getLocation().getBlockZ() - centerZ), 2) < threshold)
-                queueChunks(((CraftPlayer) player).getHandle(), chunkCache);
+        int threshold = (Bukkit.getServer().getViewDistance() << 4) + 32;
+        threshold = threshold * threshold;
+
+        List<ChunkCoordIntPair> pairs = new ArrayList<ChunkCoordIntPair>();
+        for (ChunkCoordIntPair c : chunkCache) {
+            pairs.add(c);
+        }
+        int centerX = getLowerX() + getSizeX() / 2;
+        int centerZ = getLowerZ() + getSizeZ() / 2;
+        for (Player player : getWorld().getPlayers()) {
+            int px = player.getLocation().getBlockX();
+            int pz = player.getLocation().getBlockZ();
+            if ((px - centerX) * (px - centerX) + (pz - centerZ) * (pz - centerZ) < threshold) {
+                queueChunks(((CraftPlayer) player).getHandle(), pairs);
+            }
+        }
     }
 
-    private void queueChunks(EntityPlayer ep, Set<ChunkCoordIntPair> pairs) {
-        synchronized (getWorld()) {
-            if (pairs.size() > 5) {
-                List<net.minecraft.server.Chunk> nc = new ArrayList<net.minecraft.server.Chunk>();
-                for (ChunkCoordIntPair par : pairs)
-                    nc.add(((CraftChunk) getWorld().getChunkAt(par.x, par.z)).getHandle());
-                synchronized (ep.netServerHandler) {
-                    ep.netServerHandler.sendPacket(new Packet56MapChunkBulk(nc));
-                }
-            } else {
-                for (ChunkCoordIntPair par : pairs)
-                    synchronized (ep.netServerHandler) {
-                        ep.netServerHandler.sendPacket(new Packet51MapChunk(((CraftChunk) getWorld().getChunkAt(par.x, par.z)).getHandle(), true, 1));
-                    }
+    private void queueChunks(EntityPlayer ep, List<ChunkCoordIntPair> pairs) {
+        Set<ChunkCoordIntPair> queued = new HashSet<ChunkCoordIntPair>();
+        for (Object o : ep.chunkCoordIntPairQueue) {
+            queued.add((ChunkCoordIntPair) o);
+        }
+        for (ChunkCoordIntPair pair : pairs) {
+            if (!queued.contains(pair)) {
+                ep.chunkCoordIntPairQueue.add(pair);
             }
         }
     }

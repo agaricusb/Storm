@@ -6,9 +6,10 @@ import com.github.StormTeam.Storm.Storm;
 import com.github.StormTeam.Storm.Volcano.VolcanoWorker;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.entity.FallingBlock;
+import org.bukkit.util.Vector;
 
 /**
- *
  * @author xiaomao
  */
 
@@ -30,8 +31,8 @@ public class EruptTask implements Runnable {
 
     @Override
     public void run() {
-        // FallingBlock block = volcano.world.spawnFallingBlock(volcano.center, 10, 0);
-        //block.setVelocity(new Vector(Math.random() - 0.5, 0.3, Math.random() - 0.5));
+        FallingBlock block = volcano.world.spawnFallingBlock(volcano.center, 10, (byte) 0);
+        block.setVelocity(new Vector(Math.random() - 0.5, 0.3, Math.random() - 0.5));
     }
 
     public void start() {
