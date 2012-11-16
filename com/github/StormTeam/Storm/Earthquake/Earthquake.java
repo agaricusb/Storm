@@ -138,6 +138,4 @@ public class Earthquake {
         RuptureTask crack = new RuptureTask(area, location, length, width, depth);
         crack.start();
     }
-
-
 }
