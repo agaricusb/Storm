@@ -1,17 +1,13 @@
 package com.github.StormTeam.Storm.Earthquake;
 
 import com.github.StormTeam.Storm.Cuboid;
-import com.github.StormTeam.Storm.Math.Cracker;
+import com.github.StormTeam.Storm.Earthquake.Tasks.RuptureTask;
 import com.github.StormTeam.Storm.ReflectCommand;
 import com.github.StormTeam.Storm.Storm;
-import com.github.StormTeam.Storm.Verbose;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
-import org.bukkit.util.BlockIterator;
-import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -137,32 +133,9 @@ public class Earthquake {
         area = area.expand(BlockFace.EAST, length);
         area = area.expand(BlockFace.SOUTH, length);
         area = area.expand(BlockFace.WEST, length);
-
-        Cracker cracker = new Cracker(length, location.getBlockX(), location.getBlockY(), location.getBlockZ(), width, depth);
-        cracker.plot();
-
-        World w = location.getWorld();
-        for (int i = 0; ; ++i) {
-            Verbose.log("Cracking layer " + i);
-            List<Vector> layer = cracker.get(i);
-            if (layer.size() == 0)
-                break;
-            for (Vector block : layer) {
-                BlockIterator bi = new BlockIterator(w, block, new Vector(0, 1, 0), 0, (256 - block.getBlockY()));
-                while (bi.hasNext()) {
-                    Block toInspect = bi.next();
-                    int id = toInspect.getTypeId();
-                    if (id != 0 && id != 7)
-                        area.setBlockFast(toInspect, 0);
-                    if ((id & 0xFE) == 8) // 8 or 9
-                        toInspect.setTypeId(9, true);
-                    else if ((id & 0xFE) == 10) // 10 or 11
-                        toInspect.setTypeId(10, true);
-                }
-            }
-            Storm.util.playSoundNearby(location, length * width + 500, "ambient.weather.thunder", 3F, Storm.random.nextInt(3) + 1);
-            area.sendClientChanges();
-            area.loadChunks();
-        }
+        RuptureTask crack = new RuptureTask(area, location, length, width, depth);
+        crack.start();
     }
+
+
 }
