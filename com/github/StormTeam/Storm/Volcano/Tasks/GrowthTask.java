@@ -19,6 +19,8 @@ public class GrowthTask implements Runnable {
 
     @Override
     public void run() {
+        if (!volcano.active)
+            return;
         if (volcano.layer >= heightCap) {
             stop();
             return;

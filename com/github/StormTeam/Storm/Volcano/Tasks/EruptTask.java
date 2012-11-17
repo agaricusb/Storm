@@ -21,7 +21,7 @@ public class EruptTask implements Runnable {
 
     @Override
     public void run() {
-        if (volcano.layer < 30 && !(Storm.random.nextInt(100) > 70))
+        if (!volcano.active || (volcano.layer < 30 && !(Storm.random.nextInt(100) > 70)))
             return;
 
         volcano.recalculateLayer();
