@@ -16,24 +16,6 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-/*
- * This file is part of Storm.
- *
- * Storm is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of
- * the License, or (at your option) any later version.
- *
- * Storm is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with Storm.  If not, see
- * <http://www.gnu.org/licenses/>.
- */
-
 package com.github.StormTeam.Storm.Math;
 
 import com.github.StormTeam.Storm.Storm;
@@ -48,7 +30,7 @@ import java.util.logging.Level;
 
 import static com.github.StormTeam.Storm.Storm.random;
 
-public class Cracker {
+public class Cracker { //As in a chocolate cracker. CHOCOLATE! CHOCOLATE!!!
     Connection connection;
     PreparedStatement insert;
     PreparedStatement select;
@@ -76,10 +58,9 @@ public class Cracker {
             if (cs < 10000)
                 connection = DriverManager.getConnection("jdbc:sqlite::memory:");
             else {
-                StormUtil.log(Level.WARNING, "Crack size set to be " + cs + ". Too large to fit in memory. Using flatfile: expect slowness.");
+                StormUtil.log(Level.WARNING, "Fissure size set to be " + cs + ". Too large to fit in memory. Using flatfile: expect slowness.");
                 connection = DriverManager.getConnection("jdbc:sqlite:" + File.createTempFile("StormCrack", ".db").getAbsolutePath());
             }
-
             Statement statement = connection.createStatement();
             statement.executeUpdate("CREATE TABLE points (id INTEGER PRIMARY KEY AUTOINCREMENT, x INTEGER, y INTEGER, z INTEGER, dx INTEGER)");
             statement.executeUpdate("CREATE INDEX dz ON points (dx)");
@@ -87,13 +68,7 @@ public class Cracker {
             select = connection.prepareStatement("SELECT x, y, z FROM points WHERE dx = ?");
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException(e);
         }
-    }
-
-    int intGauss(int mu, int sigma) {
-        int out = (int) Storm.random.gauss(mu, sigma);
-        return out > 0 ? out : 1;
     }
 
     public void plot() {
@@ -106,8 +81,7 @@ public class Cracker {
                 int min = -intGauss(k, 1), max = intGauss(k, 1);
                 for (int dx = min; dx < max; ++dx) {
                     //Force the value to stay within half depth
-                    int dy = Math.abs(dx) * halfDepth / (dx < 0 ? -min : max);
-                    dy = maxDepth - (int) (dy * random.gauss(1, 0.25));
+                    int dy = maxDepth - (int) ((Math.abs(dx) * halfDepth / (dx < 0 ? -min : max)) * random.gauss(1, 0.25));
                     insert.setInt(1, x + dx);
                     insert.setInt(2, y - dy);
                     insert.setInt(4, Math.abs(dx));
@@ -117,7 +91,6 @@ public class Cracker {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new RuntimeException(e);
         }
     }
 
@@ -131,7 +104,12 @@ public class Cracker {
             return out;
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new RuntimeException(e);
+            return new LinkedList<Vector>();
         }
+    }
+
+    int intGauss(int mu, int sigma) {
+        int out = (int) Storm.random.gauss(mu, sigma);
+        return out > 0 ? out : 1;
     }
 }
