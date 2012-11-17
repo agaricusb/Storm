@@ -19,20 +19,13 @@ import java.util.List;
 public class LightningUtils {
 
     /**
-     * Creates a lightning utility object.
-     */
-
-    public LightningUtils() {
-    }
-
-    /**
      * Gets a location of a metallic block near given location.
      *
      * @param oldLoc The given location to search around
      * @return A Location of a block
      */
 
-    public Location hitMetal(Location oldLoc) {
+    public static Location hitMetal(Location oldLoc) {
         Chunk chunk = pickChunk(oldLoc.getWorld());
         if (chunk != null) {
             Location loc = pickLightningRod(chunk);
@@ -50,20 +43,16 @@ public class LightningUtils {
      * @return A Location of a player
      */
 
-    public Location hitPlayers(Location oldLoc) {
-        final Location chunk = pickChunk(oldLoc.getWorld()).getBlock(8, 255, 8)
-                .getLocation();
+    public static Location hitPlayers(Location oldLoc) {
+        Location chunk = pickChunk(oldLoc.getWorld()).getBlock(8, 255, 8).getLocation();
         GlobalVariables glob = Storm.wConfigs.get(oldLoc.getWorld().getName());
 
         for (Player p : Bukkit.getServer().getOnlinePlayers()) {
-            Location playerLocation = new Location(p.getWorld(), p.getLocation().getX(),
-                    255, p.getLocation().getZ());
+            Location playerLocation = new Location(p.getWorld(), p.getLocation().getX(), 255, p.getLocation().getZ());
             if (chunk.distance(playerLocation) <= 40 && !p.hasPermission("storm.lightning.immune")) {
                 for (int id : glob.Lightning_Attraction_Players_Attractors) {
                     if (p.getInventory().getItemInHand().getTypeId() == id
-                            || Arrays.asList(
-                            p.getInventory().getArmorContents())
-                            .contains(new ItemStack(id))) {
+                            || Arrays.asList(p.getInventory().getArmorContents()).contains(new ItemStack(id))) {
                         return p.getLocation();
                     }
                 }
@@ -72,7 +61,7 @@ public class LightningUtils {
         return oldLoc;
     }
 
-    private Location pickLightningRod(Chunk chunk) {
+    private static Location pickLightningRod(Chunk chunk) {
         ChunkSnapshot snapshot = chunk.getChunkSnapshot(true, false, false);
         List<Location> list = findLightningRods(chunk);
         if ((list != null) && (!list.isEmpty())) {
@@ -97,7 +86,7 @@ public class LightningUtils {
         return null;
     }
 
-    private List<Location> findLightningRods(Chunk chunk) {
+    private static List<Location> findLightningRods(Chunk chunk) {
         ArrayList<Location> list = new ArrayList<Location>();
         ChunkSnapshot snapshot = chunk.getChunkSnapshot(true, false, false);
         GlobalVariables glob = Storm.wConfigs.get(chunk.getWorld().getName());
@@ -126,7 +115,7 @@ public class LightningUtils {
         return list;
     }
 
-    private Chunk pickChunk(World world) {
+    private static Chunk pickChunk(World world) {
         List<Player> players = world.getPlayers();
         if ((players == null) || (players.isEmpty())) {
             return null;
@@ -135,8 +124,7 @@ public class LightningUtils {
 
         List<Block> blocks = player.getLastTwoTargetBlocks(null, 100);
         if ((blocks != null) && (Storm.random.nextInt(100) < 30)) {
-            return world.getChunkAt(
-                    (blocks.get(Storm.random.nextInt(blocks.size()))).getLocation());
+            return world.getChunkAt((blocks.get(Storm.random.nextInt(blocks.size()))).getLocation());
         }
         return world.getChunkAt(player.getLocation());
     }
