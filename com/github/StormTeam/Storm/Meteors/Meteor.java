@@ -74,6 +74,7 @@ public class Meteor {
         return false;
     }
 
+    @SuppressWarnings("SameReturnValue")
     @ReflectCommand.Command(
             name = "meteor",
             alias = {"meteorite"},

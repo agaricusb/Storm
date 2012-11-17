@@ -54,7 +54,7 @@ public class EntityMeteor extends EntityFireball {
     private int snowRadius;
     private boolean h_lock, h_lock_2, h_lock_3;
 
-    private final HashMap<IDBlock, Integer> ores = new HashMap();
+    private final HashMap<IDBlock, Integer> ores = new HashMap<IDBlock, Integer>();
 
     /**
      * Constructs a meteor for the given world.
@@ -281,7 +281,6 @@ public class EntityMeteor extends EntityFireball {
                 final double yn = nextYn;
                 nextYn = (y + 1) * invRadiusY;
                 double nextZn = 0;
-                forZ:
                 for (int z = 0; z <= ceilRadiusZ; ++z) {
                     final double zn = nextZn;
                     nextZn = (z + 1) * invRadiusZ;

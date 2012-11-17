@@ -25,8 +25,8 @@ public class EntityShelterer implements Runnable {
     private Field selector;
     private Method register;
     private final ArrayList<Integer> registered = new ArrayList<Integer>();
-    private Set<Biome> filter = new HashSet();
-    private final Set<Class<?>> filteredEntities = new HashSet() {{
+    private Set<Biome> filter = new HashSet<Biome>();
+    private final Set<Class<?>> filteredEntities = new HashSet<Class<?>>() {{
         add(EntityPlayer.class);
         add(EntitySlime.class);
         add(EntityEnderDragon.class);

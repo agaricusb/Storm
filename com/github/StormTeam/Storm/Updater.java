@@ -25,7 +25,6 @@ public class Updater {
     private String versionLink;
     private long totalSize;
     private int sizeLine;
-    private int multiplier;
     private boolean announce;
     private URL url; // Connecting to RSS
     private static final String DBOUrl = "http://dev.bukkit.org/server-mods/"; // Slugs will be appended to this to get to the project's RSS feed
@@ -248,7 +247,7 @@ public class Updater {
                     sizeLine = counter + 1;
                 } else if (counter == sizeLine) {
                     String size = line.replaceAll("<dd>", "").replaceAll("</dd>", "");
-                    multiplier = size.contains("MiB") ? 1048576 : 1024;
+                    int multiplier = size.contains("MiB") ? 1048576 : 1024;
                     size = size.replace(" KiB", "").replace(" MiB", "");
                     totalSize = (long) (Double.parseDouble(size) * multiplier);
                 }
@@ -319,7 +318,6 @@ public class Updater {
                     if (event.asStartElement().getName().getLocalPart().equals(LINK)) {
                         event = eventReader.nextEvent();
                         link = event.asCharacters().getData();
-                        continue;
                     }
                 } else if (event.isEndElement()) {
                     if (event.asEndElement().getName().getLocalPart().equals(ITEM)) {

@@ -70,6 +70,7 @@ public class Wildfire {
         return false;
     }
 
+    @SuppressWarnings("SameReturnValue")
     @ReflectCommand.Command(
             name = "wildfire",
             permission = "storm.wildfire.command",
