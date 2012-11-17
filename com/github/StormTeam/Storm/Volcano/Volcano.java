@@ -32,7 +32,7 @@ public class Volcano {
             sender = ReflectCommand.Sender.PLAYER
     )
     public static boolean volcano(Player p) {
-        volcano(p.getTargetBlock(null, 0).getLocation(), 30);
+        volcano(p.getTargetBlock(null, 0).getLocation(), 90);
         return true;
     }
 

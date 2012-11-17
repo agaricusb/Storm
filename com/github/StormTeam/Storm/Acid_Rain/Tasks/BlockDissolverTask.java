@@ -49,7 +49,8 @@ public class BlockDissolverTask implements Runnable {
     @Override
     public void run() {
         try {
-            for (Block b : ticker.getRandomTickedBlocks()) {
+            List<Block> tb = ticker.getRandomTickedBlocks();
+            for (Block b : tb) {
                 Block tran = b.getRelative(BlockFace.DOWN);
                 if (tran.getTypeId() != 0 && StormUtil.isRainy(tran.getBiome()) && !StormUtil.isBlockProtected(tran)) {
                     for (BlockTransformer t : transformations) {

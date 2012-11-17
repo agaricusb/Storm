@@ -93,6 +93,8 @@ public class ReflectConfiguration {
     private final String name;
     private final String prefix;
     private final String header;
+    private final String folder;
+    private final Object mutex = new Object();
 
     /**
      * Creates a ReflectConfiguration file based on given name
@@ -102,10 +104,15 @@ public class ReflectConfiguration {
      */
 
     public ReflectConfiguration(Plugin plugin, String name) {
+        this(plugin, name, null);
+    }
+
+    public ReflectConfiguration(Plugin plugin, String name, String folder) {
         this.plugin = plugin;
         this.name = name;
         this.prefix = plugin.getName();
         this.header = prefix + " configuration file: '" + name + "'.\nGenerated for " + prefix + " version " + plugin.getDescription().getVersion() + ".";
+        this.folder = folder;
     }
 
     /**
@@ -114,7 +121,7 @@ public class ReflectConfiguration {
 
     public void load() {
         try {
-            synchronized (this) {
+            synchronized (mutex) {
                 plugin.getLogger().log(Level.INFO, "Loading configuration file: " + name);
                 onLoad(plugin);
             }
@@ -125,12 +132,16 @@ public class ReflectConfiguration {
     }
 
     private void onLoad(Plugin plugin) throws Exception {
-        synchronized (this) {
-            File worldFolder = new File(plugin.getDataFolder() + File.separator + "worlds");
-            if (!worldFolder.exists()) {
-                worldFolder.mkdir();
+        synchronized (mutex) {
+            File fold;
+            if (folder != null)
+                fold = new File(plugin.getDataFolder() + folder.replace(".", File.separator));
+            else fold = plugin.getDataFolder();
+
+            if (!fold.exists()) {
+                fold.mkdir();
             }
-            File worldFile = new File(worldFolder.getAbsoluteFile(), File.separator + name + ".yml");
+            File worldFile = new File(fold.getAbsoluteFile(), File.separator + name + ".yml");
             YamlConfiguration worlds = YamlConfiguration.loadConfiguration(worldFile);
             ((FileConfiguration) worlds).options().header(header);
 

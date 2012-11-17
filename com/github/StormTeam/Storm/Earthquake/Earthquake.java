@@ -16,18 +16,18 @@ public class Earthquake {
             permission = "storm.earthquake.command"
     )
     public static boolean quake(Player sender) {
-        EarthquakeControl.loadQuake(sender.getLocation(), 100);
+        EarthquakeControl.loadQuake(sender.getLocation(), 4);
         return true;
     }
 
     @ReflectCommand.Command(
             name = "earthquake",
             alias = "quake",
-            usage = "/<command> [radius]",
+            usage = "/<command> [magnitude]",
             permission = "storm.earthquake.command"
     )
-    public static boolean quake(Player sender, String radius) {
-        EarthquakeControl.loadQuake(sender.getLocation(), Integer.parseInt(radius));
+    public static boolean quake(Player sender, String magnitude) {
+        EarthquakeControl.loadQuake(sender.getLocation(), Integer.parseInt(magnitude));
         return true;
     }
 

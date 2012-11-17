@@ -350,7 +350,7 @@ public class Random extends java.util.Random {
      */
     public double gamma(double alpha, double beta) {
         if (alpha <= 0.0 || beta <= 0.0)
-            throw new IllegalArgumentException("gamma: alpha and beta must be > 0.0");
+            throw new IllegalArgumentException("alpha and beta must be > 0.0");
 
         if (alpha > 1.0) {
             // Uses R.C.H. Cheng, "The generation of Gamma

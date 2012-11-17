@@ -41,7 +41,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * An object that provides a plethora of utility functions used in Storm.
+ * A class that provides a plethora of utility functions used in Storm.
  *
  * @author Icyene, xiaomao
  */
@@ -55,18 +55,13 @@ public class StormUtil {
     private static Method explode;
     private static Logger log;
 
-    /**
-     * Creates a util object.
-     *
-     * @param plugin The plugin.
-     */
-    public StormUtil(Plugin plugin) {
+    static {
         try {
-            Plugin wgp = plugin.getServer().getPluginManager().getPlugin("WorldGuard");
+            Plugin wgp = Bukkit.getServer().getPluginManager().getPlugin("WorldGuard");
             hasWG = wgp != null; // Short and sweet
             if (hasWG)
                 wg = (WorldGuardPlugin) wgp;
-            hasResidence = plugin.getServer().getPluginManager().getPlugin("Residence") != null;
+            hasResidence = Bukkit.getServer().getPluginManager().getPlugin("Residence") != null;
 
             isRaining = WorldData.class.getDeclaredField("isRaining");
             isRaining.setAccessible(true);
@@ -80,14 +75,12 @@ public class StormUtil {
             if (Storm.version >= 1.4D) {
                 explode = net.minecraft.server.World.class.getDeclaredMethod("createExplosion",
                         net.minecraft.server.Entity.class, double.class, double.class, double.class, float.class, boolean.class, boolean.class);
-                //(Entity entity, double d0, double d1, double d2, float f, boolean flag, boolean flag1)
-
             } else {
                 explode = net.minecraft.server.World.class.getDeclaredMethod("createExplosion",
                         net.minecraft.server.Entity.class, double.class, double.class, double.class, float.class, boolean.class);
             }
 
-            log = plugin.getLogger();
+            log = Storm.instance.getLogger();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -549,6 +542,4 @@ public class StormUtil {
     public static boolean isSnowy(Biome b) {
         return isTundra(b);
     }
-
-
 }

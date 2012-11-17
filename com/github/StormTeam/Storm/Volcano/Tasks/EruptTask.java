@@ -4,6 +4,7 @@ import com.github.StormTeam.Storm.Storm;
 import com.github.StormTeam.Storm.Volcano.VolcanoWorker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.FallingBlock;
 import org.bukkit.util.Vector;
 
 /**
@@ -21,22 +22,25 @@ public class EruptTask implements Runnable {
 
     @Override
     public void run() {
-        if (!volcano.active || (volcano.layer < 30 && !(Storm.random.nextInt(100) > 70)))
+        if (volcano.layer < 10 || !(Storm.random.nextInt(100) > 70) || !volcano.active)
             return;
 
-        volcano.recalculateLayer();
+        // volcano.recalculateLayer();
         Location er = volcano.center.clone();
         er.setY(volcano.center.getBlockY() + volcano.layer);
 
         if (Storm.random.nextInt(100) > 95)
             volcano.explode(er, volcano.layer / 10 + 2);
-
-        for (int i = 0; i != Storm.random.nextInt(5, 15); i++)
-            volcano.world.spawnFallingBlock(er, 10, (byte) 0).setVelocity(new Vector(Math.random() - 0.5, 0.3, Math.random() - 0.5));
+        int rand = Storm.random.nextInt(5) + 1;
+        for (int i = 0; i != rand; i++) {
+            FallingBlock b = volcano.world.spawnFallingBlock(er, 11, (byte) 0);
+            b.setDropItem(false);
+            b.setVelocity(new Vector(Math.random() - 0.5, 0.3, Math.random() - 0.5));
+        }
     }
 
     public void start() {
-        id = Bukkit.getScheduler().scheduleSyncRepeatingTask(Storm.instance, this, 0, 20);
+        id = Bukkit.getScheduler().scheduleSyncRepeatingTask(Storm.instance, this, 20, 20);
     }
 
     public void stop() {

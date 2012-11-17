@@ -21,7 +21,7 @@ public class LifeTask implements Runnable {
     }
 
     public void start() {
-        id = Bukkit.getScheduler().scheduleSyncRepeatingTask(Storm.instance, this, 0, 36000);
+        id = Bukkit.getScheduler().scheduleSyncRepeatingTask(Storm.instance, this, 36000, 36000);
     }
 
     public void stop() {

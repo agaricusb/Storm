@@ -41,13 +41,11 @@ public class SnowLayer extends BlockSnow {
             return;
         }
 
-        final org.bukkit.entity.Entity inSnow = e.getBukkitEntity();
+        org.bukkit.entity.Entity inSnow = e.getBukkitEntity();
         if ((inSnow instanceof Player && ((Player) (inSnow)).getGameMode() == GameMode.CREATIVE) || !StormUtil.isTundra(inSnow.getLocation().getBlock().getBiome())) {
             return;
         }
 
-        inSnow.setVelocity(inSnow.getVelocity().clone()
-                .multiply(Storm.wConfigs.get(name).Blizzard_Player_Speed__Loss__While__In__Snow));
-
+        inSnow.setVelocity(inSnow.getVelocity().multiply(Storm.wConfigs.get(name).Blizzard_Player_Speed__Loss__While__In__Snow));
     }
 }

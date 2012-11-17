@@ -1,9 +1,11 @@
 package com.github.StormTeam.Storm.Volcano.Tasks;
 
 import com.github.StormTeam.Storm.Storm;
+import com.github.StormTeam.Storm.Verbose;
 import com.github.StormTeam.Storm.Volcano.VolcanoControl;
 import com.github.StormTeam.Storm.Volcano.VolcanoWorker;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 
 public class GrowthTask implements Runnable {
@@ -26,20 +28,22 @@ public class GrowthTask implements Runnable {
             return;
         }
 
-        volcano.recalculateLayer();
+        //  volcano.recalculateLayer();
         Block set = volcano.center.clone().add(0, volcano.layer, 0).getBlock();
         if (!volcano.area.contains(set)) {
             stop();
             return;
+        } else {
+            Verbose.log("Volcano no contain block.");
         }
-        volcano.area.setBlockFast(set, 11);
+        set.setType(Material.LAVA);
         volcano.area.sendClientChanges();
         volcano.layer++;
         VolcanoControl.dumpVolcanoes();
     }
 
     public void start() {
-        id = Bukkit.getScheduler().scheduleSyncRepeatingTask(Storm.instance, this, 0, 15000);
+        id = Bukkit.getScheduler().scheduleSyncRepeatingTask(Storm.instance, this, 0, 300);
     }
 
     public void stop() {

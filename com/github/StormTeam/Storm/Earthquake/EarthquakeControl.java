@@ -23,8 +23,8 @@ import java.util.ArrayList;
 public class EarthquakeControl implements Listener {
     public static ArrayList<Quake> quakes = new ArrayList<Quake>();
 
-    public static void loadQuake(Location epicenter, int radius) {
-        Quake quake = new Quake(epicenter, radius);
+    public static void loadQuake(Location epicenter, int magnitude) {
+        Quake quake = new Quake(epicenter, magnitude);
         quake.start();
         quakes.add(quake);
     }
@@ -33,29 +33,32 @@ public class EarthquakeControl implements Listener {
         HandlerList.unregisterAll(this);
     }
 
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler
     public void unloadWorld(WorldUnloadEvent e) {
-        for (Quake quake : quakes) {
-            if (quake.world.equals(e.getWorld())) {
-                quake.stop();
-                quakes.remove(quake);
+        if (!e.isCancelled())
+            for (Quake quake : quakes) {
+                if (quake.world.equals(e.getWorld())) {
+                    quake.stop();
+                    quakes.remove(quake);
+                }
             }
-        }
     }
 
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onBlockPlace(BlockPlaceEvent e) {
-        handleBlock(e.getBlock(), e.getPlayer());
+        if (!e.isCancelled())
+            handleBlock(e.getBlock(), e.getPlayer());
     }
 
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onBlockBreak(BlockBreakEvent e) {
-        handleBlock(e.getBlock(), e.getPlayer());
+        if (!e.isCancelled())
+            handleBlock(e.getBlock(), e.getPlayer());
     }
 
     public void handleBlock(final Block block, Player p) {
         for (Quake quake : quakes) {
-            if (p.getGameMode() == GameMode.CREATIVE || !quake.isQuaking(block.getLocation()) || StormUtil.isBlockProtected(block) || isBounceable(block))
+            if (p.getGameMode() == GameMode.CREATIVE || !quake.isQuaking(block.getLocation()) || StormUtil.isBlockProtected(block) || !isBounceable(block))
                 return;
         }
 

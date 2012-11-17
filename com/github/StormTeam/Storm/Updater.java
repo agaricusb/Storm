@@ -40,7 +40,7 @@ public class Updater {
 
     public enum UpdateResult {
         /**
-         * The updater found an update, and has readied it to be isFromFile the next time the server restarts/reloads.
+         * The updater found an update, and has readied it to be loaded the next time the server restarts/reloads.
          */
         SUCCESS(1),
         /**

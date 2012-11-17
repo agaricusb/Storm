@@ -39,8 +39,8 @@ public class GlobalVariables extends ReflectConfiguration {
      * @param name   The name of the file
      */
 
-    public GlobalVariables(Plugin plugin, String name) {
-        super(plugin, name);
+    public GlobalVariables(Plugin plugin, String name, String folder) {
+        super(plugin, name, folder);
     }
 
     //Acid Rain
@@ -92,7 +92,7 @@ public class GlobalVariables extends ReflectConfiguration {
     public int Acid__Rain_Absorbing__Radius = 2;
     @LimitInteger
     @Comment(_ = "The chance for a block to be deteriorated.")
-    public int Acid__Rain_Dissolver_Block__Deterioration__Chance = 60;
+    public int Acid__Rain_Dissolver_Block__Deterioration__Chance = 10;
     @LimitInteger(limit = 16)
     @Comment(_ = "The amount of a chunk that can be deteriorated. An integral number from 0->16")
     public int Acid__Rain_Dissolver_Block__Deterioration__Area = 60;
@@ -200,14 +200,18 @@ public class GlobalVariables extends ReflectConfiguration {
     public List<List<String>> Natural__Disasters_Meteor_Ore__Chance__Percentages = new ArrayList<List<String>>() {
         {
             //block ID, chance
-            add(Arrays.asList("5", "100"));
+            add(Arrays.asList("1", "68"));
+            add(Arrays.asList("56", "5"));
+            add(Arrays.asList("14", "5"));
+            add(Arrays.asList("15", "5"));
+            add(Arrays.asList("16", "10"));
+            add(Arrays.asList("129", "7"));
         }
     };
     @LimitInteger
-
     public int Natural__Disasters_Wildfires_Chance__To__Start = 20;
     public int Natural__Disasters_Wildfires_Wildfire__Base__Interval = 72000;
-    public int Natural__Disasters_Wildfires_Spread__Limit = 2;
+    public int Natural__Disasters_Wildfires_Spread__Limit = 5;
     public int Natural__Disasters_Wildfires_Scan__Radius = 2;
     public String Natural__Disasters_Wildfires_Messages_On__Start = "A wildfire has been spotted around %x, %y, %z!";
     public int Natural__Disasters_Wildfires_Maximum__Fires = 100;
@@ -232,8 +236,6 @@ public class GlobalVariables extends ReflectConfiguration {
     //  if (Storm.version > 1.2)
     //      add(Material.EMERALD_ORE.getId());
     //}};
-    // Texture Packs
-    public boolean Alpha__Features_Volcanoes_Enabled = true;
 
     public String Textures_Acid__Rain__Texture__Path = "http://dl.dropbox.com/u/67341745/Storm/Acid_Rain.zip";
     public String Textures_Blizzard__Texture__Path = "http://dl.dropbox.com/u/67341745/Storm/Blizzard.zip";

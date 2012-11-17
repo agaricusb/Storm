@@ -82,7 +82,9 @@ public class VolcanoWorker {
         }
 
         grower = new GrowthTask(this);
+        grower.start();
         eruptor = new EruptTask(this);
+        eruptor.start();
         VolcanoControl.volcanoes.add(this);
     }
 
@@ -106,6 +108,7 @@ public class VolcanoWorker {
 
     public void recalculateLayer() {
         while (world.getBlockTypeIdAt(x, y + layer, z) == 0) layer--;
+        Verbose.log("Recalculated layer to " + layer);
     }
 
     public void explode(final Location exp, final float power) {

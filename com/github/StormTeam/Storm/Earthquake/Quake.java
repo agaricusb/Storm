@@ -2,6 +2,7 @@ package com.github.StormTeam.Storm.Earthquake;
 
 import com.github.StormTeam.Storm.Earthquake.Tasks.QuakeTask;
 import com.github.StormTeam.Storm.Storm;
+import com.github.StormTeam.Storm.Verbose;
 import org.bukkit.Location;
 import org.bukkit.World;
 
@@ -22,14 +23,18 @@ public class Quake {
 
     public void start() {
         // Blocks will bounce everywhere in the quake!
-        Storm.pm.registerEvents((controller = new EarthquakeControl()), Storm.instance);
+        Verbose.log("Starting quake!");
+        controller = new EarthquakeControl();
+        Storm.pm.registerEvents(controller, Storm.instance);
         quaker = new QuakeTask(this);
+        quaker.start();
 
         // Get cracking!
-        EarthquakeControl.crack(new Location(world, epicenter.getBlockX(), epicenter.getBlockY(), epicenter.getBlockZ()), (int) Math.sqrt(radius) * 3, magnitude * 2, 64 + magnitude);
+        EarthquakeControl.crack(new Location(world, epicenter.getBlockX(), epicenter.getBlockY(), epicenter.getBlockZ()), (int) Math.sqrt(radius) * 3, magnitude, 64 + magnitude);
     }
 
     public void stop() {
+        Verbose.log("Stopping quake!");
         if (controller != null && EarthquakeControl.quakes.isEmpty()) {
             controller.forget();
         }
@@ -37,6 +42,6 @@ public class Quake {
     }
 
     public boolean isQuaking(Location point) {
-        return point.getWorld().getName().equals(this.world) && epicenter.distance(point) <= radius;
+        return point.getWorld().equals(this.world) && epicenter.distance(point) <= radius;
     }
 }

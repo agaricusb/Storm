@@ -92,7 +92,7 @@ public class Storm extends JavaPlugin implements Listener {
     public void onEnable() {
         try {
             commandRegistrator = new ReflectCommand(this);
-            ErrorLogger.register(this, "Storm", "com.github.StormTeam.Storm", "http://www.stormteam.co.cc/projects/storm/issues");
+            //ErrorLogger.register(this, "Storm", "com.github.StormTeam.Storm", "http://www.stormteam.co.cc/projects/storm/issues");
 
             if (instance != null) {
                 getLogger().log(Level.SEVERE, "Error! Only one instance of Storm may run at once! Storm detected running version: " +
@@ -139,12 +139,12 @@ public class Storm extends JavaPlugin implements Listener {
         // Make per-world configuration files           
         for (World world : Bukkit.getWorlds()) {
             String name = world.getName();
-            GlobalVariables config = new GlobalVariables(this, name);
+            GlobalVariables config = new GlobalVariables(this, name, ".worlds");
             config.load();
             wConfigs.put(name, config);
         }
 
-        pm.registerEvents(new WorldConfigLoader(this), this); //For late loading worlds isFromFile by world plugins al a MultiVerse
+        pm.registerEvents(new WorldConfigLoader(this), this); //For late loading worlds loaded by world plugins al a MultiVerse
     }
 
     private void initUpdater() {
