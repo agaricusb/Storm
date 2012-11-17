@@ -3,7 +3,7 @@ package com.github.StormTeam.Storm.Volcano;
 import com.github.StormTeam.Storm.ErrorLogger;
 import com.github.StormTeam.Storm.ReflectCommand;
 import com.github.StormTeam.Storm.Storm;
-import com.github.StormTeam.Storm.Volcano.Tasks.ReigniterTask;
+import com.github.StormTeam.Storm.Volcano.Tasks.LifeTask;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -11,6 +11,18 @@ import java.io.File;
 
 public class Volcano {
     public static File vulkanos;
+
+    public static void load() {
+        try {
+            vulkanos = new File(Storm.instance.getDataFolder() + File.separator + "volcanoes.bin");
+            if (vulkanos.exists() || vulkanos.createNewFile())
+                VolcanoControl.load(vulkanos);
+            Storm.commandRegistrator.register(Volcano.class);
+            new LifeTask().start();
+        } catch (Exception e) {
+            ErrorLogger.generateErrorLog(e);
+        }
+    }
 
     @ReflectCommand.Command(
             name = "volcano",
@@ -38,18 +50,6 @@ public class Volcano {
 
     public static void volcano(Location loc, int radius) {
         VolcanoWorker volcano = new VolcanoWorker(loc, radius, 0);
-        volcano.spawn();
-    }
-
-    public static void load() {
-        try {
-            vulkanos = new File(Storm.instance.getDataFolder() + File.separator + "volcanoes.bin");
-            if (vulkanos.exists() || vulkanos.createNewFile())
-                VolcanoControl.load(vulkanos);
-            Storm.commandRegistrator.register(Volcano.class);
-            new ReigniterTask().start();
-        } catch (Exception e) {
-            ErrorLogger.generateErrorLog(e);
-        }
+        volcano.start();
     }
 }

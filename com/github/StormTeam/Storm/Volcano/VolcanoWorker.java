@@ -47,7 +47,7 @@ public class VolcanoWorker {
     public int x, y, z;
     public Cuboid area;
     public Set<Integer> explosionIDs = new HashSet<Integer>();
-    public boolean isFromFile = false;
+    public boolean isExternal = false;
 
     public EruptTask eruptor;
     public GrowthTask grower;
@@ -62,11 +62,9 @@ public class VolcanoWorker {
     public VolcanoWorker() {
     }
 
-    public void spawn() {
-        if (controller == null) {
-            controller = new VolcanoControl();
-            Storm.pm.registerEvents(controller, Storm.instance);
-        }
+    public void start() {
+        if (controller == null)
+            Storm.pm.registerEvents((controller = new VolcanoControl()), Storm.instance);
 
         area = new Cuboid(center, center);
         area = area.expand(BlockFace.UP, radius).expand(BlockFace.DOWN, radius / 4);
@@ -78,36 +76,36 @@ public class VolcanoWorker {
         y = center.getBlockY();
         z = center.getBlockZ();
 
-        if (!isFromFile)
+        if (!isExternal) {
             explode(center, 10F);
+            active = true;
+        }
 
         grower = new GrowthTask(this);
         eruptor = new EruptTask(this);
         VolcanoControl.volcanoes.add(this);
     }
 
-    public void makeExtinct() {
-        stop();
+    public void delete() {
         VolcanoControl.volcanoes.remove(this);
+        stop();
     }
 
     public void stop() {
-        if (controller != null && VolcanoControl.volcanoes.isEmpty()) {
+        if (controller != null && VolcanoControl.volcanoes.isEmpty())
             controller.forget();
-        }
         grower.stop();
         eruptor.stop();
+        active = false;
     }
 
     public boolean ownsBlock(Block block) {
-        return block.getWorld().equals(world) /* && Math.sqrt(Math.pow(Math.abs(block.getX() - x), 2)
-                + Math.pow(Math.abs(block.getZ() - z), 2)) < this.radius * 2 */ && area.contains(block);
+        /* && Math.sqrt(Math.pow(Math.abs(block.getX() - x), 2) + Math.pow(Math.abs(block.getZ() - z), 2)) < this.radius * 2 */
+        return block.getWorld().equals(world) && area.contains(block);
     }
 
     public void recalculateLayer() {
-        while (world.getBlockTypeIdAt(x, y + layer, z) == 0) {
-            layer--;
-        }
+        while (world.getBlockTypeIdAt(x, y + layer, z) == 0) layer--;
     }
 
     public void explode(final Location exp, final float power) {
@@ -143,6 +141,6 @@ public class VolcanoWorker {
         layer = Integer.parseInt(split.get(5));
         active = Boolean.valueOf(split.get(6));
 
-        isFromFile = true;
+        isExternal = true;
     }
 }

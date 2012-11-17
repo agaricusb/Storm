@@ -45,7 +45,7 @@ import java.util.*;
 
 public class VolcanoControl implements Listener {
     static public final Set<VolcanoWorker> volcanoes = new HashSet<VolcanoWorker>();
-    static final HashMap<String, List<Integer>> volcanoBlockCache = new HashMap<String, List<Integer>>();
+    static final HashMap<String, ArrayList<Integer>> volcanoBlockCache = new HashMap<String, ArrayList<Integer>>();
     static final Object mutex = new Object();
 
     public void forget() {
@@ -64,7 +64,7 @@ public class VolcanoControl implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void unloadChunk(ChunkUnloadEvent e) {
         Chunk c = e.getChunk();
         for (VolcanoWorker volcano : volcanoes) {
@@ -91,7 +91,7 @@ public class VolcanoControl implements Listener {
             vulc.area.setBlockFastDelayed(lava, idTo, ((data & 0x8) == 0x8 ? 1 : 4 - data / 2) * 20 * 2);
     }
 
-    static List<Integer> getVolcanoBlock(String world) {
+    static ArrayList<Integer> getVolcanoBlock(String world) {
         if (!volcanoBlockCache.containsKey(world))
             volcanoBlockCache.put(world, new ArrayList() {
                 {
@@ -103,7 +103,7 @@ public class VolcanoControl implements Listener {
     }
 
     static int randomVolcanoBlock(String world) {
-        List<Integer> choices = getVolcanoBlock(world);
+        ArrayList<Integer> choices = getVolcanoBlock(world);
         return choices.get(Storm.random.nextInt(choices.size()));
     }
 
@@ -140,7 +140,6 @@ public class VolcanoControl implements Listener {
                 }
             }
             );
-
         }
     }
 
@@ -152,7 +151,7 @@ public class VolcanoControl implements Listener {
             for (String vulc : Arrays.asList(contents.split("\n"))) {
                 VolcanoWorker maker = new VolcanoWorker();
                 maker.fromString(vulc);
-                maker.spawn();
+                maker.start();
                 volcanoes.add(maker);
             }
     }
