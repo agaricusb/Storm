@@ -1,7 +1,7 @@
 package com.github.StormTeam.Storm.Meteors.Listener;
 
 import com.github.StormTeam.Storm.Meteors.Meteor;
-import com.github.StormTeam.Storm.Storm;
+import com.github.StormTeam.Storm.StormUtil;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -24,7 +24,7 @@ public class SafeExplosion implements Listener {
             ArrayList<Block> toProtect = new ArrayList<Block>(), toRemove = new ArrayList<Block>();
 
             for (Block block : ex.blockList())
-                if (Storm.util.isBlockProtected(block))
+                if (StormUtil.isBlockProtected(block))
                     toProtect.add(block);
                 else
                     toRemove.add(block);

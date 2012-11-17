@@ -15,7 +15,7 @@ import java.util.*;
 /**
  * An object for returning large lists of pseudorandom blocks at high speeds.
  *
- * @author Tudor
+ * @author Icyene
  */
 
 public class BlockTickSelector {
@@ -24,8 +24,8 @@ public class BlockTickSelector {
     private final World bWorld;
     private Method a, recheckGaps;
     private int chan;
+    private int radius;
 
-    @SuppressWarnings("FieldCanBeLocal")
     private final Map<String, String> recheckGapsName = new HashMap<String, String>() {{
         put("1.2", "o");
         put("1.3", "k");
@@ -44,12 +44,13 @@ public class BlockTickSelector {
      * @throws IllegalAccessException
      */
 
-    public BlockTickSelector(World world, int selChance)
+    public BlockTickSelector(World world, int selChance, int rad)
             throws NoSuchMethodException,
-            SecurityException {
+            SecurityException, NoSuchFieldException, InstantiationException, IllegalAccessException {
 
         this.world = ((CraftWorld) world).getHandle();
         this.bWorld = world;
+        this.radius = rad;
 
         if (!recheckGapsName.containsKey(Storm.version + "")) {
             throw new UnsupportedOperationException("BlockTickSelector not updated for MineCraft " + Storm.version);
@@ -62,7 +63,13 @@ public class BlockTickSelector {
 
     }
 
-    ArrayList<ChunkCoordIntPair> getRandomTickedChunks() {
+    public BlockTickSelector(World world, int selChance)
+            throws NoSuchMethodException,
+            SecurityException, NoSuchFieldException, InstantiationException, IllegalAccessException {
+        this(world, selChance, 16);
+    }
+
+    ArrayList<ChunkCoordIntPair> getRandomTickedChunks() throws InvocationTargetException, IllegalAccessException {
 
         ArrayList<ChunkCoordIntPair> doTick = new ArrayList<ChunkCoordIntPair>();
 
@@ -115,7 +122,7 @@ public class BlockTickSelector {
             a.invoke(world, xOffset, zOffset, chunk);
             recheckGaps.invoke(chunk);
             if (Storm.random.nextInt(100) <= chan) {
-                int x = Storm.random.nextInt(15), z = Storm.random.nextInt(15);
+                int x = Storm.random.nextInt(radius), z = Storm.random.nextInt(radius);
                 doTick.add(world.getWorld().getBlockAt(x + xOffset, bWorld.getHighestBlockYAt(x + xOffset, z + zOffset), z + zOffset));
             }
         }

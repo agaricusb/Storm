@@ -21,6 +21,7 @@ package com.github.StormTeam.Storm.Meteors.Entities;
 import com.github.StormTeam.Storm.IDBlock;
 import com.github.StormTeam.Storm.Meteors.Meteor;
 import com.github.StormTeam.Storm.Storm;
+import com.github.StormTeam.Storm.StormUtil;
 import net.minecraft.server.*;
 import org.bukkit.Location;
 import org.bukkit.block.Biome;
@@ -170,7 +171,7 @@ public class EntityMeteor extends EntityFireball {
 
             if ((locY & 0xFFFFFFE0) == 0) { // locy < 32
                 try {
-                    Storm.util.playSoundNearby(new Location(world.getWorld(), locX, locY, locZ), 100, "random.explode" + Storm.random.nextInt(3) + 1, 10F, 1F);
+                    StormUtil.playSoundNearby(new Location(world.getWorld(), locX, locY, locZ), 100, "random.explode" + Storm.random.nextInt(3) + 1, 10F, 1F);
                     explode();
                 } catch (NullPointerException ignored) {
                     //Throws an NPE if explodes in unloaded chunk (locs are null). Can be ignored without consequence.
@@ -179,9 +180,9 @@ public class EntityMeteor extends EntityFireball {
                 }
                 return;
             }
-            if (!Storm.util.isBlockProtected(world.getWorld().getBlockAt((int) locX, locY, (int) locZ))) {
-                Storm.util.playSoundNearby(new Location(world.getWorld(), locX, locY, locZ), 500, "random.explode", 10F, Storm.random.nextInt(3) + 1F);
-                Storm.util.createExplosion(this, locX, this.locY, locZ, trailPower, true);
+            if (!StormUtil.isBlockProtected(world.getWorld().getBlockAt((int) locX, locY, (int) locZ))) {
+                StormUtil.playSoundNearby(new Location(world.getWorld(), locX, locY, locZ), 500, "random.explode", 10F, Storm.random.nextInt(3) + 1F);
+                StormUtil.createExplosion(this, locX, this.locY, locZ, trailPower, true);
             }
         } while (false);
         motX *= 1.0F;
@@ -199,18 +200,18 @@ public class EntityMeteor extends EntityFireball {
     public void a(MovingObjectPosition movingobjectposition) {
         if (burrowCount > 0) {
             // Not yet dead, so burrow.
-            if (!Storm.util.isBlockProtected(world.getWorld().getBlockAt((int) locX, (int) locY, (int) locZ))) {
-                Storm.util.playSoundNearby(new Location(world.getWorld(), locX, locY, locZ), 500, "random.explode", 1F, Storm.random.nextInt(3) + 1F);
-                Storm.util.createExplosion(this, locX, locY, locZ, burrowPower, true);
+            if (!StormUtil.isBlockProtected(world.getWorld().getBlockAt((int) locX, (int) locY, (int) locZ))) {
+                StormUtil.playSoundNearby(new Location(world.getWorld(), locX, locY, locZ), 500, "random.explode", 1F, Storm.random.nextInt(3) + 1F);
+                StormUtil.createExplosion(this, locX, locY, locZ, burrowPower, true);
             }
             --burrowCount;
             return;
         }
-        if (!Storm.util.isBlockProtected(world.getWorld().getBlockAt((int) locX, (int) locY, (int) locZ))) {
+        if (!StormUtil.isBlockProtected(world.getWorld().getBlockAt((int) locX, (int) locY, (int) locZ))) {
             if (doSnow)
                 makeWinter();
             try {
-                Storm.util.playSoundNearby(new Location(world.getWorld(), locX, locY, locZ), 500, "random.explode", 1F, Storm.random.nextInt(3) + 1F);
+                StormUtil.playSoundNearby(new Location(world.getWorld(), locX, locY, locZ), 500, "random.explode", 1F, Storm.random.nextInt(3) + 1F);
                 explode();
             } catch (NullPointerException ignored) {
                 //Throws an NPE if explodes in unloaded chunk (locs are null). Can be ignored without consequence.
@@ -219,19 +220,19 @@ public class EntityMeteor extends EntityFireball {
     }
 
     private void explode() {
-        Storm.util.createExplosion(this, locX, locY, locZ, explosionRadius, true);
+        StormUtil.createExplosion(this, locX, locY, locZ, explosionRadius, true);
 
         Location origin = new Location(world.getWorld(), locX, locY, locZ);
 
-        Storm.util.damageNearbyPlayers(new Location(this.world.getWorld(),
+        StormUtil.damageNearbyPlayers(new Location(this.world.getWorld(),
                 locX, locY, locZ), shockwaveDamageRadius, shockwaveDamage,
                 damageMessage, "storm.meteor.immune");
 
-        Storm.util.broadcast(this.meteorCrashMessage.replace("%x", (int) locX + "")
+        StormUtil.broadcast(this.meteorCrashMessage.replace("%x", (int) locX + "")
                 .replace("%z", (int) locZ + "")
                 .replace("%y", (int) locY + ""), world.getWorld());
 
-        Storm.util.playSoundNearby(new Location(world.getWorld(), locX, locY, locZ), 500, "random.explode", 1F, Storm.random.nextInt(3) + 1F);
+        StormUtil.playSoundNearby(new Location(world.getWorld(), locX, locY, locZ), 500, "random.explode", 1F, Storm.random.nextInt(3) + 1F);
 
         if (this.spawnMeteorOnImpact) {
             this.spawnMeteor(origin);

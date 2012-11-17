@@ -2,6 +2,7 @@ package com.github.StormTeam.Storm.Blizzard.Tasks;
 
 import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.Storm;
+import com.github.StormTeam.Storm.StormUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.World;
@@ -14,7 +15,7 @@ import org.bukkit.potion.PotionEffectType;
 /**
  * An object for damaging entities during acid rain.
  *
- * @author Tudor
+ * @author Icyene
  */
 
 public class EntityDamagerTask implements Runnable {
@@ -45,8 +46,8 @@ public class EntityDamagerTask implements Runnable {
     @Override
     public void run() {
         for (Entity damagee : affectedWorld.getEntities()) {
-            if (Storm.util.isEntityUnderSky(damagee) && Storm.util.isSnowy(damagee.getLocation().getBlock().getBiome())) {
-                if (Storm.util.isLocationNearBlock(damagee.getLocation(), glob.Blizzard_Heating__Blocks, glob.Blizzard_Heat__Radius)) {
+            if (StormUtil.isEntityUnderSky(damagee) && StormUtil.isSnowy(damagee.getLocation().getBlock().getBiome())) {
+                if (StormUtil.isLocationNearBlock(damagee.getLocation(), glob.Blizzard_Heating__Blocks, glob.Blizzard_Heat__Radius)) {
                     if (glob.Features_Blizzards_Entity__Damaging && damagee instanceof LivingEntity && !(damagee instanceof Player))
                         ((LivingEntity) (damagee)).damage(glob.Blizzard_Entity_Damage__From__Exposure);
                     else if (glob.Features_Blizzards_Player__Damaging && damagee instanceof Player) {
@@ -56,7 +57,7 @@ public class EntityDamagerTask implements Runnable {
                                 dam.addPotionEffect(blindness, true);
                                 dam.damage(glob.Blizzard_Player_Damage__From__Exposure);
                                 dam.sendMessage(glob.Blizzard_Messages_On__Player__Damaged__Cold);
-                                Storm.util.playSound(dam, "random.breath", 1F, 1F);
+                                StormUtil.playSound(dam, "random.breath", 1F, 1F);
                             }
                         }
                     }

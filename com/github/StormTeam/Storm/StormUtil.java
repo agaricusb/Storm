@@ -43,17 +43,17 @@ import java.util.logging.Logger;
 /**
  * An object that provides a plethora of utility functions used in Storm.
  *
- * @author Tudor, xiaomao
+ * @author Icyene, xiaomao
  */
 
 public class StormUtil {
 
-    private WorldGuardPlugin wg;
-    private boolean hasWG = false;
-    private boolean hasResidence = false;
-    private Field isRaining, isThundering, rainTicks, thunderTicks;
-    private Method explode;
-    private Logger log;
+    private static WorldGuardPlugin wg;
+    private static boolean hasWG = false;
+    private static boolean hasResidence = false;
+    private static Field isRaining, isThundering, rainTicks, thunderTicks;
+    private static Method explode;
+    private static Logger log;
 
     /**
      * Creates a util object.
@@ -100,7 +100,7 @@ public class StormUtil {
      * @param world Bukkit world object
      * @param flag  whether to set it to raining or not
      */
-    public void setRainNoEvent(World world, boolean flag) {
+    public static void setRainNoEvent(World world, boolean flag) {
         try {
             WorldData data = ((CraftWorld) world).getHandle().worldData;
             isRaining.set(data, flag);
@@ -116,7 +116,7 @@ public class StormUtil {
      * @param world Bukkit world object
      * @param flag  whether to set it to thundering or not
      */
-    public void setThunderNoEvent(World world, boolean flag) {
+    public static void setThunderNoEvent(World world, boolean flag) {
         try {
             WorldData data = ((CraftWorld) world).getHandle().worldData;
             isThundering.set(data, flag);
@@ -131,7 +131,7 @@ public class StormUtil {
      *
      * @param logM Log message
      */
-    public void log(String logM) {
+    public static void log(String logM) {
         log.log(Level.INFO, logM);
     }
 
@@ -141,7 +141,7 @@ public class StormUtil {
      * @param level Log level
      * @param logM  Log message
      */
-    public void log(Level level, String logM) {
+    public static void log(Level level, String logM) {
         log.log(level, logM);
     }
 
@@ -150,7 +150,7 @@ public class StormUtil {
      *
      * @param message message to send
      */
-    public void broadcast(String message) {
+    public static void broadcast(String message) {
         if (!message.isEmpty()) {
             Bukkit.getServer().broadcastMessage(parseColors(message));
         }
@@ -162,7 +162,7 @@ public class StormUtil {
      * @param message message to send
      * @param world   Bukkit world object
      */
-    public void broadcast(String message, World world) {
+    public static void broadcast(String message, World world) {
         log("(" + world.getName().toUpperCase() + ") " + message);
         if (world != null)
             for (Player p : world.getPlayers()) {
@@ -176,7 +176,7 @@ public class StormUtil {
      * @param message message to send
      * @param world   world name
      */
-    public void broadcast(String message, String world) {
+    public static void broadcast(String message, String world) {
         World bw;
         if ((bw = Bukkit.getWorld(world)) == null)
             return;
@@ -190,7 +190,7 @@ public class StormUtil {
      * @param player  player name
      * @param message message to send
      */
-    public void message(Player player, String message) {
+    public static void message(Player player, String message) {
         player.sendMessage(parseColors(message));
     }
 
@@ -200,7 +200,7 @@ public class StormUtil {
      * @param msg the string to convert
      * @return the converted string
      */
-    public String parseColors(String msg) {
+    public static String parseColors(String msg) {
         return ChatColor.translateAlternateColorCodes('&', msg);
     }
 
@@ -212,7 +212,7 @@ public class StormUtil {
      * @param damage   the amount of damage to cause
      * @param message  the message to notify the player about the cause of the damage
      */
-    public void damageNearbyPlayers(Location location, double radius, int damage, String message) {
+    public static void damageNearbyPlayers(Location location, double radius, int damage, String message) {
         for (Player p : getNearbyPlayers(location, radius)) {
             damagePlayer(p, message, damage);
         }
@@ -227,7 +227,7 @@ public class StormUtil {
      * @param message    the message to notify the player about the cause of the damage
      * @param permission the permission the user must have to avoid damage
      */
-    public void damageNearbyPlayers(Location location, double radius, int damage, String message, String permission) {
+    public static void damageNearbyPlayers(Location location, double radius, int damage, String message, String permission) {
         for (Player p : getNearbyPlayers(location, radius)) {
             if (!p.hasPermission(permission)) {
                 damagePlayer(p, message, damage);
@@ -235,15 +235,15 @@ public class StormUtil {
         }
     }
 
-    public void playSound(Player to, String sound, Location loc, float pitch, float volume) {
+    public static void playSound(Player to, String sound, Location loc, float pitch, float volume) {
         ((CraftPlayer) to).getHandle().netServerHandler.sendPacket(new Packet62NamedSoundEffect(sound, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), pitch, volume));
     }
 
-    public void playSound(Player to, String sound, float pitch, float volume) {
+    public static void playSound(Player to, String sound, float pitch, float volume) {
         playSound(to, sound, to.getLocation(), pitch, volume);
     }
 
-    public void playSoundNearby(Location origin, double radius, String sound, float pitch, float volume) {
+    public static void playSoundNearby(Location origin, double radius, String sound, float pitch, float volume) {
         for (Player p : getNearbyPlayers(origin, radius)) {
             playSound(p, sound, origin, pitch, volume);
         }
@@ -256,15 +256,15 @@ public class StormUtil {
      * @param message message to send to player
      * @param damage  damage to cause on player, in hearts
      */
-    public void damagePlayer(Player player, String message, int damage) {
+    public static void damagePlayer(Player player, String message, int damage) {
         if (player.getGameMode() != GameMode.CREATIVE && player.getHealth() != 0) {
             player.damage(damage * 2);
-            this.message(player, message);
+            message(player, message);
         }
     }
 
 
-    public void setRenderDistance(World world, int distance) {
+    public static void setRenderDistance(World world, int distance) {
         try {
 
             net.minecraft.server.WorldServer cWorld = ((CraftWorld) world).getHandle();
@@ -298,7 +298,7 @@ public class StormUtil {
      * @param block Bukkit block object to check
      * @return boolean of wheather it's protected
      */
-    public boolean isBlockProtected(Block block) {
+    public static boolean isBlockProtected(Block block) {
         return (hasWG && wg.getGlobalRegionManager().get(block.getWorld()).getApplicableRegions(BukkitUtil.toVector(block.getLocation())).size() > 0) ||
                 (hasResidence && Residence.getResidenceManager().getByLoc(block.getLocation()) != null);
     }
@@ -310,7 +310,7 @@ public class StormUtil {
      * @param radius   the radius of the range
      * @return a set of Bukkit player objects
      */
-    public Set<Player> getNearbyPlayers(Location location, double radius) {
+    public static Set<Player> getNearbyPlayers(Location location, double radius) {
         Set<Player> playerList = new HashSet<Player>();
         World locWorld = location.getWorld();
 
@@ -325,7 +325,7 @@ public class StormUtil {
         return playerList;
     }
 
-    public void createExplosion(net.minecraft.server.Entity entity, double locX, double locY, double locZ, float power, boolean incendiary) {
+    public static void createExplosion(net.minecraft.server.Entity entity, double locX, double locY, double locZ, float power, boolean incendiary) {
         try {
             if (Storm.version > 1.3D)
                 explode.invoke(entity.world, entity, locX, locY, locZ, power, incendiary, true);
@@ -343,7 +343,7 @@ public class StormUtil {
      * @param toTransform     the Bukkit block object to transform
      * @param transformations the list if transformations to apply
      */
-    public void transform(Block toTransform, List<List<String>> transformations) {
+    public static void transform(Block toTransform, List<List<String>> transformations) {
         if (isBlockProtected(toTransform)) {
             return;
         }
@@ -375,12 +375,12 @@ public class StormUtil {
     }
 
     /**
-     * Selects a random loaded chunk in world.
+     * Selects a random isFromFile chunk in world.
      *
      * @param world Bukkit world object
      * @return the chunk selected
      */
-    public Chunk pickChunk(World world) {
+    public static Chunk pickChunk(World world) {
         Chunk[] loadedChunks = world.getLoadedChunks();
         return loadedChunks[Storm.random.nextInt(loadedChunks.length)];
     }
@@ -391,7 +391,7 @@ public class StormUtil {
      * @param player  Player object
      * @param texture URI to texture
      */
-    public void setTexture(Player player, String texture) {
+    public static void setTexture(Player player, String texture) {
         if (Storm.version >= 1.3 && Storm.wConfigs.get(player.getWorld().getName()).Features_Force__Weather__Textures) {
             ((CraftPlayer) player).getHandle().netServerHandler.sendPacket(new Packet250CustomPayload("MC|TPack", (texture + "\0" + 16).getBytes()));
         }
@@ -402,7 +402,7 @@ public class StormUtil {
      *
      * @param player Bukkit player object
      */
-    public void clearTexture(Player player) {
+    public static void clearTexture(Player player) {
         setTexture(player, Storm.wConfigs.get(player.getWorld().getName()).Textures_Default__Texture__Path);
     }
 
@@ -412,7 +412,7 @@ public class StormUtil {
      * @param player Bukkit player object
      * @return boolean
      */
-    public boolean isPlayerUnderSky(Player player) {
+    public static boolean isPlayerUnderSky(Player player) {
         return isLocationUnderSky(player.getLocation());
     }
 
@@ -422,7 +422,7 @@ public class StormUtil {
      * @param entity Bukkit entity object
      * @return boolean
      */
-    public boolean isEntityUnderSky(Entity entity) {
+    public static boolean isEntityUnderSky(Entity entity) {
         return isLocationUnderSky(entity.getLocation());
     }
 
@@ -433,7 +433,7 @@ public class StormUtil {
      * @return boolean
      */
 
-    public boolean isLocationUnderSky(Location loc) {
+    public static boolean isLocationUnderSky(Location loc) {
         return loc.getWorld().getHighestBlockYAt(loc) <= loc.getBlockY();
     }
 
@@ -445,7 +445,7 @@ public class StormUtil {
      * @param radius   the radius to search
      * @return boolean
      */
-    public boolean isLocationNearBlock(Location location, Collection<Integer> blocks, int radius) {
+    public static boolean isLocationNearBlock(Location location, Collection<Integer> blocks, int radius) {
         World world = location.getWorld();
         int x = (int) location.getX(), y = (int) location.getY(), z = (int) location.getZ();
 
@@ -472,7 +472,7 @@ public class StormUtil {
     /**
      * All biomes that rain can fall in.
      */
-    public final Set<Biome> rainBiomes = asSet(Biome.EXTREME_HILLS,
+    public static final Set<Biome> rainBiomes = asSet(Biome.EXTREME_HILLS,
             Biome.FOREST, Biome.FOREST_HILLS,
             Biome.JUNGLE,
             Biome.JUNGLE_HILLS, Biome.MUSHROOM_ISLAND,
@@ -483,19 +483,19 @@ public class StormUtil {
     /**
      * All desert biomes.
      */
-    public final Set<Biome> desertBiomes = asSet(Biome.DESERT, Biome.DESERT_HILLS);
+    public static final Set<Biome> desertBiomes = asSet(Biome.DESERT, Biome.DESERT_HILLS);
     /**
      * All forest biomes.
      */
-    public final Set<Biome> forestBiomes = asSet(Biome.FOREST, Biome.FOREST_HILLS);
+    public static final Set<Biome> forestBiomes = asSet(Biome.FOREST, Biome.FOREST_HILLS);
     /**
      * All jungle biomes.
      */
-    public final Set<Biome> jungleBiomes = asSet(Biome.JUNGLE_HILLS, Biome.MUSHROOM_ISLAND);
+    public static final Set<Biome> jungleBiomes = asSet(Biome.JUNGLE_HILLS, Biome.MUSHROOM_ISLAND);
     /**
      * All snow biomes.
      */
-    public final Set<Biome> snowyBiomes = asSet(Biome.FROZEN_OCEAN, Biome.FROZEN_RIVER,
+    public static final Set<Biome> snowyBiomes = asSet(Biome.FROZEN_OCEAN, Biome.FROZEN_RIVER,
             Biome.ICE_MOUNTAINS,
             Biome.ICE_PLAINS, Biome.TAIGA,
             Biome.TAIGA_HILLS);
@@ -506,7 +506,7 @@ public class StormUtil {
      * @param b biome to check
      * @return boolean
      */
-    public boolean isRainy(Biome b) {
+    public static boolean isRainy(Biome b) {
         return rainBiomes.contains(b);
     }
 
@@ -516,7 +516,7 @@ public class StormUtil {
      * @param b biome to check
      * @return boolean
      */
-    public boolean isForest(Biome b) {
+    public static boolean isForest(Biome b) {
         return forestBiomes.contains(b) || jungleBiomes.contains(b);
     }
 
@@ -526,7 +526,7 @@ public class StormUtil {
      * @param b biome to check
      * @return boolean
      */
-    public boolean isDesert(Biome b) {
+    public static boolean isDesert(Biome b) {
         return desertBiomes.contains(b);
     }
 
@@ -536,7 +536,7 @@ public class StormUtil {
      * @param b biome to check
      * @return boolean
      */
-    public boolean isTundra(Biome b) {
+    public static boolean isTundra(Biome b) {
         return snowyBiomes.contains(b);
     }
 
@@ -546,7 +546,7 @@ public class StormUtil {
      * @param b biome to check
      * @return boolean
      */
-    public boolean isSnowy(Biome b) {
+    public static boolean isSnowy(Biome b) {
         return isTundra(b);
     }
 

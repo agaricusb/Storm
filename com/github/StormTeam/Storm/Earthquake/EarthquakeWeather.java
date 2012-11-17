@@ -21,14 +21,14 @@ package com.github.StormTeam.Storm.Earthquake;
 import com.github.StormTeam.Storm.Storm;
 import com.github.StormTeam.Storm.Weather.StormWeather;
 
-public class QuakeWeather extends StormWeather {
+public class EarthquakeWeather extends StormWeather {
     /**
      * Constructor. DO NOT CHANGE ARGUMENTS.
      *
      * @param storm Storm plugin object
      * @param world World name to act opon
      */
-    protected QuakeWeather(Storm storm, String world) {
+    protected EarthquakeWeather(Storm storm, String world) {
         super(storm, world);
     }
 

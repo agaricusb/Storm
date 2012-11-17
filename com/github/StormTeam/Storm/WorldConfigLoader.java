@@ -8,14 +8,14 @@ import org.bukkit.event.world.WorldUnloadEvent;
 /**
  * Handles memory leaks caused by World unloading and loads/unloads config files.
  *
- * @author Tudor
+ * @author Icyene
  */
 class WorldConfigLoader implements Listener {
 
     private final Storm storm;
 
     /**
-     * Creates a WorldConfigLoader object to handle config for worlds (un)loaded by plugins a la MultiVerse.
+     * Creates a WorldConfigLoader object to handle config for worlds (un)isFromFile by plugins a la MultiVerse.
      *
      * @param storm The storm plugin: used for GlobalVariables loading
      */
@@ -25,7 +25,7 @@ class WorldConfigLoader implements Listener {
     }
 
     /**
-     * Loads a config file for world when it is loaded
+     * Loads a config file for world when it is isFromFile
      *
      * @param e The WorldLoadEvent
      */

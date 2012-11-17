@@ -216,7 +216,7 @@ public class EntityShelterer implements Runnable {
         }
 
         public boolean isUnderSky(net.minecraft.server.World world, double x, double y, double z) {
-            return Storm.util.isLocationUnderSky(new Location(world.getWorld(), x, y, z));
+            return StormUtil.isLocationUnderSky(new Location(world.getWorld(), x, y, z));
         }
     }
 }

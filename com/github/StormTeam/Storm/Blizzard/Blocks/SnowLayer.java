@@ -1,6 +1,7 @@
 package com.github.StormTeam.Storm.Blizzard.Blocks;
 
 import com.github.StormTeam.Storm.Storm;
+import com.github.StormTeam.Storm.StormUtil;
 import net.minecraft.server.BlockSnow;
 import net.minecraft.server.Entity;
 import net.minecraft.server.World;
@@ -32,25 +33,16 @@ public class SnowLayer extends BlockSnow {
      */
 
     @Override
-    public void a(final World w, final int x, final int y,
-                  final int z, final Entity e) {
+    public void a(final World w, final int x, final int y, final int z, final Entity e) {
 
         String name = w.getWorld().getName();
 
-        if (!Storm.manager.getActiveWeathers(name).contains("storm_blizzard")) {
-            return;
-        }
-
-        if (!Storm.wConfigs.containsKey(name) && !Storm.wConfigs.get(name).Features_Blizzards_Slowing__Snow) {
+        if (!Storm.manager.getActiveWeathers(name).contains("storm_blizzard") || (!Storm.wConfigs.containsKey(name) && !Storm.wConfigs.get(name).Features_Blizzards_Slowing__Snow)) {
             return;
         }
 
         final org.bukkit.entity.Entity inSnow = e.getBukkitEntity();
-        if (inSnow instanceof Player && ((Player) (inSnow)).getGameMode() == GameMode.CREATIVE) {
-            return;
-        }
-
-        if (!Storm.util.isTundra(inSnow.getLocation().getBlock().getBiome())) {
+        if ((inSnow instanceof Player && ((Player) (inSnow)).getGameMode() == GameMode.CREATIVE) || !StormUtil.isTundra(inSnow.getLocation().getBlock().getBiome())) {
             return;
         }
 

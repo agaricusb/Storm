@@ -213,20 +213,8 @@ public class ReflectConfiguration {
                 modified = true;
 
             }
-
-            Newline slashn = null;
-            try {
-                slashn = getClass().getDeclaredField(id).getAnnotation(Newline.class);
-            } catch (NoSuchFieldException ignored) {
-            }
-            if (slashn != null) {
-                modified = true;
-            }
-
             if (!modified)
                 outlines.add(line);
-
-
         }
         return outlines;
     }
@@ -262,11 +250,4 @@ public class ReflectConfiguration {
             }
         }
     }
-
-    @Target(ElementType.FIELD)
-    @Retention(RetentionPolicy.RUNTIME)
-    public @interface Newline {
-        int num() default 1;
-    }
-
 }

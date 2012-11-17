@@ -3,6 +3,7 @@ package com.github.StormTeam.Storm.Meteors;
 import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.Meteors.Entities.EntityMeteor;
 import com.github.StormTeam.Storm.Storm;
+import com.github.StormTeam.Storm.StormUtil;
 import com.github.StormTeam.Storm.Weather.StormWeather;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -44,7 +45,7 @@ public class MeteorWeather extends StormWeather {
             return;
         }
 
-        Chunk chunk = Storm.util.pickChunk(Bukkit.getWorld(world));
+        Chunk chunk = StormUtil.pickChunk(Bukkit.getWorld(world));
 
         if (chunk == null) {
             return;

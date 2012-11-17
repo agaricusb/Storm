@@ -5,12 +5,9 @@ import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.ReflectCommand;
 import com.github.StormTeam.Storm.Storm;
 import com.github.StormTeam.Storm.Weather.Exceptions.WeatherNotFoundException;
-import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -52,7 +49,6 @@ public class ThunderStorm {
             name = "thunderstorm",
             usage = "/<command> [world]",
             permission = "storm.thunderstorm.command",
-            permissionMessage = "You do not have the permission to start a thunder storm!",
             sender = ReflectCommand.Sender.EVERYONE
     )
     public static boolean thunderstormConsole(CommandSender sender, String world) {
@@ -66,7 +62,6 @@ public class ThunderStorm {
     @ReflectCommand.Command(
             name = "thunderstorm",
             permission = "storm.thunderstorm.command",
-            permissionMessage = "You do not have the permission to start a thunder storm!",
             sender = ReflectCommand.Sender.PLAYER
     )
     public static boolean thunderstormPlayer(Player sender) {

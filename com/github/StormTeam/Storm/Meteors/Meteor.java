@@ -64,7 +64,6 @@ public class Meteor {
             alias = {"meteorite"},
             usage = "/<command> [world]",
             permission = "storm.meteor.command",
-            permissionMessage = "You don't have the permission to make 2012 reality.",
             sender = ReflectCommand.Sender.EVERYONE
     )
     public static boolean meteorConsole(CommandSender sender, String world) {
@@ -80,7 +79,6 @@ public class Meteor {
             name = "meteor",
             alias = {"meteorite"},
             permission = "storm.meteor.command",
-            permissionMessage = "You don't have the permission to make 2012 reality.",
             sender = ReflectCommand.Sender.PLAYER
     )
     public static boolean meteorPlayer(Player sender) {
