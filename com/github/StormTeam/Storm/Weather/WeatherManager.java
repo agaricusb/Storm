@@ -46,7 +46,7 @@ public class WeatherManager implements Listener {
      * Registers a weather. Only registers the weather for the worlds specified
      * in worlds.
      *
-     * @param weather Weather clas
+     * @param weather Weather class
      * @param name    Weather name
      * @throws WeatherAlreadyRegisteredException
      *
@@ -65,17 +65,23 @@ public class WeatherManager implements Listener {
                 ErrorLogger.generateErrorLog(e);
             }
         }
+        try {
+            enableWeatherForWorld("a", "b", 10, 20);
+        } catch (WeatherNotFoundException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 
     /**
-     * Initalize a weather for a world.
+     * Initialize a weather for a world.
      *
      * @param name          Weather name.
      * @param world         World name.
-     * @param chance        Chance of occuring, in percent, i.e. probabiliyty * 100.
+     * @param chance        Chance of occurring, in percent, i.e. probability* 100.
      * @param recalculation Ticks before trying to start with chance.
+     * @param args          Arguments to weather constructor.
      */
-    public void enableWeatherForWorld(String name, String world, int chance, int recalculation) throws WeatherNotFoundException {
+    public void enableWeatherForWorld(String name, String world, int chance, int recalculation, Object... args) throws WeatherNotFoundException {
         synchronized (this) {
             if (!registeredWeathers.containsKey(name)) {
                 throw new WeatherNotFoundException(String.format("Weather %s not found", name));
@@ -83,8 +89,20 @@ public class WeatherManager implements Listener {
             Map<String, StormWeather> instances = registeredWeathers.get(name).RIGHT;
             Map<String, Pair<Integer, WeatherTrigger>> triggers = weatherTriggers.get(name);
             Class<? extends StormWeather> weather = registeredWeathers.get(name).LEFT;
+
+            Class[] classes = new Class[args.length + 2];
+            classes[0] = Storm.class;
+            classes[1] = String.class;
+            for (int i = 2; i < classes.length; ++i)
+                classes[i] = args[i].getClass();
+
+            Object[] arguments = new Object[args.length + 2];
+            arguments[0] = storm;
+            arguments[1] = world;
+            for (int i = 2; i < arguments.length; ++i)
+                arguments[i] = args[i];
             try {
-                instances.put(world, weather.getConstructor(Storm.class, String.class).newInstance(storm, world));
+                instances.put(world, weather.getConstructor(classes).newInstance(arguments));
                 WeatherTrigger trigger = new WeatherTrigger(this, name, world, chance);
                 int id = Bukkit.getScheduler().scheduleSyncRepeatingTask(storm, trigger, recalculation, recalculation);
                 triggers.put(world, new Pair<Integer, WeatherTrigger>(id, trigger));
