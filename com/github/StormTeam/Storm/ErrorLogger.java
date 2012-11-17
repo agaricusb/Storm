@@ -110,7 +110,7 @@ public class ErrorLogger extends PluginLogger {
                     .append("\nStacktrace:\n").append(ERROR).append("\n")
                     .append(NAME).append(" version: ").append(PLUGIN.getDescription().getVersion())
                     .append("\nBukkit message: ").append(record.getMessage())
-                    .append("\nPlugins loaded: ").append(Arrays.asList(Bukkit.getPluginManager().getPlugins()))
+                    .append("\nPlugins isFromFile: ").append(Arrays.asList(Bukkit.getPluginManager().getPlugins()))
                     .append("\nCraftBukkit version: ").append(Bukkit.getServer().getBukkitVersion())
                     .append("\nJava info: ").append(getProperty("java.version"))
                     .append("\nOS info: ").append(getProperty("os.arch")).append(" ").append(getProperty("os.name")).append(", ").append(getProperty("os.version"))

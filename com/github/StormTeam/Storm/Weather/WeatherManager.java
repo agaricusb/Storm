@@ -3,6 +3,7 @@ package com.github.StormTeam.Storm.Weather;
 import com.github.StormTeam.Storm.ErrorLogger;
 import com.github.StormTeam.Storm.Pair;
 import com.github.StormTeam.Storm.Storm;
+import com.github.StormTeam.Storm.StormUtil;
 import com.github.StormTeam.Storm.Weather.Exceptions.WeatherAlreadyRegisteredException;
 import com.github.StormTeam.Storm.Weather.Exceptions.WeatherNotAllowedException;
 import com.github.StormTeam.Storm.Weather.Exceptions.WeatherNotFoundException;
@@ -25,7 +26,7 @@ import java.util.*;
 /**
  * Weather Manager for Storm. All members thread-safe unless documented.
  *
- * @author Tudor
+ * @author Icyene
  * @author xiaomao
  */
 public class WeatherManager implements Listener {
@@ -206,11 +207,11 @@ public class WeatherManager implements Listener {
                 }
             }
             if (currentRain != rain) {
-                Storm.util.setRainNoEvent(Bukkit.getWorld(world), rain);
+                StormUtil.setRainNoEvent(Bukkit.getWorld(world), rain);
                 currentRain = rain;
             }
             if (currentThunder != thunder) {
-                Storm.util.setThunderNoEvent(Bukkit.getWorld(world), thunder);
+                StormUtil.setThunderNoEvent(Bukkit.getWorld(world), thunder);
                 currentThunder = thunder;
             }
         } catch (Exception e) {
@@ -334,7 +335,7 @@ public class WeatherManager implements Listener {
                 String texture = weather.getTexture();
                 if (texture != null) {
                     for (Player player : Bukkit.getWorld(world).getPlayers()) {
-                        Storm.util.setTexture(player, texture);
+                        StormUtil.setTexture(player, texture);
                     }
                     worldTextures.put(world, texture);
                 }
@@ -392,7 +393,7 @@ public class WeatherManager implements Listener {
                 String texture = weather.getTexture();
                 if (texture != null) {
                     for (Player player : Bukkit.getWorld(world).getPlayers()) {
-                        Storm.util.clearTexture(player);
+                        StormUtil.clearTexture(player);
                     }
                     worldTextures.put(world, null);
                 }
@@ -448,9 +449,9 @@ public class WeatherManager implements Listener {
             texture = worldTextures.get(target.getName());
         }
         if (texture == null) {
-            Storm.util.clearTexture(hopper);
+            StormUtil.clearTexture(hopper);
         } else {
-            Storm.util.setTexture(hopper, texture);
+            StormUtil.setTexture(hopper, texture);
         }
     }
 
@@ -470,7 +471,7 @@ public class WeatherManager implements Listener {
             texture = worldTextures.get(world.getName());
         }
         if (texture != null) {
-            Storm.util.setTexture(player, texture);
+            StormUtil.setTexture(player, texture);
         }
     }
 

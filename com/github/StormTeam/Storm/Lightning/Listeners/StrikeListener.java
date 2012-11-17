@@ -3,6 +3,7 @@ package com.github.StormTeam.Storm.Lightning.Listeners;
 import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.Lightning.LightningUtils;
 import com.github.StormTeam.Storm.Storm;
+import com.github.StormTeam.Storm.StormUtil;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -44,7 +45,7 @@ public class StrikeListener implements Listener {
         Location strikeLocation = strike.getLightning().getLocation();
 
         if (glob.Features_Lightning_Greater__Range__And__Damage) {
-            Storm.util.damageNearbyPlayers(strikeLocation,
+            StormUtil.damageNearbyPlayers(strikeLocation,
                     glob.Lightning_Damage_Damage__Radius,
                     glob.Lightning_Damage_Damage,
                     glob.Lightning_Messages_On__Player__Hit);
@@ -69,10 +70,10 @@ public class StrikeListener implements Listener {
 
         if (glob.Features_Lightning_Block__Transformations) {
 
-            Storm.util.transform(strikeLocation.getBlock(),
+            StormUtil.transform(strikeLocation.getBlock(),
                     glob.Lightning_Melter_Block__Transformations);
         }
-        Storm.util.playSoundNearby(strikeLocation, 10F, "mob.enderman.scream", 3F, Storm.random.nextInt(3) + 1F);
+        StormUtil.playSoundNearby(strikeLocation, 10F, "mob.enderman.scream", 3F, Storm.random.nextInt(3) + 1F);
 
     }
 

@@ -3,6 +3,7 @@ package com.github.StormTeam.Storm.Thunder_Storm;
 import com.github.StormTeam.Storm.EntityShelterer;
 import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.Storm;
+import com.github.StormTeam.Storm.StormUtil;
 import com.github.StormTeam.Storm.Thunder_Storm.Tasks.StrikerTask;
 import com.github.StormTeam.Storm.Weather.StormWeather;
 import org.bukkit.Bukkit;
@@ -41,7 +42,7 @@ public class ThunderStormWeather extends StormWeather {
             return;
         }
 
-        Storm.util.broadcast(glob.Thunder__Storm_Messages_On__Thunder__Storm__Start, bukkitWorld);
+        StormUtil.broadcast(glob.Thunder__Storm_Messages_On__Thunder__Storm__Start, bukkitWorld);
 
         if (glob.Features_Thunder__Storms_Thunder__Striking) {
             striker = new StrikerTask(storm, bukkitWorld);
@@ -49,7 +50,7 @@ public class ThunderStormWeather extends StormWeather {
         }
 
         if (glob.Features_Thunder__Storms_Entity__Shelter__Pathfinding) {
-            shelter = new EntityShelterer(storm, world, "storm_thunderstorm", Storm.util.rainBiomes);
+            shelter = new EntityShelterer(storm, world, "storm_thunderstorm", StormUtil.rainBiomes);
             shelter.start();
         }
 
@@ -63,7 +64,7 @@ public class ThunderStormWeather extends StormWeather {
 
     @Override
     public void end() {
-        Storm.util.broadcast(glob.Thunder__Storm_Messages_On__Thunder__Storm__Stop, bukkitWorld);
+        StormUtil.broadcast(glob.Thunder__Storm_Messages_On__Thunder__Storm__Stop, bukkitWorld);
         striker.stop();
         striker = null; //Remove references
         shelter.stop();

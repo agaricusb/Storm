@@ -48,7 +48,6 @@ public class AcidRain {
             name = "acidrain",
             usage = "/<command> [world]",
             permission = "storm.acidrain.command",
-            permissionMessage = "You do not have permission to make green drops fall and murder things!",
             sender = ReflectCommand.Sender.EVERYONE
     )
     public static boolean acidrainConsole(CommandSender sender, String world) {
@@ -62,7 +61,6 @@ public class AcidRain {
     @ReflectCommand.Command(
             name = "acidrain",
             permission = "storm.acidrain.command",
-            permissionMessage = "You do not have permission to make green drops fall and murder things!",
             sender = ReflectCommand.Sender.PLAYER
     )
     public static boolean acidrainPlayer(Player sender) {

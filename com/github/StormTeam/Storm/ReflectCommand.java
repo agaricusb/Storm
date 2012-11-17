@@ -71,17 +71,17 @@ public class ReflectCommand {
 
         String name = com.name();
         List<String> alias = new ArrayList<String>();
-        alias.add(com.name());
+        alias.add(name);
         if (!ArrayUtils.isEmpty(com.alias()))
             for (String ob : com.alias())
                 alias.add(ob);
-        register.register(com.name(), alias.toArray(new String[alias.size()]), com.usage(), com.permission(), com.permissionMessage());
+        register.register(name, alias.toArray(new String[alias.size()]), com.usage(), com.permission(), com.permissionMessage());
         HashMap<String, Set<Method>> hm;
         try {
             Field map = this.getClass().getDeclaredField(com.sender().name().toLowerCase() + "Commands");
             hm = (HashMap) map.get(this);
             if (hm.containsKey(name))
-                hm.get(m.getName()).add(m);
+                hm.get(name).add(m);
             else
                 hm.put(name, Sets.newHashSet(m));
             map.set(this, hm);

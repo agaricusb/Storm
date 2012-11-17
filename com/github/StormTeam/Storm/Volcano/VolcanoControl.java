@@ -29,6 +29,8 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
@@ -45,29 +47,25 @@ public class VolcanoControl implements Listener {
     static public final Set<VolcanoWorker> volcanoes = new HashSet<VolcanoWorker>();
     static final HashMap<String, List<Integer>> volcanoBlockCache = new HashMap<String, List<Integer>>();
     static final Object mutex = new Object();
-    static final Set<Integer> cannotBlow = new HashSet() {{
-        add(Material.BEDROCK.getId());
-        add(Material.OBSIDIAN.getId());
-    }};
 
-    @EventHandler
+    public void forget() {
+        HandlerList.unregisterAll(this);
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
     public void coolLava(BlockFromToEvent e) {
-        if (e.isCancelled())
-            return;
         Block from = e.getBlock();
         for (VolcanoWorker volcano : volcanoes) {
             if ((from.getTypeId() & 0xfe) == 0xa && volcano.active && volcano.ownsBlock(from)) { //Checks if the block is lava and if a volcano owns it
                 solidify(volcano, from, randomVolcanoBlock(from.getWorld()));
                 if (!volcano.ownsBlock(e.getToBlock()))
-                    volcano.grow(false); //Reached boundaries
+                    volcano.grower.stop(); //Reached boundaries
             }
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void unloadChunk(ChunkUnloadEvent e) {
-        if (e.isCancelled())
-            return;
         Chunk c = e.getChunk();
         for (VolcanoWorker volcano : volcanoes) {
             if (volcano.area.contains(c)) {
@@ -77,14 +75,12 @@ public class VolcanoControl implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void unloadWorld(WorldUnloadEvent e) {
-        if (e.isCancelled())
-            return;
         for (VolcanoWorker vulk : volcanoes) {
             if (vulk.world.equals(e.getWorld())) {
                 vulk.active = false;
-                vulk.dumpVolcanoes();
+                dumpVolcanoes();
             }
         }
     }
@@ -113,6 +109,14 @@ public class VolcanoControl implements Listener {
 
     static int randomVolcanoBlock(World world) {
         return randomVolcanoBlock(world.getName());
+    }
+
+    public static void dumpVolcanoes() {
+        try {
+            VolcanoControl.save(Volcano.vulkanos);
+        } catch (Exception e) {
+            ErrorLogger.generateErrorLog(e);
+        }
     }
 
     public static void save(final File dump) {
@@ -147,7 +151,7 @@ public class VolcanoControl implements Listener {
         if (!StringUtils.isEmpty(contents))
             for (String vulc : Arrays.asList(contents.split("\n"))) {
                 VolcanoWorker maker = new VolcanoWorker();
-                maker.deserialize(vulc);
+                maker.fromString(vulc);
                 maker.spawn();
                 volcanoes.add(maker);
             }

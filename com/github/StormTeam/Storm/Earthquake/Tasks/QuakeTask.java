@@ -25,13 +25,12 @@ public class QuakeTask implements Runnable {
 
     @Override
     public void run() {
-        for (Player p : quake.getWorld().getPlayers()) {
+        for (Player p : quake.world.getPlayers()) {
             // Don't bother creative players
             if (p.getGameMode() == GameMode.CREATIVE || !quake.isQuaking(p.getLocation()))
                 continue;
 
-            int a = 5 / (2 + Math.abs(quake.getEpicenter().LEFT - p.getLocation().getBlockX()) +
-                    Math.abs(quake.getEpicenter().RIGHT - p.getLocation().getBlockZ()) / 2);
+            int a = 5 / (2 + Math.abs(quake.epicenter.getBlockX() - p.getLocation().getBlockX()) + Math.abs(quake.epicenter.getBlockZ() - p.getLocation().getBlockZ()) / 2);
 
             if (toggle) {
                 p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 2, a), true);

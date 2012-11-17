@@ -2,6 +2,7 @@ package com.github.StormTeam.Storm.Wildfire;
 
 import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.Storm;
+import com.github.StormTeam.Storm.StormUtil;
 import com.github.StormTeam.Storm.Weather.StormWeather;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -48,23 +49,23 @@ public class WildfireWeather extends StormWeather { //TODO: Make use of getTicke
         Chunk chunk;
         while (true) {
             recurse++;
-            if (recurse >= 40 || (chunk = Storm.util.pickChunk(affectedWorld)) == null)
+            if (recurse >= 40 || (chunk = StormUtil.pickChunk(affectedWorld)) == null)
                 return;
             int x = Storm.random.nextInt(15), z = Storm.random.nextInt(15);
             toBurn = chunk.getWorld().getHighestBlockAt(chunk.getBlock(x, 4, z).getLocation()).getLocation().subtract(0, 1, 0).getBlock();
 
-            if (!Storm.util.isBlockProtected(toBurn)
-                    && Storm.util.isForest(toBurn.getBiome())
-                    && Storm.wConfigs.get(toBurn.getWorld().getName()).Natural__Disasters_Wildfires_Flammable__Blocks.contains(toBurn.getTypeId()))
-                break;
+            if (!StormUtil.isBlockProtected(toBurn)
+                    && StormUtil.isForest(toBurn.getBiome())
+                    && Storm.wConfigs.get(toBurn.getWorld().getName()).Natural__Disasters_Wildfires_Flammable__Blocks.contains(toBurn.getTypeId())) {
 
-            toBurn = toBurn.getLocation().add(0, 1, 0).getBlock();
+                toBurn = toBurn.getLocation().add(0, 1, 0).getBlock();
 
-            if (Wildfire.wildfireBlocks.containsKey((world = toBurn.getWorld().getName()))) {
-                Wildfire.wildfireBlocks.get(world).add(toBurn);
-                toBurn.setType(Material.FIRE);
-                Storm.util.broadcast(glob.Natural__Disasters_Wildfires_Messages_On__Start.replace("%x", toBurn.getX() + "")
-                        .replace("%y", toBurn.getY() + "").replace("%z", toBurn.getZ() + ""), affectedWorld);
+                if (Wildfire.wildfireBlocks.containsKey((world = toBurn.getWorld().getName()))) {
+                    Wildfire.wildfireBlocks.get(world).add(toBurn);
+                    toBurn.setType(Material.FIRE);
+                    StormUtil.broadcast(glob.Natural__Disasters_Wildfires_Messages_On__Start.replace("%x", toBurn.getX() + "")
+                            .replace("%y", toBurn.getY() + "").replace("%z", toBurn.getZ() + ""), affectedWorld);
+                }
                 break;
             }
         }

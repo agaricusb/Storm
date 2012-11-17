@@ -3,6 +3,7 @@ package com.github.StormTeam.Storm.Earthquake.Tasks;
 import com.github.StormTeam.Storm.Cuboid;
 import com.github.StormTeam.Storm.Math.Cracker;
 import com.github.StormTeam.Storm.Storm;
+import com.github.StormTeam.Storm.StormUtil;
 import com.github.StormTeam.Storm.Verbose;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -18,7 +19,6 @@ public class RuptureTask implements Runnable {
     private Location location;
     private int length;
     private final int width;
-    private final int depth;
     private int id = -1;
     private int layerIndex = 0;
     private Cracker cracker;
@@ -26,11 +26,10 @@ public class RuptureTask implements Runnable {
     private World world;
 
     public RuptureTask(Cuboid area, Location location, int length, int width, int depth) {
-
         this.location = location;
+        this.world = location.getWorld();
         this.length = length;
         this.width = width;
-        this.depth = depth;
         this.area = area;
 
         cracker = new Cracker(length, location.getBlockX(), location.getBlockY(), location.getBlockZ(), width, depth);
@@ -39,7 +38,6 @@ public class RuptureTask implements Runnable {
 
 
     public void run() {
-        World w = location.getWorld();
         Verbose.log("Cracking layer " + layerIndex);
         List<Vector> layer = cracker.get(layerIndex);
         if (layer.size() == 0) {
@@ -47,19 +45,19 @@ public class RuptureTask implements Runnable {
             return;
         }
         for (Vector block : layer) {
-            BlockIterator bi = new BlockIterator(w, block, new Vector(0, 1, 0), 0, (256 - block.getBlockY()));
+            BlockIterator bi = new BlockIterator(world, block, new Vector(0, 1, 0), 0, (256 - block.getBlockY()));
             while (bi.hasNext()) {
                 Block toInspect = bi.next();
-                int id = toInspect.getTypeId();
-                if (id != 0 && id != 7)
+                int bid = toInspect.getTypeId();
+                if (bid != 0 && id != 7)
                     area.setBlockFast(toInspect, 0);
-                if ((id & 0xFE) == 8) // 8 or 9
+                if ((bid & 0xFE) == 8) // 8 or 9
                     toInspect.setTypeId(9, true);
-                else if ((id & 0xFE) == 10) // 10 or 11
+                else if ((bid & 0xFE) == 10) // 10 or 11
                     toInspect.setTypeId(10, true);
             }
         }
-        Storm.util.playSoundNearby(location, length * width + 500, "ambient.weather.thunder", 3F, Storm.random.nextInt(3) + 1);
+        StormUtil.playSoundNearby(location, (length * width) / 2, "ambient.weather.thunder", 1F, Storm.random.nextInt(3) + 1);
         area.sendClientChanges();
         area.loadChunks();
         ++layerIndex;
@@ -69,7 +67,7 @@ public class RuptureTask implements Runnable {
         id = Bukkit.getScheduler()
                 .scheduleSyncRepeatingTask(
                         Storm.instance,
-                        this, 20, 20);
+                        this, 0, 20);
     }
 
     /**

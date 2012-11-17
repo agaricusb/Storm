@@ -2,13 +2,10 @@ package com.github.StormTeam.Storm.Thunder_Storm.Tasks;
 
 /**
  *
- * @author Tudor
+ * @author Icyene
  */
 
-import com.github.StormTeam.Storm.BlockTickSelector;
-import com.github.StormTeam.Storm.ErrorLogger;
-import com.github.StormTeam.Storm.GlobalVariables;
-import com.github.StormTeam.Storm.Storm;
+import com.github.StormTeam.Storm.*;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -41,7 +38,7 @@ public class StrikerTask implements Runnable {
             ArrayList<Block> blocks = ticker.getRandomTickedBlocks();
             for (Block b : blocks) {
                 Block tran = b.getRelative(BlockFace.DOWN);
-                if (Storm.util.isRainy(tran.getBiome())) {
+                if (StormUtil.isRainy(tran.getBiome())) {
                     affectedWorld.strikeLightning(tran.getLocation());
                 }
             }

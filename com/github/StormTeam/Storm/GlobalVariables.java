@@ -93,13 +93,15 @@ public class GlobalVariables extends ReflectConfiguration {
     @LimitInteger
     @Comment(_ = "The chance for a block to be deteriorated.")
     public int Acid__Rain_Dissolver_Block__Deterioration__Chance = 60;
+    @LimitInteger(limit = 16)
+    @Comment(_ = "The amount of a chunk that can be deteriorated. An integral number from 0->16")
+    public int Acid__Rain_Dissolver_Block__Deterioration__Area = 60;
     @Comment(_ = "The delay between sets of block deteriorations, in ticks.")
     public int Acid__Rain_Scheduler_Dissolver__Calculation__Intervals__In__Ticks = 10;
     @Comment(_ = "The delay between damaging entities, in ticks.")
     public int Acid__Rain_Scheduler_Damager__Calculation__Intervals__In__Ticks = 40;
     //Thunder Storms
     @LimitInteger
-    @Newline
     @Comment(_ = "The chance for thunder storm to occur.")
     public int Thunder__Storm_Thunder__Storm__Chance = 4;
     @Comment(_ = "The base intervals between thunder storm tries to start.")
@@ -115,7 +117,6 @@ public class GlobalVariables extends ReflectConfiguration {
     public int Thunder__Storm_Scheduler_Striker__Calculation__Intervals__In__Ticks = 10;
     //Blizzards
     @LimitInteger
-    @Newline
     @Comment(_ = "The chance for blizzard to occur.")
     public int Blizzard_Blizzard__Chance = 20;
     @Comment(_ = "The base intervals between blizzard tries to start.")
@@ -141,7 +142,7 @@ public class GlobalVariables extends ReflectConfiguration {
     @Comment(_ = "The delay between damages by blizzard, in ticks.")
     public int Blizzard_Scheduler_Damager__Calculation__Intervals__In__Ticks = 40;
     //Better Lightning
-    @Newline
+
     @Comment(_ = "The amount of damage caused by lightning in hearts.")
     public int Lightning_Damage_Damage = 5;
     @Comment(_ = "The radius when players and entities can be damaged by a lightning strike.")
@@ -179,7 +180,7 @@ public class GlobalVariables extends ReflectConfiguration {
     //Natural Disasters
     //-Meteors
     @LimitInteger
-    @Newline(num = 2)
+
     @Comment(_ = "The chance that meteor will occur.")
     public int Natural__Disasters_Meteor_Chance__To__Spawn = 8;
     @Comment(_ = "The base intervals between meteor tries to start.")
@@ -203,7 +204,7 @@ public class GlobalVariables extends ReflectConfiguration {
         }
     };
     @LimitInteger
-    @Newline
+
     public int Natural__Disasters_Wildfires_Chance__To__Start = 20;
     public int Natural__Disasters_Wildfires_Wildfire__Base__Interval = 72000;
     public int Natural__Disasters_Wildfires_Spread__Limit = 2;
@@ -233,12 +234,12 @@ public class GlobalVariables extends ReflectConfiguration {
     //}};
     // Texture Packs
     public boolean Alpha__Features_Volcanoes_Enabled = true;
-    @Newline(num = 2)
+
     public String Textures_Acid__Rain__Texture__Path = "http://dl.dropbox.com/u/67341745/Storm/Acid_Rain.zip";
     public String Textures_Blizzard__Texture__Path = "http://dl.dropbox.com/u/67341745/Storm/Blizzard.zip";
     public String Textures_Default__Texture__Path = "http://dl.dropbox.com/u/67341745/Storm/Default.zip";
     // Features
-    @Newline(num = 2)
+
     public boolean Features_Acid__Rain_Dissolving__Blocks = true;
     public boolean Features_Acid__Rain_Player__Damaging = true;
     public boolean Features_Acid__Rain_Entity__Damaging = true;

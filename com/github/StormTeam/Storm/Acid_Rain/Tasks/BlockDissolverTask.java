@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * An object for dissolving blocks during acid rain.
  *
- * @author Tudor
+ * @author Icyene
  */
 
 public class BlockDissolverTask implements Runnable {
@@ -35,7 +35,7 @@ public class BlockDissolverTask implements Runnable {
         glob = Storm.wConfigs.get(affectedWorld);
         try {
             ticker = new BlockTickSelector(Bukkit.getWorld(affectedWorld),
-                    glob.Acid__Rain_Dissolver_Block__Deterioration__Chance);
+                    glob.Acid__Rain_Dissolver_Block__Deterioration__Chance, glob.Acid__Rain_Dissolver_Block__Deterioration__Area);
         } catch (Exception e) {
             ErrorLogger.generateErrorLog(e);
         }
@@ -51,10 +51,10 @@ public class BlockDissolverTask implements Runnable {
         try {
             for (Block b : ticker.getRandomTickedBlocks()) {
                 Block tran = b.getRelative(BlockFace.DOWN);
-                if (tran.getTypeId() != 0 && Storm.util.isRainy(tran.getBiome()) && !Storm.util.isBlockProtected(tran)) {
+                if (tran.getTypeId() != 0 && StormUtil.isRainy(tran.getBiome()) && !StormUtil.isBlockProtected(tran)) {
                     for (BlockTransformer t : transformations) {
                         if (t.transform(tran)) {
-                            Storm.util.playSoundNearby(tran.getLocation(), 5F, "random.fizz", 1F, 1F);
+                            StormUtil.playSoundNearby(tran.getLocation(), 5F, "random.fizz", 1F, 1F);
                             break;
                         }
                     }

@@ -37,11 +37,14 @@
 package com.github.StormTeam.Storm.Math;
 
 import com.github.StormTeam.Storm.Storm;
+import com.github.StormTeam.Storm.StormUtil;
 import org.bukkit.util.Vector;
 
+import java.io.File;
 import java.sql.*;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
 
 import static com.github.StormTeam.Storm.Storm.random;
 
@@ -69,8 +72,14 @@ public class Cracker {
         this.halfDepth = maxDepth / 2;
         try {
             Class.forName("org.sqlite.JDBC");
-            //  connection = DriverManager.getConnection("jdbc:sqlite:" + File.createTempFile("StormCrack", ".db").getAbsolutePath());
-            connection = DriverManager.getConnection("jdbc:sqlite::memory:");
+            int cs = size * maxWidth;
+            if (cs < 10000)
+                connection = DriverManager.getConnection("jdbc:sqlite::memory:");
+            else {
+                StormUtil.log(Level.WARNING, "Crack size set to be " + cs + ". Too large to fit in memory. Using flatfile: expect slowness.");
+                connection = DriverManager.getConnection("jdbc:sqlite:" + File.createTempFile("StormCrack", ".db").getAbsolutePath());
+            }
+
             Statement statement = connection.createStatement();
             statement.executeUpdate("CREATE TABLE points (id INTEGER PRIMARY KEY AUTOINCREMENT, x INTEGER, y INTEGER, z INTEGER, dx INTEGER)");
             statement.executeUpdate("CREATE INDEX dz ON points (dx)");
@@ -96,7 +105,7 @@ public class Cracker {
                 int k = maxWidth + 2 - Math.abs(mean - i) / (mean / maxWidth);
                 int min = -intGauss(k, 1), max = intGauss(k, 1);
                 for (int dx = min; dx < max; ++dx) {
-                    ///////////////////// Force the value to stay within half depth
+                    //Force the value to stay within half depth
                     int dy = Math.abs(dx) * halfDepth / (dx < 0 ? -min : max);
                     dy = maxDepth - (int) (dy * random.gauss(1, 0.25));
                     insert.setInt(1, x + dx);

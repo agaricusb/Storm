@@ -3,6 +3,7 @@ package com.github.StormTeam.Storm.Volcano;
 import com.github.StormTeam.Storm.ErrorLogger;
 import com.github.StormTeam.Storm.ReflectCommand;
 import com.github.StormTeam.Storm.Storm;
+import com.github.StormTeam.Storm.Volcano.Tasks.ReigniterTask;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -16,11 +17,10 @@ public class Volcano {
             alias = {"firemountain", "vulkano"},
             usage = "/<command>",
             permission = "storm.volcano.command",
-            permissionMessage = "You don't have the permission to make 2012 reality.",
             sender = ReflectCommand.Sender.PLAYER
     )
     public static boolean volcano(Player p) {
-        makeVolcano(p.getTargetBlock(null, 0).getLocation(), 30);
+        volcano(p.getTargetBlock(null, 0).getLocation(), 30);
         return true;
     }
 
@@ -29,15 +29,14 @@ public class Volcano {
             alias = {"firemountain", "vulkano"},
             usage = "/<command>",
             permission = "storm.volcano.command",
-            permissionMessage = "You don't have the permission to make 2012 reality.",
             sender = ReflectCommand.Sender.PLAYER
     )
     public static boolean volcano(Player p, String radius) {
-        makeVolcano(p.getTargetBlock(null, 200).getLocation(), Integer.parseInt(radius));
+        volcano(p.getTargetBlock(null, 200).getLocation(), Integer.parseInt(radius));
         return true;
     }
 
-    public static void makeVolcano(Location loc, int radius) {
+    public static void volcano(Location loc, int radius) {
         VolcanoWorker volcano = new VolcanoWorker(loc, radius, 0);
         volcano.spawn();
     }
@@ -48,6 +47,7 @@ public class Volcano {
             if (vulkanos.exists() || vulkanos.createNewFile())
                 VolcanoControl.load(vulkanos);
             Storm.commandRegistrator.register(Volcano.class);
+            new ReigniterTask().start();
         } catch (Exception e) {
             ErrorLogger.generateErrorLog(e);
         }

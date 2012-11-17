@@ -41,20 +41,16 @@ public class Storm extends JavaPlugin implements Listener {
                     "Thanks in advance, The-people-who-made-this-plugin";
 
     private String __ =
-            "Dear (Non-Bukkit-Admin) decompiler(s):\nThere is no point in decompiling this plugin... " +
-                    "All the source is already up at Github (github.com/StormTeam/Storm). Besides, neither JAD nor JD-GUI or " +
+            "Dear (Non-Bukkit-Admin) decompiler(s):\nThere is no point in decompiling this plugin: " +
+                    "all the source is already up at Github (github.com/StormTeam/Storm). Besides, neither JAD nor JD-GUI nor " +
                     "any decompiler can decompile source code to how it was before compilation. Save yourself time :-) " +
                     "BTW, if you decompile the code, you will not get the comments, " +
-                    "which will make our infamous bitmasks impossible to understand. Enjoy.";
+                    "which will render our bitmasks impossible to understand. Enjoy.";
 
     /**
      * A HashMap containing world name and configuration object.
      */
     public static final HashMap<String, GlobalVariables> wConfigs = new HashMap<String, GlobalVariables>();
-    /**
-     * A StormUtil object.
-     */
-    public static StormUtil util;
     /**
      * A global Random object, to avoid needless construction.
      */
@@ -81,13 +77,10 @@ public class Storm extends JavaPlugin implements Listener {
 
     public static boolean isDevBuild = true;
 
+    //Easter egg :D
     @ReflectCommand.Command(name = "sound", usage = "/<command> [sound]")
     public static boolean sound(Player p, String sound, String pitch, String volume) {
-        try {
-            Storm.util.playSound(p, sound, Float.parseFloat(pitch), Float.parseFloat(volume));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        StormUtil.playSound(p, sound, Float.parseFloat(pitch), Float.parseFloat(volume));
         return true;
     }
 
@@ -112,13 +105,10 @@ public class Storm extends JavaPlugin implements Listener {
             configureVersion();
 
             pm = getServer().getPluginManager();
-            util = new StormUtil(this);
+            pm.registerEvents((manager = new WeatherManager(this)), this); //Register texture/world events
 
             initConfiguration();
             initUpdater();
-
-            pm.registerEvents((manager = new WeatherManager(this)), this); //Register texture/world events
-            pm.registerEvents(this, this);
 
             initGraphs(new Metrics(this));
 
@@ -154,19 +144,19 @@ public class Storm extends JavaPlugin implements Listener {
             wConfigs.put(name, config);
         }
 
-        pm.registerEvents(new WorldConfigLoader(this), this); //For late loading worlds loaded by world plugins al a MultiVerse
+        pm.registerEvents(new WorldConfigLoader(this), this); //For late loading worlds isFromFile by world plugins al a MultiVerse
     }
 
     private void initUpdater() {
         if (true && !isDevBuild) { //TODO Add in conf
 
-            util.log("Checking for a new update...");
+            StormUtil.log("Checking for a new update...");
             Updater updater = new Updater(this, "storm", this.getFile(), Updater.UpdateType.DEFAULT, false);
             if (updater.getResult() != Updater.UpdateResult.NO_UPDATE) {
-                util.log("Update found! Downloading...");
-                util.log(updater.getLatestVersionString() + " will be enabled on reload!");
+                StormUtil.log("Update found! Downloading...");
+                StormUtil.log(updater.getLatestVersionString() + " will be enabled on reload!");
             } else {
-                util.log("No update found: running latest version.");
+                StormUtil.log("No update found: running latest version.");
             }
         }
     }

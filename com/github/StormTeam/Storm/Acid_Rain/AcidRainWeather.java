@@ -5,6 +5,7 @@ import com.github.StormTeam.Storm.Acid_Rain.Tasks.EntityDamagerTask;
 import com.github.StormTeam.Storm.EntityShelterer;
 import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.Storm;
+import com.github.StormTeam.Storm.StormUtil;
 import com.github.StormTeam.Storm.Weather.StormWeather;
 import org.bukkit.Bukkit;
 
@@ -46,7 +47,7 @@ public class AcidRainWeather extends StormWeather {
             return;
         }
 
-        Storm.util.broadcast(glob.Acid__Rain_Messages_On__Acid__Rain__Start, bukkitWorld);
+        StormUtil.broadcast(glob.Acid__Rain_Messages_On__Acid__Rain__Start, bukkitWorld);
 
         if (glob.Features_Acid__Rain_Entity__Damaging || glob.Features_Blizzards_Player__Damaging) {
             enDamager = new EntityDamagerTask(storm, world);
@@ -59,7 +60,7 @@ public class AcidRainWeather extends StormWeather {
         }
 
         if (glob.Features_Acid__Rain_Entity__Shelter__Pathfinding) {
-            shelter = new EntityShelterer(storm, world, "storm_acidrain", Storm.util.rainBiomes);
+            shelter = new EntityShelterer(storm, world, "storm_acidrain", StormUtil.rainBiomes);
             shelter.start();
         }
 
@@ -73,7 +74,7 @@ public class AcidRainWeather extends StormWeather {
     @Override
     public void end() {
         try {
-            Storm.util.broadcast(glob.Acid__Rain_Messages_On__Acid__Rain__Stop, bukkitWorld);
+            StormUtil.broadcast(glob.Acid__Rain_Messages_On__Acid__Rain__Stop, bukkitWorld);
             enDamager.stop();
             enDamager = null;
             shelter.stop();

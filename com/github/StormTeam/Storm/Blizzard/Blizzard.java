@@ -55,7 +55,6 @@ public class Blizzard {
             name = "blizzard",
             usage = "/<command> [world]",
             permission = "storm.blizzard.command",
-            permissionMessage = "You don't have the permission to freeze player's toes off!",
             sender = ReflectCommand.Sender.EVERYONE
     )
     public static boolean blizzardConsole(CommandSender sender, String world) {
@@ -69,7 +68,6 @@ public class Blizzard {
     @ReflectCommand.Command(
             name = "blizzard",
             permission = "storm.blizzard.command",
-            permissionMessage = "You don't have the permission to freeze player's toes off!",
             sender = ReflectCommand.Sender.PLAYER
     )
     public static boolean blizzardPlayer(Player sender) {

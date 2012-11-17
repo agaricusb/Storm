@@ -4,6 +4,7 @@ import com.github.StormTeam.Storm.Blizzard.Tasks.EntityDamagerTask;
 import com.github.StormTeam.Storm.EntityShelterer;
 import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.Storm;
+import com.github.StormTeam.Storm.StormUtil;
 import com.github.StormTeam.Storm.Weather.StormWeather;
 import org.bukkit.Bukkit;
 
@@ -45,7 +46,7 @@ public class BlizzardWeather extends StormWeather {
             return;
         }
 
-        Storm.util.broadcast(glob.Blizzard_Messages_On__Blizzard__Start, bukkitWorld);
+        StormUtil.broadcast(glob.Blizzard_Messages_On__Blizzard__Start, bukkitWorld);
 
         if (glob.Features_Blizzards_Slowing__Snow) {
             Blizzard.modder.modBestFit();
@@ -56,7 +57,7 @@ public class BlizzardWeather extends StormWeather {
             enDamager.start();
         }
         if (glob.Features_Blizzards_Entity__Shelter__Pathfinding) {
-            shelter = new EntityShelterer(storm, world, "storm_blizzard", Storm.util.snowyBiomes);
+            shelter = new EntityShelterer(storm, world, "storm_blizzard", StormUtil.snowyBiomes);
             shelter.start();
         }
         killID = Storm.manager.createAutoKillWeatherTask("storm_blizzard", world, 7500 + Storm.random.nextInt(1024));
@@ -72,8 +73,8 @@ public class BlizzardWeather extends StormWeather {
             if (glob.Features_Blizzards_Slowing__Snow) {
                 Blizzard.modder.reset();
             }
-            Storm.util.broadcast(glob.Blizzard_Messages_On__Blizzard__Stop, bukkitWorld);
-            Storm.util.setRainNoEvent(bukkitWorld, false);
+            StormUtil.broadcast(glob.Blizzard_Messages_On__Blizzard__Stop, bukkitWorld);
+            StormUtil.setRainNoEvent(bukkitWorld, false);
             enDamager.stop();
             enDamager = null;
             shelter.stop();

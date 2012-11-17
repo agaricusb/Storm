@@ -60,7 +60,6 @@ public class Wildfire {
             name = "wildfire",
             usage = "/<command> [world]",
             permission = "storm.wildfire.command",
-            permissionMessage = "You don't have the permission to start a wildfire! No mass destruction for you!",
             sender = ReflectCommand.Sender.EVERYONE
     )
     public static boolean wildfireConsole(CommandSender sender, String world) {
@@ -74,7 +73,6 @@ public class Wildfire {
     @ReflectCommand.Command(
             name = "wildfire",
             permission = "storm.wildfire.command",
-            permissionMessage = "You don't have the permission to start a wildfire! No mass destruction for you!",
             sender = ReflectCommand.Sender.PLAYER
     )
     public static boolean wildfirePlayer(Player sender) {
