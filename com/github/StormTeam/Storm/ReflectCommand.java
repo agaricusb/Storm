@@ -19,7 +19,10 @@ import java.util.*;
 
 public class ReflectCommand {
 
-    private HashMap<String, Set<Method>> everyoneCommands = new HashMap(), playerCommands = new HashMap(), consoleCommands = new HashMap();
+    private HashMap<String, Set<Method>>
+            everyoneCommands = new HashMap<String, Set<Method>>(),
+            playerCommands = new HashMap<String, Set<Method>>(),
+            consoleCommands = new HashMap<String, Set<Method>>();
     private CommandExecutor executor;
     private Plugin plugin;
 
@@ -28,28 +31,28 @@ public class ReflectCommand {
         executor = new CommandExecutor() {
             @Override
             public boolean onCommand(CommandSender commandSender, org.bukkit.command.Command command, String s, String[] args) {
-                Object retval = false;
+                Object returnValue = false;
                 String commandName = command.getName();
                 Object[] varargs = prepend(args, commandSender);
                 try {
                     if (everyoneCommands.containsKey(commandName)) {
                         for (Method m : everyoneCommands.get(command.getName()))
                             if (varargs.length >= m.getParameterTypes().length)
-                                retval = m.invoke(null, trim(varargs, m.getParameterTypes().length));
+                                returnValue = m.invoke(null, trim(varargs, m.getParameterTypes().length));
                     }
                     if (commandSender instanceof Player) {
                         if (playerCommands.containsKey(commandName))
                             for (Method m : playerCommands.get(commandName))
                                 if (varargs.length >= m.getParameterTypes().length)
-                                    retval = m.invoke(null, trim(varargs, m.getParameterTypes().length));
+                                    returnValue = m.invoke(null, trim(varargs, m.getParameterTypes().length));
                     }
                     if (commandSender instanceof ConsoleCommandSender) {
                         if (consoleCommands.containsKey(commandName))
                             for (Method m : consoleCommands.get(commandName))
                                 if (varargs.length >= m.getParameterTypes().length)
-                                    retval = m.invoke(null, trim(varargs, m.getParameterTypes().length));
+                                    returnValue = m.invoke(null, trim(varargs, m.getParameterTypes().length));
                     }
-                    return (Boolean) retval;
+                    return (Boolean) returnValue;
                 } catch (Exception e) {
                     e.printStackTrace();
                     return false;
@@ -73,13 +76,12 @@ public class ReflectCommand {
         List<String> alias = new ArrayList<String>();
         alias.add(name);
         if (!ArrayUtils.isEmpty(com.alias()))
-            for (String ob : com.alias())
-                alias.add(ob);
+            Collections.addAll(alias, com.alias());
         register.register(name, alias.toArray(new String[alias.size()]), com.usage(), com.permission(), com.permissionMessage());
         HashMap<String, Set<Method>> hm;
         try {
             Field map = this.getClass().getDeclaredField(com.sender().name().toLowerCase() + "Commands");
-            hm = (HashMap) map.get(this);
+            hm = (HashMap<String, Set<Method>>) map.get(this);
             if (hm.containsKey(name))
                 hm.get(name).add(m);
             else
@@ -93,14 +95,13 @@ public class ReflectCommand {
     Object[] prepend(Object[] arr, Object firstElement) {
         List<Object> pre = new ArrayList<Object>();
         pre.add(firstElement);
-        for (Object ob : arr)
-            pre.add(ob);
-        return pre.toArray(new Object[0]);
+        Collections.addAll(pre, arr);
+        return pre.toArray(new Object[pre.size()]);
     }
 
-    Object[] trim(Object[] input, int newsize) {
-        Object result[] = new Object[newsize];
-        for (int i = 0; i < newsize; i++) result[i] = input[i];
+    Object[] trim(Object[] input, int newSize) {
+        Object result[] = new Object[newSize];
+        System.arraycopy(input, 0, result, 0, newSize);
         return result;
     }
 
