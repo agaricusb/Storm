@@ -26,7 +26,6 @@ public class QuakeTask implements Runnable {
     @Override
     public void run() {
         for (Player p : quake.world.getPlayers()) {
-            // Don't bother creative players
             if (p.getGameMode() == GameMode.CREATIVE || !quake.isQuaking(p.getLocation()))
                 continue;
 

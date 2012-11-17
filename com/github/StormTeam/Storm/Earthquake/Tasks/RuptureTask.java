@@ -19,7 +19,7 @@ public class RuptureTask implements Runnable {
     private Location location;
     private int length;
     private final int width;
-    private int id = -1;
+    private int id;
     private int layerIndex = 0;
     private Cracker cracker;
     private Cuboid area;
@@ -35,7 +35,6 @@ public class RuptureTask implements Runnable {
         cracker = new Cracker(length, location.getBlockX(), location.getBlockY(), location.getBlockZ(), width, depth);
         cracker.plot();
     }
-
 
     public void run() {
         Verbose.log("Cracking layer " + layerIndex);
@@ -59,20 +58,12 @@ public class RuptureTask implements Runnable {
         }
         StormUtil.playSoundNearby(location, (length * width) / 2, "ambient.weather.thunder", 1F, Storm.random.nextInt(3) + 1);
         area.sendClientChanges();
-        area.loadChunks();
         ++layerIndex;
     }
 
     public void start() {
-        id = Bukkit.getScheduler()
-                .scheduleSyncRepeatingTask(
-                        Storm.instance,
-                        this, 0, 20);
+        id = Bukkit.getScheduler().scheduleSyncRepeatingTask(Storm.instance, this, 0, 20);
     }
-
-    /**
-     * Ends the task.
-     */
 
     public void stop() {
         Bukkit.getScheduler().cancelTask(id);

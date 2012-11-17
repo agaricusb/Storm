@@ -10,6 +10,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -32,10 +33,8 @@ public class EarthquakeControl implements Listener {
         HandlerList.unregisterAll(this);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void unloadWorld(WorldUnloadEvent e) {
-        if (e.isCancelled())
-            return;
         for (Quake quake : quakes) {
             if (quake.world.equals(e.getWorld())) {
                 quake.stop();
@@ -44,17 +43,13 @@ public class EarthquakeControl implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onBlockPlace(BlockPlaceEvent e) {
-        if (e.isCancelled())
-            return;
         handleBlock(e.getBlock(), e.getPlayer());
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onBlockBreak(BlockBreakEvent e) {
-        if (e.isCancelled())
-            return;
         handleBlock(e.getBlock(), e.getPlayer());
     }
 
