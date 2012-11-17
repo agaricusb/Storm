@@ -37,7 +37,7 @@ public class WeatherManager implements Listener {
     private final Storm storm;
     private boolean currentRain, currentThunder;
     private final Map<String, String> worldTextures = new HashMap<String, String>();
-    private final Set<Method> onloadMethods = new HashSet();
+    private final Set<Method> onLoadMethods = new HashSet<Method>();
 
     public WeatherManager(Storm storm) {
         this.storm = storm;
@@ -65,11 +65,6 @@ public class WeatherManager implements Listener {
             } catch (Exception e) {
                 ErrorLogger.generateErrorLog(e);
             }
-        }
-        try {
-            enableWeatherForWorld("a", "b", 10, 20);
-        } catch (WeatherNotFoundException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
     }
 
@@ -100,8 +95,7 @@ public class WeatherManager implements Listener {
             Object[] arguments = new Object[args.length + 2];
             arguments[0] = storm;
             arguments[1] = world;
-            for (int i = 2; i < arguments.length; ++i)
-                arguments[i] = args[i];
+            System.arraycopy(args, 2, arguments, 2, arguments.length - 2);
             try {
                 instances.put(world, weather.getConstructor(classes).newInstance(arguments));
                 WeatherTrigger trigger = new WeatherTrigger(this, name, world, chance);
@@ -114,7 +108,7 @@ public class WeatherManager implements Listener {
     }
 
     /**
-     * Uninitalize a weather on a world.
+     * Uninitialize a weather on a world.
      *
      * @param name  weather name
      * @param world world name
@@ -150,7 +144,7 @@ public class WeatherManager implements Listener {
      * @param world World name
      * @return A Set<String> containing the active weathers.
      */
-    Set<String> getActiveWeathersReal(String world) {
+    public Set<String> getActiveWeathersReal(String world) {
         if (!activeWeather.containsKey(world)) {
             activeWeather.put(world, new HashSet<String>());
         }
@@ -184,10 +178,10 @@ public class WeatherManager implements Listener {
         return registeredWeathers.get(weather).RIGHT.entrySet().iterator().next().getValue();
     }
 
-    public void registerWorldLoadHandler(Method meth) {
-        if (!meth.isAccessible())
-            meth.setAccessible(true);
-        onloadMethods.add(meth);
+    public void registerWorldLoadHandler(Method method) {
+        if (!method.isAccessible())
+            method.setAccessible(true);
+        onLoadMethods.add(method);
     }
 
     private boolean isConflictingWeatherOneWay(String w1, String w2) {
@@ -210,7 +204,7 @@ public class WeatherManager implements Listener {
         return conflicts.contains(w2);
     }
 
-    void controlMinecraftFlags(String world) {
+    protected void controlMinecraftFlags(String world) {
         try {
             Field needRain = StormWeather.class.getDeclaredField("needRainFlag");
             Field needThunder = StormWeather.class.getDeclaredField("needThunderFlag");
@@ -247,7 +241,7 @@ public class WeatherManager implements Listener {
      * @param w2 weather #2
      * @return whether the two are conflicting
      */
-    boolean isConflictingWeather(String w1, String w2) {
+    public boolean isConflictingWeather(String w1, String w2) {
         synchronized (this) {
             try {
                 return !(isWeatherRegistered(w1) || isWeatherRegistered(w2)) && (isConflictingWeatherOneWay(w1, w2) || isConflictingWeatherOneWay(w2, w1));
@@ -332,7 +326,7 @@ public class WeatherManager implements Listener {
      * @throws WeatherNotFoundException
      * @throws WeatherNotAllowedException
      */
-    void startWeatherReal(String name, Collection<String> worlds) throws WeatherNotFoundException, WeatherNotAllowedException {
+    protected void startWeatherReal(String name, Collection<String> worlds) throws WeatherNotFoundException, WeatherNotAllowedException {
         Pair<Class<? extends StormWeather>, Map<String, StormWeather>> weatherData = registeredWeathers.get(name);
         if (weatherData == null) {
             throw new WeatherNotFoundException(String.format("Weather %s not found", name));
@@ -389,7 +383,7 @@ public class WeatherManager implements Listener {
         }
     }
 
-    void stopWeatherReal(String name, Collection<String> worlds) throws WeatherNotFoundException {
+    protected void stopWeatherReal(String name, Collection<String> worlds) throws WeatherNotFoundException {
         Pair<Class<? extends StormWeather>, Map<String, StormWeather>> weatherData = registeredWeathers.get(name);
         if (weatherData == null) {
             throw new WeatherNotFoundException(String.format("Weather %s not found", name));
@@ -439,9 +433,9 @@ public class WeatherManager implements Listener {
 
     @EventHandler
     public void worldLoad(WorldLoadEvent e) {
-        for (Method me : onloadMethods) {
+        for (Method method : onLoadMethods) {
             try {
-                me.invoke(null, e.getWorld());
+                method.invoke(null, e.getWorld());
             } catch (Exception ex) {
                 ErrorLogger.generateErrorLog(ex);
             }
