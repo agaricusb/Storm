@@ -144,7 +144,7 @@ public class WeatherManager implements Listener {
      * @param world World name
      * @return A Set<String> containing the active weathers.
      */
-    public Set<String> getActiveWeathersReal(String world) {
+    protected Set<String> getActiveWeathersReal(String world) {
         if (!activeWeather.containsKey(world)) {
             activeWeather.put(world, new HashSet<String>());
         }
