@@ -15,23 +15,21 @@ import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 import static com.github.StormTeam.Storm.Wildfire.Wildfire.getWFBlocks;
 
 /**
- * Handles fire events for wildfires.
+ * Handles fire events for wildfires. The epitome of unreadability.
  */
 
 public class WildfireListeners implements Listener {
 
     /**
-     * Checks for other blocks to burn if event involves a block in Wildfire,getWFBlocks().
+     * Checks for other blocks to burn if event involves a block in Wildfire.getWFBlocks().
      *
      * @param event The BlockIgniteEvent being handled
      */
 
     @EventHandler
     public void onBlockIgnite(BlockIgniteEvent event) {
-
-        if (!event.getCause().equals(IgniteCause.SPREAD)) {
+        if (!event.getCause().equals(IgniteCause.SPREAD))
             return;
-        }
 
         Location loc = event.getBlock().getLocation();
         int ox = (int) loc.getX(), oy = (int) loc.getY(), oz = (int) loc.getZ();
@@ -39,7 +37,7 @@ public class WildfireListeners implements Listener {
         String name = world.getName();
 
         GlobalVariables glob = Storm.wConfigs.get(name);
-        if (getWFBlocks(name).size() < glob.Natural__Disasters_Wildfires_Maximum__Fires) {
+        if (getWFBlocks(name).size() <= glob.Natural__Disasters_Wildfires_Maximum__Fires) {
             int radiuski = glob.Natural__Disasters_Wildfires_Scan__Radius;
             for (int x = -radiuski; x <= radiuski; ++x) {
                 for (int y = -radiuski; y <= radiuski; ++y) {
@@ -73,9 +71,7 @@ public class WildfireListeners implements Listener {
         for (int x = -radiuski; x <= radiuski; ++x) {
             for (int y = -radiuski; y <= radiuski; ++y) {
                 for (int z = -radiuski; z <= radiuski; ++z) {
-                    block = w.getBlockAt(loc.getBlockX() + x, loc.getBlockX() + y, loc.getBlockX() + z);
-
-                    if (block.getTypeId() != 0)
+                    if ((block = w.getBlockAt(loc.getBlockX() + x, loc.getBlockX() + y, loc.getBlockX() + z)).getTypeId() != 0)
                         continue;
 
                     // Tries to burn all blocks with one face touching `block` and `block` itself
@@ -84,7 +80,8 @@ public class WildfireListeners implements Listener {
                             burn(block.getRelative(
                                     i >> 1 == 0 ? ((i & 1) == 0 ? 1 : -1) : 0,
                                     i >> 1 == 1 ? ((i & 1) == 0 ? 1 : -1) : 0,
-                                    i >> 1 == 2 ? ((i & 1) == 0 ? 1 : -1) : 0));
+                                    i >> 1 == 2 ? ((i & 1) == 0 ? 1 : -1) : 0)
+                            );
                             ++spread;
                         }
                     }
