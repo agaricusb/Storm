@@ -1,7 +1,7 @@
 package com.github.StormTeam.Storm.Lightning;
 
-import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.Storm;
+import com.github.StormTeam.Storm.WorldVariables;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -45,7 +45,7 @@ public class LightningUtils {
 
     public static Location hitPlayers(Location oldLoc) {
         Location chunk = pickChunk(oldLoc.getWorld()).getBlock(8, 255, 8).getLocation();
-        GlobalVariables glob = Storm.wConfigs.get(oldLoc.getWorld().getName());
+        WorldVariables glob = Storm.wConfigs.get(oldLoc.getWorld().getName());
 
         for (Player p : Bukkit.getServer().getOnlinePlayers()) {
             Location playerLocation = new Location(p.getWorld(), p.getLocation().getX(), 255, p.getLocation().getZ());
@@ -89,7 +89,7 @@ public class LightningUtils {
     private static List<Location> findLightningRods(Chunk chunk) {
         ArrayList<Location> list = new ArrayList<Location>();
         ChunkSnapshot snapshot = chunk.getChunkSnapshot(true, false, false);
-        GlobalVariables glob = Storm.wConfigs.get(chunk.getWorld().getName());
+        WorldVariables glob = Storm.wConfigs.get(chunk.getWorld().getName());
 
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {

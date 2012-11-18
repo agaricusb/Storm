@@ -1,10 +1,10 @@
 package com.github.StormTeam.Storm.Meteors;
 
-import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.Meteors.Entities.EntityMeteor;
 import com.github.StormTeam.Storm.Storm;
 import com.github.StormTeam.Storm.StormUtil;
 import com.github.StormTeam.Storm.Weather.StormWeather;
+import com.github.StormTeam.Storm.WorldVariables;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.World;
@@ -19,7 +19,7 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 
 public class MeteorWeather extends StormWeather {
 
-    private final GlobalVariables glob;
+    private final WorldVariables glob;
     private int killID;
 
     /**

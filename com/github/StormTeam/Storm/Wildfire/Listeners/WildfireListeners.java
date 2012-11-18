@@ -1,7 +1,7 @@
 package com.github.StormTeam.Storm.Wildfire.Listeners;
 
-import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.Storm;
+import com.github.StormTeam.Storm.WorldVariables;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -36,7 +36,7 @@ public class WildfireListeners implements Listener {
         World world = loc.getWorld();
         String name = world.getName();
 
-        GlobalVariables glob = Storm.wConfigs.get(name);
+        WorldVariables glob = Storm.wConfigs.get(name);
         if (getWFBlocks(name).size() <= glob.Natural__Disasters_Wildfires_Maximum__Fires) {
             int radiuski = glob.Natural__Disasters_Wildfires_Scan__Radius;
             for (int x = -radiuski; x <= radiuski; ++x) {

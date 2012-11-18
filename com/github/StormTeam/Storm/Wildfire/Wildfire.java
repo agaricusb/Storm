@@ -1,11 +1,11 @@
 package com.github.StormTeam.Storm.Wildfire;
 
 import com.github.StormTeam.Storm.ErrorLogger;
-import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.ReflectCommand;
 import com.github.StormTeam.Storm.Storm;
 import com.github.StormTeam.Storm.Weather.Exceptions.WeatherNotFoundException;
 import com.github.StormTeam.Storm.Wildfire.Listeners.WildfireListeners;
+import com.github.StormTeam.Storm.WorldVariables;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -48,7 +48,7 @@ public class Wildfire {
 
     private static void loadWorld(World world) throws WeatherNotFoundException {
         String name = world.getName();
-        GlobalVariables temp = Storm.wConfigs.get(name);
+        WorldVariables temp = Storm.wConfigs.get(name);
         if (temp.Features_Wildfires) {
             Storm.manager.enableWeatherForWorld("storm_wildfire", name,
                     temp.Natural__Disasters_Wildfires_Chance__To__Start,

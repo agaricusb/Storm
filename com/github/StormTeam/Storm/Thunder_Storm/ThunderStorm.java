@@ -1,10 +1,10 @@
 package com.github.StormTeam.Storm.Thunder_Storm;
 
 import com.github.StormTeam.Storm.ErrorLogger;
-import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.ReflectCommand;
 import com.github.StormTeam.Storm.Storm;
 import com.github.StormTeam.Storm.Weather.Exceptions.WeatherNotFoundException;
+import com.github.StormTeam.Storm.WorldVariables;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -38,7 +38,7 @@ public class ThunderStorm {
 
     private static void loadWorld(World world) throws WeatherNotFoundException {
         String name = world.getName();
-        GlobalVariables temp = Storm.wConfigs.get(name);
+        WorldVariables temp = Storm.wConfigs.get(name);
         if (temp.Features_Thunder__Storms_Thunder__Striking) {
             Storm.manager.enableWeatherForWorld("storm_thunderstorm", name,
                     temp.Thunder__Storm_Thunder__Storm__Chance, temp.Thunder__Storm_Thunder__Storm__Base__Interval);

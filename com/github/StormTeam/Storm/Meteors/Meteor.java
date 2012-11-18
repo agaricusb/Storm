@@ -1,12 +1,12 @@
 package com.github.StormTeam.Storm.Meteors;
 
 import com.github.StormTeam.Storm.ErrorLogger;
-import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.Meteors.Entities.EntityMeteor;
 import com.github.StormTeam.Storm.Meteors.Listener.SafeExplosion;
 import com.github.StormTeam.Storm.ReflectCommand;
 import com.github.StormTeam.Storm.Storm;
 import com.github.StormTeam.Storm.Weather.Exceptions.WeatherNotFoundException;
+import com.github.StormTeam.Storm.WorldVariables;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -51,7 +51,7 @@ public class Meteor {
 
     private static void loadWorld(World world) throws WeatherNotFoundException {
         String name = world.getName();
-        GlobalVariables temp = Storm.wConfigs.get(name);
+        WorldVariables temp = Storm.wConfigs.get(name);
         if (temp.Features_Meteor) {
             Storm.manager.enableWeatherForWorld("storm_meteor", name,
                     temp.Natural__Disasters_Meteor_Chance__To__Spawn,
@@ -104,7 +104,7 @@ public class Meteor {
     private static void trajectoryMeteor(Location targetLoc, Location spawnLoc) {
         net.minecraft.server.WorldServer mcWorld = ((CraftWorld) (spawnLoc.getWorld())).getHandle();
 
-        GlobalVariables glob = Storm.wConfigs.get(mcWorld.getWorld().getName());
+        WorldVariables glob = Storm.wConfigs.get(mcWorld.getWorld().getName());
         EntityMeteor mm = new EntityMeteor(
                 mcWorld, 15, 15, 15, 60, 100,
                 glob.Natural__Disasters_Meteor_Messages_On__Meteor__Crash, 9,
