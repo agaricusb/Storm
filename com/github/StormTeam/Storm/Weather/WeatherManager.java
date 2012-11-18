@@ -511,7 +511,7 @@ public class WeatherManager implements Listener {
             String world = event.getWorld().getName();
             List<String> worlds = Arrays.asList(world);
             synchronized (this) {
-                for (String weather : getActiveWeathersReal(world)) {
+                for (String weather : new HashSet<String>(getActiveWeathersReal(world))) {
                     try {
                         stopWeatherReal(weather, worlds);
                     } catch (WeatherNotFoundException ex) {
