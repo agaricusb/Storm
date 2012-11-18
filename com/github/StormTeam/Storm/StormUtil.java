@@ -449,6 +449,13 @@ public class StormUtil {
         return true;
     }
 
+    public static Location getSurface(Location location) {
+        // TODO finish
+        Location out = location.clone();
+        out.setY(80);
+        return location;
+    }
+
     /**
      * Returns a HashSet containing all the arguments passed in.
      *
