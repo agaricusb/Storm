@@ -48,8 +48,9 @@ public class RuptureTask implements Runnable {
             while (bi.hasNext()) {
                 Block toInspect = bi.next();
                 int bid = toInspect.getTypeId();
-                if (bid != 0 && id != 7)
-                    area.setBlockFast(toInspect, 0);
+                if (bid == 0 || bid == 7)
+                    continue;
+                area.setBlockFast(toInspect, 0);
                 if ((bid & 0xFE) == 8) // 8 or 9
                     toInspect.setTypeId(9, true);
                 else if ((bid & 0xFE) == 10) // 10 or 11

@@ -42,85 +42,20 @@ import java.net.URLEncoder;
 import java.util.*;
 import java.util.logging.Level;
 
-/**
- * <p>
- * The metrics class obtains data about a plugin and submits statistics about it to the metrics backend.
- * </p>
- * <p>
- * Public methods provided by this class:
- * </p>
- * <code>
- * Graph createGraph(String name); <br/>
- * void addCustomData(Metrics.Plotter plotter); <br/>
- * void start(); <br/>
- * </code>
- */
 public class Metrics {
 
-    /**
-     * The current revision number
-     */
     private final static int REVISION = 5;
-
-    /**
-     * The base url of the metrics domain
-     */
     private static final String BASE_URL = "http://mcstats.org";
-
-    /**
-     * The url used to report a server's status
-     */
     private static final String REPORT_URL = "/report/%s";
-
-    /**
-     * The separator to use for custom data. This MUST NOT change unless you are hosting your own
-     * version of metrics and want to change it.
-     */
     private static final String CUSTOM_DATA_SEPARATOR = "~~";
-
-    /**
-     * Interval of time to ping (in minutes)
-     */
     private static final int PING_INTERVAL = 10;
-
-    /**
-     * The plugin this metrics submits for
-     */
     private final Plugin plugin;
-
-    /**
-     * All of the custom graphs to submit to metrics
-     */
     private final Set<Graph> graphs = Collections.synchronizedSet(new HashSet<Graph>());
-
-    /**
-     * The default graph, used for addCustomData when you don't want a specific graph
-     */
     private final Graph defaultGraph = new Graph("Default");
-
-    /**
-     * The plugin configuration file
-     */
     private final YamlConfiguration configuration;
-
-    /**
-     * The plugin configuration file
-     */
     private final File configurationFile;
-
-    /**
-     * Unique server id
-     */
     private final String guid;
-
-    /**
-     * Lock for synchronization
-     */
     private final Object optOutLock = new Object();
-
-    /**
-     * Id of the scheduled task
-     */
     private volatile int taskId = -1;
 
     public Metrics(final Plugin plugin) throws IOException {

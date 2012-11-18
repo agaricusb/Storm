@@ -56,7 +56,7 @@ public class VolcanoControl implements Listener {
     public void coolLava(BlockFromToEvent e) {
         Block from = e.getBlock();
         for (VolcanoWorker volcano : volcanoes) {
-            if ((from.getTypeId() & 0xfe) == 0xa && volcano.active && volcano.ownsBlock(from)) { //Checks if the block is lava and if a volcano owns it
+            if (volcano.active && (from.getTypeId() & 0xfe) == 0xa && volcano.ownsBlock(from)) { //Checks if the block is lava and if a volcano owns it
                 solidify(volcano, from, randomVolcanoBlock(from.getWorld()));
                 if (!volcano.ownsBlock(e.getToBlock()))
                     volcano.grower.stop(); //Reached boundaries

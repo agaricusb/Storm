@@ -160,12 +160,16 @@ public class Storm extends JavaPlugin implements Listener {
 
     private void initUpdater() {
         StormUtil.log("Checking for a new update...");
-        Updater updater = new Updater(this, "storm", this.getFile(), Updater.UpdateType.DEFAULT, false);
-        if (updater.getResult() != Updater.UpdateResult.NO_UPDATE) {
-            StormUtil.log("Update found! Downloading...");
-            StormUtil.log(updater.getLatestVersionString() + " will be enabled on reload!");
-        } else {
-            StormUtil.log("No update found: running latest version.");
+        try {
+            Updater updater = new Updater(this, "storm", this.getFile(), Updater.UpdateType.DEFAULT, false);
+            if (updater.getResult() != Updater.UpdateResult.NO_UPDATE) {
+                StormUtil.log("Update found! Downloading...");
+                StormUtil.log(updater.getLatestVersionString() + " will be enabled on reload!");
+            } else {
+                StormUtil.log("No update found: running latest version.");
+            }
+        } catch (Exception e) {
+            StormUtil.log(Level.WARNING, "Failed to check for an update. This may be due to limited or no internet conectivity.");
         }
     }
 
