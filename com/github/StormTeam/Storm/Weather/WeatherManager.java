@@ -336,7 +336,7 @@ public class WeatherManager implements Listener {
             if (weather == null) {
                 throw new WeatherNotAllowedException(String.format("Weather %s not allowed in %s", name, world));
             }
-            if (!getActiveWeathersReal(world).contains(name)) {
+            if (!getActiveWeathersReal(world).contains(name) && weather.canStart()) {
                 WeatherEvent startEvent = new WeatherEvent(Bukkit.getWorld(world), true, name);
                 Storm.pm.callEvent(startEvent);
 
