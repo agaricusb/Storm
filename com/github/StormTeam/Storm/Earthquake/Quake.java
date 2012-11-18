@@ -35,6 +35,7 @@ public class Quake {
 
     public void stop() {
         Verbose.log("Stopping quake!");
+        EarthquakeControl.quakes.remove(this);
         if (controller != null && EarthquakeControl.quakes.isEmpty()) {
             controller.forget();
         }
