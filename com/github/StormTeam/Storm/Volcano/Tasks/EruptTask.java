@@ -31,11 +31,13 @@ public class EruptTask implements Runnable {
 
         if (Storm.random.nextInt(100) > 95)
             volcano.explode(er, volcano.layer / 10 + 2);
-        int rand = Storm.random.nextInt(5) + 1;
-        for (int i = 0; i != rand; i++) {
-            FallingBlock b = volcano.world.spawnFallingBlock(er, 11, (byte) 0);
-            b.setDropItem(false);
-            b.setVelocity(new Vector(Math.random() - 0.5, 0.3, Math.random() - 0.5));
+        if (Storm.version > 1.2) {
+            int rand = Storm.random.nextInt(5) + 1;
+            for (int i = 0; i != rand; i++) {
+                FallingBlock b = volcano.world.spawnFallingBlock(er, 11, (byte) 0);
+                b.setDropItem(false);
+                b.setVelocity(new Vector(Math.random() - 0.5, 0.3, Math.random() - 0.5));
+            }
         }
     }
 

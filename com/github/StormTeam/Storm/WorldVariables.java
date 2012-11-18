@@ -30,7 +30,7 @@ import java.util.List;
  * Container class for all configurable Storm variables.
  */
 
-public class GlobalVariables extends ReflectConfiguration {
+public class WorldVariables extends ReflectConfiguration {
 
     /**
      * Creates a GlobalVariable object with the given name.
@@ -39,7 +39,7 @@ public class GlobalVariables extends ReflectConfiguration {
      * @param name   The name of the file
      */
 
-    public GlobalVariables(Plugin plugin, String name, String folder) {
+    public WorldVariables(Plugin plugin, String name, String folder) {
         super(plugin, name, folder);
     }
 

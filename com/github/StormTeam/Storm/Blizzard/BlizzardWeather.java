@@ -2,10 +2,10 @@ package com.github.StormTeam.Storm.Blizzard;
 
 import com.github.StormTeam.Storm.Blizzard.Tasks.EntityDamagerTask;
 import com.github.StormTeam.Storm.EntityShelterer;
-import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.Storm;
 import com.github.StormTeam.Storm.StormUtil;
 import com.github.StormTeam.Storm.Weather.StormWeather;
+import com.github.StormTeam.Storm.WorldVariables;
 import org.bukkit.Bukkit;
 
 import java.util.HashSet;
@@ -17,7 +17,7 @@ import java.util.Set;
 
 public class BlizzardWeather extends StormWeather {
 
-    private final GlobalVariables glob;
+    private final WorldVariables glob;
     private EntityDamagerTask enDamager;
     private EntityShelterer shelter;
     private int killID;

@@ -1,9 +1,9 @@
 package com.github.StormTeam.Storm.Lightning.Listeners;
 
-import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.Lightning.LightningUtils;
 import com.github.StormTeam.Storm.Storm;
 import com.github.StormTeam.Storm.StormUtil;
+import com.github.StormTeam.Storm.WorldVariables;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -24,7 +24,7 @@ public class StrikeListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void strikeLightningListener(LightningStrikeEvent strike) {
-        GlobalVariables glob = Storm.wConfigs.get(strike.getWorld().getName());
+        WorldVariables glob = Storm.wConfigs.get(strike.getWorld().getName());
 
         Location strikeLocation = strike.getLightning().getLocation();
 

@@ -1,11 +1,11 @@
 package com.github.StormTeam.Storm.Thunder_Storm;
 
 import com.github.StormTeam.Storm.EntityShelterer;
-import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.Storm;
 import com.github.StormTeam.Storm.StormUtil;
 import com.github.StormTeam.Storm.Thunder_Storm.Tasks.StrikerTask;
 import com.github.StormTeam.Storm.Weather.StormWeather;
+import com.github.StormTeam.Storm.WorldVariables;
 import org.bukkit.Bukkit;
 
 /**
@@ -14,7 +14,7 @@ import org.bukkit.Bukkit;
 
 public class ThunderStormWeather extends StormWeather {
 
-    private final GlobalVariables glob;
+    private final WorldVariables glob;
     private StrikerTask striker;
     private EntityShelterer shelter;
     private int killID;

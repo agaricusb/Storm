@@ -152,6 +152,15 @@ public class ReflectCommand {
 
         @Override
         public boolean execute(CommandSender sender, String label, String[] args) {
+            boolean hasPerm = false;
+            for (String perm : permissions) {
+                if (sender.hasPermission(perm))
+                    hasPerm = true;
+            }
+            if (!hasPerm) {
+                sender.sendMessage(getPermissionMessage());
+                return false;
+            }
             return owner.onCommand(sender, this, label, args);
         }
 

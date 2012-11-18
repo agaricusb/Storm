@@ -1,9 +1,9 @@
 package com.github.StormTeam.Storm.Wildfire;
 
-import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.Storm;
 import com.github.StormTeam.Storm.StormUtil;
 import com.github.StormTeam.Storm.Weather.StormWeather;
+import com.github.StormTeam.Storm.WorldVariables;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
@@ -16,7 +16,7 @@ import org.bukkit.block.Block;
 
 public class WildfireWeather extends StormWeather { //TODO: Make use of getTickedBlock(Chunk) to get better ranges of wildfires 
 
-    private final GlobalVariables glob;
+    private final WorldVariables glob;
     private int killID;
     private final World affectedWorld;
 

@@ -2,6 +2,7 @@ package com.github.StormTeam.Storm.Earthquake;
 
 import com.github.StormTeam.Storm.Cuboid;
 import com.github.StormTeam.Storm.Earthquake.Tasks.RuptureTask;
+import com.github.StormTeam.Storm.Storm;
 import com.github.StormTeam.Storm.StormUtil;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -57,15 +58,16 @@ public class EarthquakeControl implements Listener {
     }
 
     public void handleBlock(final Block block, Player p) {
-        for (Quake quake : quakes) {
-            if (p.getGameMode() == GameMode.CREATIVE || !quake.isQuaking(block.getLocation()) || StormUtil.isBlockProtected(block) || !isBounceable(block))
-                return;
-        }
+        if (Storm.version > 1.2) {
+            for (Quake quake : quakes)
+                if (p.getGameMode() == GameMode.CREATIVE || !quake.isQuaking(block.getLocation()) || StormUtil.isBlockProtected(block) || !isBounceable(block))
+                    return;
 
-        FallingBlock fB = block.getWorld().spawnFallingBlock(block.getLocation(), block.getType(), block.getData());
-        fB.setDropItem(true);
-        block.setTypeId(0);
-        fB.setVelocity(new Vector(Math.random() - 0.5, 0.3, Math.random() - 0.5));
+            FallingBlock fB = block.getWorld().spawnFallingBlock(block.getLocation(), block.getType(), block.getData());
+            fB.setDropItem(true);
+            block.setTypeId(0);
+            fB.setVelocity(new Vector(Math.random() - 0.5, 0.3, Math.random() - 0.5));
+        }
     }
 
     public static boolean isQuaking(Location location) {

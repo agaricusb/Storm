@@ -21,6 +21,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -50,7 +51,7 @@ public class Storm extends JavaPlugin implements Listener {
     /**
      * A HashMap containing world name and configuration object.
      */
-    public static final HashMap<String, GlobalVariables> wConfigs = new HashMap<String, GlobalVariables>();
+    public static final HashMap<String, WorldVariables> wConfigs = new HashMap<String, WorldVariables>();
     /**
      * A global Random object, to avoid needless construction.
      */
@@ -71,16 +72,21 @@ public class Storm extends JavaPlugin implements Listener {
 
     public static Storm instance = null;
 
-    public static final boolean debug = true;
+    public static boolean verbose = true;
 
     public static ReflectCommand commandRegistrator = null;
-
-    public static boolean isDevBuild = true;
 
     //Easter egg :D
     @ReflectCommand.Command(name = "sound", usage = "/<command> [sound]")
     public static boolean sound(Player p, String sound, String pitch, String volume) {
         StormUtil.playSound(p, sound, Float.parseFloat(pitch), Float.parseFloat(volume));
+        return true;
+    }
+
+    @ReflectCommand.Command(name = "speed", usage = "/<command> [speed]")
+    public static boolean speed(Player p, String amp) {
+        p.setFlySpeed(Float.parseFloat(amp));
+        p.setWalkSpeed(Float.parseFloat(amp));
         return true;
     }
 
@@ -91,6 +97,10 @@ public class Storm extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         try {
+            GlobalVariables glob = new GlobalVariables(this, "global_variables");
+            glob.load();
+            verbose = glob.Verbose__Logging;
+
             commandRegistrator = new ReflectCommand(this);
             //ErrorLogger.register(this, "Storm", "com.github.StormTeam.Storm", "http://www.stormteam.co.cc/projects/storm/issues");
 
@@ -108,7 +118,8 @@ public class Storm extends JavaPlugin implements Listener {
             pm.registerEvents((manager = new WeatherManager(this)), this); //Register texture/world events
 
             initConfiguration();
-            initUpdater();
+            if (glob.Auto__Updating)
+                initUpdater();
 
             initGraphs(new Metrics(this));
 
@@ -139,7 +150,7 @@ public class Storm extends JavaPlugin implements Listener {
         // Make per-world configuration files           
         for (World world : Bukkit.getWorlds()) {
             String name = world.getName();
-            GlobalVariables config = new GlobalVariables(this, name, ".worlds");
+            WorldVariables config = new WorldVariables(this, name, ".worlds");
             config.load();
             wConfigs.put(name, config);
         }
@@ -148,16 +159,13 @@ public class Storm extends JavaPlugin implements Listener {
     }
 
     private void initUpdater() {
-        if (true && !isDevBuild) { //TODO Add in conf
-
-            StormUtil.log("Checking for a new update...");
-            Updater updater = new Updater(this, "storm", this.getFile(), Updater.UpdateType.DEFAULT, false);
-            if (updater.getResult() != Updater.UpdateResult.NO_UPDATE) {
-                StormUtil.log("Update found! Downloading...");
-                StormUtil.log(updater.getLatestVersionString() + " will be enabled on reload!");
-            } else {
-                StormUtil.log("No update found: running latest version.");
-            }
+        StormUtil.log("Checking for a new update...");
+        Updater updater = new Updater(this, "storm", this.getFile(), Updater.UpdateType.DEFAULT, false);
+        if (updater.getResult() != Updater.UpdateResult.NO_UPDATE) {
+            StormUtil.log("Update found! Downloading...");
+            StormUtil.log(updater.getLatestVersionString() + " will be enabled on reload!");
+        } else {
+            StormUtil.log("No update found: running latest version.");
         }
     }
 
@@ -165,7 +173,7 @@ public class Storm extends JavaPlugin implements Listener {
         try {
             Metrics.Graph graph = met.createGraph("Weathers Enabled");
 
-            for (GlobalVariables gb : wConfigs.values()) {
+            for (WorldVariables gb : wConfigs.values()) {
                 if (gb.Features_Acid__Rain_Dissolving__Blocks || gb.Features_Acid__Rain_Player__Damaging || gb.Features_Acid__Rain_Entity__Damaging || gb.Features_Acid__Rain_Entity__Shelter__Pathfinding) {
                     graph.addPlotter(new Metrics.Plotter("Acid Rain") {
                         @Override
@@ -177,7 +185,7 @@ public class Storm extends JavaPlugin implements Listener {
                 }
             }
 
-            for (GlobalVariables gb : wConfigs.values()) {
+            for (WorldVariables gb : wConfigs.values()) {
                 if (gb.Features_Blizzards_Player__Damaging || gb.Features_Blizzards_Entity__Damaging || gb.Features_Blizzards_Entity__Shelter__Pathfinding || gb.Features_Blizzards_Slowing__Snow) {
                     graph.addPlotter(new Metrics.Plotter("Blizzard") {
                         @Override
@@ -189,7 +197,7 @@ public class Storm extends JavaPlugin implements Listener {
                 }
             }
 
-            for (GlobalVariables gb : wConfigs.values()) {
+            for (WorldVariables gb : wConfigs.values()) {
                 if (gb.Features_Meteor) {
                     graph.addPlotter(new Metrics.Plotter("Meteor") {
                         public int getValue() {
@@ -200,7 +208,7 @@ public class Storm extends JavaPlugin implements Listener {
                 }
             }
 
-            for (GlobalVariables gb : wConfigs.values()) {
+            for (WorldVariables gb : wConfigs.values()) {
                 if (gb.Features_Wildfires) {
                     graph.addPlotter(new Metrics.Plotter("Wildfire") {
                         public int getValue() {
@@ -211,7 +219,7 @@ public class Storm extends JavaPlugin implements Listener {
                 }
             }
 
-            for (GlobalVariables gb : wConfigs.values()) {
+            for (WorldVariables gb : wConfigs.values()) {
                 if (gb.Features_Thunder__Storms_Thunder__Striking || gb.Features_Thunder__Storms_Entity__Shelter__Pathfinding) {
                     graph.addPlotter(new Metrics.Plotter("Thunder Storm") {
                         public int getValue() {
@@ -224,7 +232,7 @@ public class Storm extends JavaPlugin implements Listener {
 
             met.addCustomData(new Metrics.Plotter("Servers Forcing Texture Packs") {
                 public int getValue() {
-                    for (GlobalVariables gb : wConfigs.values()) {
+                    for (WorldVariables gb : wConfigs.values()) {
                         if (gb.Features_Force__Weather__Textures) {
                             return 1;
                         }
@@ -238,4 +246,15 @@ public class Storm extends JavaPlugin implements Listener {
             ErrorLogger.generateErrorLog(e);
         }
     }
+
+
+    class GlobalVariables extends ReflectConfiguration {
+        public GlobalVariables(Plugin plugin, String name) {
+            super(plugin, name);
+        }
+
+        public boolean Auto__Updating = true;
+        public boolean Verbose__Logging = false;
+    }
+
 }

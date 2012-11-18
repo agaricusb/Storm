@@ -17,7 +17,7 @@ public class StrikerTask implements Runnable {
 
     private int id;
     private final Storm storm;
-    private final GlobalVariables glob;
+    private final WorldVariables glob;
     private BlockTickSelector ticker;
     private final World affectedWorld;
 

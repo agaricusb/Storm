@@ -1,8 +1,8 @@
 package com.github.StormTeam.Storm.Acid_Rain.Tasks;
 
-import com.github.StormTeam.Storm.GlobalVariables;
 import com.github.StormTeam.Storm.Storm;
 import com.github.StormTeam.Storm.StormUtil;
+import com.github.StormTeam.Storm.WorldVariables;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.World;
@@ -23,7 +23,7 @@ public class EntityDamagerTask implements Runnable {
     private int id;
     private final World affectedWorld;
     private final Storm storm;
-    private final GlobalVariables glob;
+    private final WorldVariables glob;
     private final PotionEffect hunger;
 
     /**
