@@ -354,6 +354,9 @@ public class WeatherManager implements Listener {
                 }
                 getActiveWeathersReal(world).add(name);
                 controlMinecraftFlags(world);
+
+                if (weather.autoKillTicks >= 0)
+                    createAutoKillWeatherTask(name, world, weather.autoKillTicks);
             }
         }
     }

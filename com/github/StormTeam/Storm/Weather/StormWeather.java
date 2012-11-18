@@ -57,9 +57,14 @@ public abstract class StormWeather {
     }
 
     /**
+     * Number of ticks before this weather is auto-killed.
+     */
+    public int autoKillTicks;
+
+    /**
      * Set to true to enable minecraft rain mode.
      */
-    protected boolean needRainFlag = false;
+    public boolean needRainFlag = false;
 
     /**
      * Set to true to enable minecraft thunder mode.
