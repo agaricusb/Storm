@@ -23,6 +23,10 @@ public abstract class StormWeather {
         this.bukkitWorld = Bukkit.getWorld(world);
     }
 
+    public boolean canStart() {
+        return true;
+    }
+
     /**
      * Called when the weather is started.
      */
