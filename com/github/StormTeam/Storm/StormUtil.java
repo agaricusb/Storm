@@ -32,7 +32,6 @@ import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.util.BlockIterator;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -450,27 +449,40 @@ public class StormUtil {
         return true;
     }
 
-    public static Location getSurface(Location location) {
-        // TODO finish
-        List surfaceMaterials = Arrays.asList(0, 2, 3);
-        Location out = location.clone();
-        out.setY(80);
-        Block u = location.getBlock();
-        //new BlockIterator(world, block, new Vector(0, 1, 0), 0, (256 - block.getBlockY()));
-        BlockIterator bi = new BlockIterator(out.getWorld(), out.toVector(), new org.bukkit.util.Vector(0, 1, 0), 0, (256 - out.getBlockY()));
+    public static Location getSurface(Location loc) {
+        return getSurface(loc, 15);
+    }
 
-        HashMap<Integer, Location> bestMatch = new HashMap<Integer, Location>();
+    public static Location getSurface(Location location, int tolerance) {
+        return location.getWorld().getHighestBlockAt(location).getLocation();
+    }
 
-        while (bi.hasNext()) {
-            Block b = bi.next();
-            int c = 0;
-            if (b.getY() > 64)
-                c++;
-            if (StormUtil.isLocationNearBlock(b.getLocation(), surfaceMaterials, 2))
-                c += 2;
+    public static LinkedHashMap sortHashMapByValues(HashMap passedMap, boolean ascending) {
+
+        List mapKeys = new ArrayList(passedMap.keySet());
+        List mapValues = new ArrayList(passedMap.values());
+        Collections.sort(mapValues);
+        Collections.sort(mapKeys);
+
+        if (!ascending)
+            Collections.reverse(mapValues);
+
+        LinkedHashMap someMap = new LinkedHashMap();
+        Iterator valueIt = mapValues.iterator();
+        while (valueIt.hasNext()) {
+            Object val = valueIt.next();
+            Iterator keyIt = mapKeys.iterator();
+            while (keyIt.hasNext()) {
+                Object key = keyIt.next();
+                if (passedMap.get(key).toString().equals(val.toString())) {
+                    passedMap.remove(key);
+                    mapKeys.remove(key);
+                    someMap.put(key, val);
+                    break;
+                }
+            }
         }
-
-        return location;
+        return someMap;
     }
 
     /**

@@ -90,6 +90,12 @@ public class Storm extends JavaPlugin implements Listener {
         return true;
     }
 
+    @ReflectCommand.Command(name = "highest", usage = "/<command>")
+    public static boolean highest(Player p, String amp) {
+        p.sendMessage(StormUtil.getSurface(p.getTargetBlock(null, 200).getLocation(), Integer.parseInt(amp)).toString());
+        return true;
+    }
+
     /**
      * Called to enable Storm.
      */
