@@ -95,7 +95,7 @@ public class WeatherManager implements Listener {
             Object[] arguments = new Object[args.length + 2];
             arguments[0] = storm;
             arguments[1] = world;
-            System.arraycopy(args, 2, arguments, 2, arguments.length - 2);
+            System.arraycopy(args, 0, arguments, 2, args.length);
             try {
                 instances.put(world, weather.getConstructor(classes).newInstance(arguments));
                 WeatherTrigger trigger = new WeatherTrigger(this, name, world, chance);
