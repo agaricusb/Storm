@@ -28,12 +28,7 @@ public class EntityShelterer implements Runnable {
     private Set<Biome> filter = new HashSet<Biome>();
     private final Set<Class<?>> filteredEntities = new HashSet<Class<?>>() {{
         add(EntityPlayer.class);
-        add(EntitySlime.class);
         add(EntityEnderDragon.class);
-        if (Storm.version > 1.3) {
-            add(EntityBat.class);
-            add(EntityWitch.class);
-        }
     }};
     private final String name;
     private Method vec3DCreate;
@@ -61,13 +56,11 @@ public class EntityShelterer implements Runnable {
         try {
             for (Entity en : affectedWorld.getEntities()) {
                 net.minecraft.server.Entity notchMob = ((CraftEntity) en).getHandle();
-                if (notchMob instanceof EntityLiving) {
-                    if (!filteredEntities.contains(notchMob.getClass())) {
-                        int eid = en.getEntityId();
-                        if (!registered.contains(eid) && filter.contains(en.getLocation().getBlock().getBiome())) {
-                            register.invoke(selector.get(notchMob), 1, new PathfinderGoalFleeSky((EntityCreature) notchMob, 0.25F, name));
-                            registered.add(eid);
-                        }
+                if (notchMob instanceof EntityLiving && !filteredEntities.contains(notchMob.getClass())) {
+                    int eid = en.getEntityId();
+                    if (!registered.contains(eid) && filter.contains(en.getLocation().getBlock().getBiome())) {
+                        register.invoke(selector.get(notchMob), 1, new PathfinderGoalFleeSky((EntityLiving) notchMob, 0.25F, name));
+                        registered.add(eid);
                     }
                 }
             }
@@ -86,7 +79,7 @@ public class EntityShelterer implements Runnable {
 
     public class PathfinderGoalFleeSky extends PathfinderGoal {
 
-        private final EntityCreature entity;
+        private final EntityLiving entity;
         private double x;
         private double y;
         private double z;
@@ -94,7 +87,7 @@ public class EntityShelterer implements Runnable {
         private final net.minecraft.server.World world;
         private final String name;
 
-        public PathfinderGoalFleeSky(EntityCreature creature, float fast, String weather) {
+        public PathfinderGoalFleeSky(EntityLiving creature, float fast, String weather) {
             entity = creature;
             speed = fast;
             world = creature.world;

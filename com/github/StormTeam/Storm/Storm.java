@@ -102,7 +102,7 @@ public class Storm extends JavaPlugin implements Listener {
             verbose = glob.Verbose__Logging;
 
             commandRegistrator = new ReflectCommand(this);
-            //ErrorLogger.register(this, "Storm", "com.github.StormTeam.Storm", "http://www.stormteam.co.cc/projects/storm/issues");
+            ErrorLogger.register(this, "Storm", "com.github.StormTeam.Storm", "http://www.stormteam.tk/projects/storm/issues");
 
             if (instance != null) {
                 getLogger().log(Level.SEVERE, "Error! Only one instance of Storm may run at once! Storm detected running version: " +
@@ -160,16 +160,12 @@ public class Storm extends JavaPlugin implements Listener {
 
     private void initUpdater() {
         StormUtil.log("Checking for a new update...");
-        try {
-            Updater updater = new Updater(this, "storm", this.getFile(), Updater.UpdateType.DEFAULT, false);
-            if (updater.getResult() != Updater.UpdateResult.NO_UPDATE) {
-                StormUtil.log("Update found! Downloading...");
-                StormUtil.log(updater.getLatestVersionString() + " will be enabled on reload!");
-            } else {
-                StormUtil.log("No update found: running latest version.");
-            }
-        } catch (Exception e) {
-            StormUtil.log(Level.WARNING, "Failed to check for an update. This may be due to limited or no internet conectivity.");
+        Updater updater = new Updater(this, "storm", this.getFile(), Updater.UpdateType.DEFAULT, false);
+        if (updater.getResult() != Updater.UpdateResult.NO_UPDATE) {
+            StormUtil.log("Update found! Downloading...");
+            StormUtil.log(updater.getLatestVersionString() + " will be enabled on reload!");
+        } else {
+            StormUtil.log("No update found: running latest version.");
         }
     }
 

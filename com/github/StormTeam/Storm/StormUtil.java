@@ -32,8 +32,7 @@ import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
+import org.bukkit.util.BlockIterator;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -453,8 +452,24 @@ public class StormUtil {
 
     public static Location getSurface(Location location) {
         // TODO finish
+        List surfaceMaterials = Arrays.asList(0, 2, 3);
         Location out = location.clone();
         out.setY(80);
+        Block u = location.getBlock();
+        //new BlockIterator(world, block, new Vector(0, 1, 0), 0, (256 - block.getBlockY()));
+        BlockIterator bi = new BlockIterator(out.getWorld(), out.toVector(), new org.bukkit.util.Vector(0, 1, 0), 0, (256 - out.getBlockY()));
+
+        HashMap<Integer, Location> bestMatch = new HashMap<Integer, Location>();
+
+        while (bi.hasNext()) {
+            Block b = bi.next();
+            int c = 0;
+            if (b.getY() > 64)
+                c++;
+            if (StormUtil.isLocationNearBlock(b.getLocation(), surfaceMaterials, 2))
+                c += 2;
+        }
+
         return location;
     }
 
@@ -469,14 +484,6 @@ public class StormUtil {
         Set<T> set = new HashSet<T>();
         Collections.addAll(set, objects);
         return set;
-    }
-
-    public static void setWalkSpeed(Player p, float amp) {
-        if (Storm.version >= 1.3) {
-            p.setWalkSpeed(amp);
-        } else {
-            p.addPotionEffect(amp > 0.2 ? new PotionEffect(PotionEffectType.SPEED, 20, (int) amp * 10) : new PotionEffect(PotionEffectType.SLOW, 20, (int) amp * 10), true);
-        }
     }
 
     /**

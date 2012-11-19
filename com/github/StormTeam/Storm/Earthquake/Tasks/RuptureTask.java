@@ -47,14 +47,19 @@ public class RuptureTask implements Runnable {
             BlockIterator bi = new BlockIterator(world, block, new Vector(0, 1, 0), 0, (256 - block.getBlockY()));
             while (bi.hasNext()) {
                 Block toInspect = bi.next();
-                int bid = toInspect.getTypeId();
-                if (bid == 0 || bid == 7)
+                if (StormUtil.isBlockProtected(toInspect))
                     continue;
-                area.setBlockFast(toInspect, 0);
-                if ((bid & 0xFE) == 8) // 8 or 9
+                int bid = toInspect.getTypeId();
+                if (bid != 0 && id != 7)
+                    area.setBlockFast(toInspect, 0);
+                else if ((bid & 0xFE) == 8) // 8 or 9
                     toInspect.setTypeId(9, true);
                 else if ((bid & 0xFE) == 10) // 10 or 11
                     toInspect.setTypeId(10, true);
+                else if (bid == 55)
+                    toInspect.setTypeId(0, true);
+                else if (bid == 52)
+                    toInspect.setTypeId(0, true);
             }
         }
         StormUtil.playSoundNearby(location, (length * width) / 2, "ambient.weather.thunder", 1F, Storm.random.nextInt(3) + 1);

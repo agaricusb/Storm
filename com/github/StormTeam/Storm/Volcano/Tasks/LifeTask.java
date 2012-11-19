@@ -11,15 +11,13 @@ public class LifeTask implements Runnable {
 
     @Override
     public void run() {
-        for (VolcanoWorker vulc : VolcanoControl.volcanoes) {
-            vulc.area.sendClientChanges();
+        for (VolcanoWorker vulc : VolcanoControl.volcanoes)
             if (Storm.random.nextInt(100) > 90)
                 vulc.delete();
             else if (Storm.random.nextInt(100) > 70 && !vulc.active)
                 vulc.start();
             else if (Storm.random.nextInt(100) > 40)
                 vulc.stop();
-        }
     }
 
     public void start() {

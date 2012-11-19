@@ -358,10 +358,6 @@ public class Random extends java.util.Random {
             throw new IllegalArgumentException("alpha and beta must be > 0.0");
 
         if (alpha > 1.0) {
-            // Uses R.C.H. Cheng, "The generation of Gamma
-            // variables with non-integral shape parameters",
-            // Applied Statistics, (1977), 26, No. 1, p71-74
-
             double ainv = Math.sqrt(2.0 * alpha - 1.0);
             double bbb = alpha - LOG4;
             double ccc = alpha + ainv;

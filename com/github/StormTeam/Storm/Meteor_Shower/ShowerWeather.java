@@ -18,6 +18,7 @@
 
 package com.github.StormTeam.Storm.Meteor_Shower;
 
+import com.github.StormTeam.Storm.Meteor_Shower.Tasks.ShowerWorker;
 import com.github.StormTeam.Storm.Storm;
 import com.github.StormTeam.Storm.Weather.StormWeather;
 import org.bukkit.Bukkit;

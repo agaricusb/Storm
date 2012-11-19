@@ -194,7 +194,6 @@ public class Cuboid {
         }
         for (ChunkCoordIntPair pair : pairs) {
             if (!queued.contains(pair)) {
-                //noinspection unchecked
                 ep.chunkCoordIntPairQueue.add(pair);
             }
         }
