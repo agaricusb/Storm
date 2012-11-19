@@ -181,6 +181,8 @@ public class WorldVariables extends ReflectConfiguration {
 
         }
     };
+    @Comment(_ = "The sound to play when lightning strikes.")
+    public String Lightning_Sound = "mob.enderman.scream";
     //Natural Disasters
     //-Meteors
     @LimitInteger
