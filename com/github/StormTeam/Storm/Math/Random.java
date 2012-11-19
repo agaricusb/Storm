@@ -263,6 +263,11 @@ public class Random extends java.util.Random {
         return mu + sigma * nextGaussian();
     }
 
+    public double gaussUnsigned(double mu, double sigma) {
+        double out = gauss(mu, sigma);
+        return out > 1 ? out : 1;
+    }
+
     /**
      * Log normal distribution.
      * <p/>

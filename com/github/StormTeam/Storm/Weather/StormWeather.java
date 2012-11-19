@@ -17,7 +17,7 @@ public abstract class StormWeather {
      * @param storm Storm plugin object
      * @param world World name to act opon
      */
-    protected StormWeather(Storm storm, String world) {
+    public StormWeather(Storm storm, String world) {
         this.storm = storm;
         this.world = world;
         this.bukkitWorld = Bukkit.getWorld(world);
@@ -57,9 +57,14 @@ public abstract class StormWeather {
     }
 
     /**
+     * Number of ticks before this weather is auto-killed.
+     */
+    public int autoKillTicks;
+
+    /**
      * Set to true to enable minecraft rain mode.
      */
-    protected boolean needRainFlag = false;
+    public boolean needRainFlag = false;
 
     /**
      * Set to true to enable minecraft thunder mode.

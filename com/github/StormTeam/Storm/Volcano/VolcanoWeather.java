@@ -37,7 +37,7 @@ public class VolcanoWeather extends StormWeather {
      * @param storm Storm plugin object
      * @param world World name to act opon
      */
-    protected VolcanoWeather(Storm storm, String world) {
+    public VolcanoWeather(Storm storm, String world) {
         super(storm, world);
     }
 
