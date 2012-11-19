@@ -19,6 +19,7 @@
 package com.github.StormTeam.Storm.Meteor_Shower;
 
 import com.github.StormTeam.Storm.Storm;
+import com.github.StormTeam.Storm.StormUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -33,7 +34,7 @@ public class ShowerWorker implements Runnable {
     Location center;
     int x, y, z;
     World world;
-    int task;
+    int id;
 
     public ShowerWorker(Location center, double radius) {
         this.center = center;
@@ -60,15 +61,17 @@ public class ShowerWorker implements Runnable {
         Location location = getLocation();
         Fireball fireball = (Fireball) world.spawnEntity(location, EntityType.FIREBALL);
         fireball.setDirection(new Vector(random.gauss(0, 2), random.nextInt(15, 30), random.gauss(0, 2)));
-        fireball.setIsIncendiary(true);
-        fireball.setYield(2F);
+        fireball.setIsIncendiary(random.nextBoolean());
+        fireball.setYield(random.nextInt(0, 2));
+        if (Storm.random.nextInt(100) > 95)
+            StormUtil.playSoundNearby(location, 100, "mob.ghast.shriek", 1F, 1F);
     }
 
     public void start() {
-        task = Bukkit.getScheduler().scheduleAsyncRepeatingTask(Storm.instance, this, 10, 10);
+        id = Bukkit.getScheduler().scheduleAsyncRepeatingTask(Storm.instance, this, 10, 10);
     }
 
     public void stop() {
-        Bukkit.getScheduler().cancelTask(task);
+        Bukkit.getScheduler().cancelTask(id);
     }
 }
