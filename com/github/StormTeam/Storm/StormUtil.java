@@ -362,9 +362,7 @@ public class StormUtil {
                         .parseByte(toState[1]), true);
                 return;
             }
-
         }
-
     }
 
     /**
@@ -496,6 +494,13 @@ public class StormUtil {
         Set<T> set = new HashSet<T>();
         Collections.addAll(set, objects);
         return set;
+    }
+
+    public static Class[] getClasses(Object... objects) {
+        Class[] classes = new Class[objects.length];
+        for (int i = 0; i < objects.length; ++i)
+            classes[i] = objects.getClass();
+        return classes;
     }
 
     /**

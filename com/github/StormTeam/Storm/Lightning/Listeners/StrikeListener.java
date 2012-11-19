@@ -52,6 +52,6 @@ public class StrikeListener implements Listener {
         if (glob.Features_Lightning_Block__Transformations) {
             StormUtil.transform(strikeLocation.getBlock(), glob.Lightning_Melter_Block__Transformations);
         }
-        StormUtil.playSoundNearby(strikeLocation, 10F, "mob.enderman.scream", 3F, Storm.random.nextInt(3) + 1F);
+        StormUtil.playSoundNearby(strikeLocation, 10, glob.Lightning_Sound, 3F, Storm.random.nextInt(3) + 1F);
     }
 }

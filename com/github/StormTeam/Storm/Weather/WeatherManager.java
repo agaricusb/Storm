@@ -261,8 +261,8 @@ public class WeatherManager implements Listener {
      * @throws WeatherNotFoundException
      * @throws WeatherNotAllowedException
      */
-    public boolean startWeather(String name, String world) throws WeatherNotFoundException, WeatherNotAllowedException {
-        Set<String> started = startWeather(name, Arrays.asList(world));
+    public boolean startWeather(String name, String world, Object... args) throws WeatherNotFoundException, WeatherNotAllowedException {
+        Set<String> started = startWeather(name, Arrays.asList(world), args);
         return started.isEmpty();
     }
 
@@ -275,7 +275,7 @@ public class WeatherManager implements Listener {
      * @throws WeatherNotFoundException
      * @throws WeatherNotAllowedException
      */
-    public Set<String> startWeather(String name, Collection<String> worlds_) throws WeatherNotFoundException, WeatherNotAllowedException {
+    public Set<String> startWeather(String name, Collection<String> worlds_, Object... args) throws WeatherNotFoundException, WeatherNotAllowedException {
         synchronized (this) {
             Set<String> worlds = new HashSet<String>(worlds_);
             for (String world : worlds) {
@@ -286,7 +286,7 @@ public class WeatherManager implements Listener {
                     }
                 }
             }
-            startWeatherReal(name, worlds);
+            startWeatherReal(name, worlds, args);
             return worlds;
         }
     }
@@ -299,9 +299,9 @@ public class WeatherManager implements Listener {
      * @throws WeatherNotFoundException
      * @throws WeatherNotAllowedException
      */
-    public void startWeatherForce(String name, String world) throws WeatherNotFoundException, WeatherNotAllowedException {
+    public void startWeatherForce(String name, String world, Object... args) throws WeatherNotFoundException, WeatherNotAllowedException {
         synchronized (this) {
-            startWeatherReal(name, Arrays.asList(world));
+            startWeatherReal(name, Arrays.asList(world), args);
         }
     }
 
@@ -312,9 +312,9 @@ public class WeatherManager implements Listener {
      * @throws WeatherNotFoundException
      * @throws WeatherNotAllowedException
      */
-    public void startWeatherForce(String name, Collection<String> worlds) throws WeatherNotFoundException, WeatherNotAllowedException {
+    public void startWeatherForce(String name, Collection<String> worlds, Object... args) throws WeatherNotFoundException, WeatherNotAllowedException {
         synchronized (this) {
-            startWeatherReal(name, worlds);
+            startWeatherReal(name, worlds, args);
         }
     }
 
@@ -326,7 +326,7 @@ public class WeatherManager implements Listener {
      * @throws WeatherNotFoundException
      * @throws WeatherNotAllowedException
      */
-    protected void startWeatherReal(String name, Collection<String> worlds) throws WeatherNotFoundException, WeatherNotAllowedException {
+    protected void startWeatherReal(String name, Collection<String> worlds, Object... args) throws WeatherNotFoundException, WeatherNotAllowedException {
         Pair<Class<? extends StormWeather>, Map<String, StormWeather>> weatherData = registeredWeathers.get(name);
         if (weatherData == null) {
             throw new WeatherNotFoundException(String.format("Weather %s not found", name));
@@ -342,6 +342,21 @@ public class WeatherManager implements Listener {
 
                 if (startEvent.isCancelled()) {
                     return;
+                }
+
+                // Optional state passing
+                Class[] classes = StormUtil.getClasses(args);
+                try {
+                    Method setState = weather.getClass().getMethod("setState", classes);
+                    setState.invoke(weather, args);
+                } catch (NoSuchMethodException ignored) {
+                    // Don't care, just don't invoke then
+                } catch (InvocationTargetException e) {
+                    // Don't really care if you can't invoke it
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    // Important but still recoverable
+                    e.printStackTrace();
                 }
 
                 weather.start();

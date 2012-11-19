@@ -100,6 +100,8 @@ public class WorldVariables extends ReflectConfiguration {
     public int Acid__Rain_Scheduler_Dissolver__Calculation__Intervals__In__Ticks = 10;
     @Comment(_ = "The delay between damaging entities, in ticks.")
     public int Acid__Rain_Scheduler_Damager__Calculation__Intervals__In__Ticks = 40;
+    @Comment(_ = "Sound to play when a player is damaged.")
+    public String Acid__Rain_Sound = "random.fizz";
     //Thunder Storms
     @LimitInteger
     @Comment(_ = "The chance for thunder storm to occur.")
@@ -141,6 +143,8 @@ public class WorldVariables extends ReflectConfiguration {
     public double Blizzard_Player_Speed__Loss__While__In__Snow = 0.4D;
     @Comment(_ = "The delay between damages by blizzard, in ticks.")
     public int Blizzard_Scheduler_Damager__Calculation__Intervals__In__Ticks = 40;
+    @Comment(_ = "The sound to play when a player is damaged by blizzard.")
+    public String Blizzard_Sound = "random.breath";
     //Better Lightning
 
     @Comment(_ = "The amount of damage caused by lightning in hearts.")
@@ -177,6 +181,8 @@ public class WorldVariables extends ReflectConfiguration {
 
         }
     };
+    @Comment(_ = "The sound to play when lightning strikes.")
+    public String Lightning_Sound = "mob.enderman.scream";
     //Natural Disasters
     //-Meteors
     @LimitInteger
@@ -208,6 +214,7 @@ public class WorldVariables extends ReflectConfiguration {
             add(Arrays.asList("129", "7"));
         }
     };
+    public String Natural__Disasters_Meteor_Sound = "random.explode";
     @LimitInteger
     public int Natural__Disasters_Wildfires_Chance__To__Start = 20;
     public int Natural__Disasters_Wildfires_Wildfire__Base__Interval = 72000;
@@ -218,8 +225,10 @@ public class WorldVariables extends ReflectConfiguration {
     public List<Integer> Natural__Disasters_Wildfires_Flammable__Blocks = Arrays.asList(Block.FENCE.id, Block.WOOD.id, Block.WOOD_STAIRS.id,
             Block.WOODEN_DOOR.id, Block.LEAVES.id, Block.BOOKSHELF.id,
             Block.GRASS.id, Block.WOOL.id);
+    @Comment(_ = "The horrible sound to play when the ground suddenly cracks.")
+    public String Natural__Disasters_Earthquakes_Ground__Crack__Sound = "ambient.weather.thunder";
     //   public int Natural__Disasters_Earthquakes_Chance__To__Spawn = 1;
-//   public String Natural__Disasters_Earthquakes_Message__On__Earthquake__Start = "The ground beneath you begins quaking! Run mortal, run!";
+    // public String Natural__Disasters_Earthquakes_Message__On__Earthquake__Start = "The ground beneath you begins quaking! Run mortal, run!";
 //   public List<Integer> Natural__Disasters_Earthquakes_Blocks__Can__Fall = Arrays.asList(Block.STONE.id, Block.COBBLESTONE.id);
 //   public long Natural__Disasters_Earthquake_Scheduler_Recalculation__Intervals__In__Ticks = 72000;
     // Volcanoes

@@ -54,7 +54,7 @@ public class EntityDamagerTask implements Runnable {
                                 dam.addPotionEffect(hunger, true);
                                 dam.damage(glob.Acid__Rain_Player_Damage__From__Exposure);
                                 dam.sendMessage(glob.Acid__Rain_Messages_On__Player__Damaged__By__Acid__Rain);
-                                StormUtil.playSound(dam, "random.fizz", 3F, 1F);
+                                StormUtil.playSound(dam, glob.Acid__Rain_Sound, 3F, 1F);
                             }
                         }
                     }
