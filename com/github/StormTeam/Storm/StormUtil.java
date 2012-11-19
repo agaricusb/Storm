@@ -32,6 +32,8 @@ import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -467,6 +469,14 @@ public class StormUtil {
         Set<T> set = new HashSet<T>();
         Collections.addAll(set, objects);
         return set;
+    }
+
+    public static void setWalkSpeed(Player p, float amp) {
+        if (Storm.version >= 1.3) {
+            p.setWalkSpeed(amp);
+        } else {
+            p.addPotionEffect(amp > 0.2 ? new PotionEffect(PotionEffectType.SPEED, 20, (int) amp * 10) : new PotionEffect(PotionEffectType.SLOW, 20, (int) amp * 10), true);
+        }
     }
 
     /**

@@ -2,6 +2,7 @@ package com.github.StormTeam.Storm.Earthquake.Tasks;
 
 import com.github.StormTeam.Storm.Earthquake.Quake;
 import com.github.StormTeam.Storm.Storm;
+import com.github.StormTeam.Storm.StormUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
@@ -29,9 +30,9 @@ public class QuakeTask implements Runnable {
 
             //int a = (int) Math.sqrt(100 / ((Math.abs(quake.epicenter.getBlockX() - p.getLocation().getBlockX()) + Math.abs(quake.epicenter.getBlockZ() - p.getLocation().getBlockZ())) / 2)) * 2;
             if (toggle) {
-                p.setWalkSpeed(0.1F);
+                StormUtil.setWalkSpeed(p, 0.1F);
             } else {
-                p.setWalkSpeed(0.3F);
+                StormUtil.setWalkSpeed(p, 0.3F);
             }
             toggle = !toggle;
         }
@@ -42,6 +43,10 @@ public class QuakeTask implements Runnable {
     }
 
     public void stop() {
+        if (Storm.version >= 1.3)
+            for (Player p : quake.world.getPlayers()) {
+                StormUtil.setWalkSpeed(p, 0.1F);
+            }
         Bukkit.getScheduler().cancelTask(id);
     }
 }
