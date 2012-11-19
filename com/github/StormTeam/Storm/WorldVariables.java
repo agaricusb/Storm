@@ -100,6 +100,8 @@ public class WorldVariables extends ReflectConfiguration {
     public int Acid__Rain_Scheduler_Dissolver__Calculation__Intervals__In__Ticks = 10;
     @Comment(_ = "The delay between damaging entities, in ticks.")
     public int Acid__Rain_Scheduler_Damager__Calculation__Intervals__In__Ticks = 40;
+    @Comment(_ = "Sound to play when a player is damaged.")
+    public String Acid__Rain_Sound = "random.fizz";
     //Thunder Storms
     @LimitInteger
     @Comment(_ = "The chance for thunder storm to occur.")
