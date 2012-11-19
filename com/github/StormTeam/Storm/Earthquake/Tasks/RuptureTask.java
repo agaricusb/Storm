@@ -1,10 +1,7 @@
 package com.github.StormTeam.Storm.Earthquake.Tasks;
 
-import com.github.StormTeam.Storm.Cuboid;
+import com.github.StormTeam.Storm.*;
 import com.github.StormTeam.Storm.Math.Cracker;
-import com.github.StormTeam.Storm.Storm;
-import com.github.StormTeam.Storm.StormUtil;
-import com.github.StormTeam.Storm.Verbose;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -24,6 +21,7 @@ public class RuptureTask implements Runnable {
     private Cracker cracker;
     private Cuboid area;
     private World world;
+    private WorldVariables glob;
 
     public RuptureTask(Cuboid area, Location location, int length, int width, int depth) {
         this.location = location;
@@ -31,6 +29,7 @@ public class RuptureTask implements Runnable {
         this.length = length;
         this.width = width;
         this.area = area;
+        this.glob = Storm.wConfigs.get(this.world);
 
         cracker = new Cracker(length, location.getBlockX(), location.getBlockY(), location.getBlockZ(), width, depth);
         cracker.plot();
@@ -62,7 +61,7 @@ public class RuptureTask implements Runnable {
                     toInspect.setTypeId(0, true);
             }
         }
-        StormUtil.playSoundNearby(location, (length * width) / 2, "ambient.weather.thunder", 1F, Storm.random.nextInt(3) + 1);
+        StormUtil.playSoundNearby(location, (length * width) / 2, glob.Natural__Disasters_Earthquakes_Ground__Crack__Sound, 1F, Storm.random.nextInt(3) + 1);
         area.sendClientChanges();
         ++layerIndex;
     }

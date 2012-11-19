@@ -222,8 +222,10 @@ public class WorldVariables extends ReflectConfiguration {
     public List<Integer> Natural__Disasters_Wildfires_Flammable__Blocks = Arrays.asList(Block.FENCE.id, Block.WOOD.id, Block.WOOD_STAIRS.id,
             Block.WOODEN_DOOR.id, Block.LEAVES.id, Block.BOOKSHELF.id,
             Block.GRASS.id, Block.WOOL.id);
+    @Comment(_ = "The horrible sound to play when the ground suddenly cracks.")
+    public String Natural__Disasters_Earthquakes_Ground__Crack__Sound = "ambient.weather.thunder";
     //   public int Natural__Disasters_Earthquakes_Chance__To__Spawn = 1;
-//   public String Natural__Disasters_Earthquakes_Message__On__Earthquake__Start = "The ground beneath you begins quaking! Run mortal, run!";
+    // public String Natural__Disasters_Earthquakes_Message__On__Earthquake__Start = "The ground beneath you begins quaking! Run mortal, run!";
 //   public List<Integer> Natural__Disasters_Earthquakes_Blocks__Can__Fall = Arrays.asList(Block.STONE.id, Block.COBBLESTONE.id);
 //   public long Natural__Disasters_Earthquake_Scheduler_Recalculation__Intervals__In__Ticks = 72000;
     // Volcanoes
