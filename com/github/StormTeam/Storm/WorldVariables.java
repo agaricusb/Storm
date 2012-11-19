@@ -214,6 +214,7 @@ public class WorldVariables extends ReflectConfiguration {
             add(Arrays.asList("129", "7"));
         }
     };
+    public String Natural__Disasters_Meteor_Sound = "random.explode";
     @LimitInteger
     public int Natural__Disasters_Wildfires_Chance__To__Start = 20;
     public int Natural__Disasters_Wildfires_Wildfire__Base__Interval = 72000;
