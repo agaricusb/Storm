@@ -143,6 +143,8 @@ public class WorldVariables extends ReflectConfiguration {
     public double Blizzard_Player_Speed__Loss__While__In__Snow = 0.4D;
     @Comment(_ = "The delay between damages by blizzard, in ticks.")
     public int Blizzard_Scheduler_Damager__Calculation__Intervals__In__Ticks = 40;
+    @Comment(_ = "The sound to play when a player is damaged by blizzard.")
+    public String Blizzard_Sound = "random.breath";
     //Better Lightning
 
     @Comment(_ = "The amount of damage caused by lightning in hearts.")

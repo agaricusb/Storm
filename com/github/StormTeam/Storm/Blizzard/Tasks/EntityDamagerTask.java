@@ -57,7 +57,7 @@ public class EntityDamagerTask implements Runnable {
                                 dam.addPotionEffect(blindness, true);
                                 dam.damage(glob.Blizzard_Player_Damage__From__Exposure);
                                 dam.sendMessage(glob.Blizzard_Messages_On__Player__Damaged__Cold);
-                                StormUtil.playSound(dam, "random.breath", 1F, 1F);
+                                StormUtil.playSound(dam, glob.Blizzard_Sound, 1F, 1F);
                             }
                         }
                     }
