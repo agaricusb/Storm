@@ -48,16 +48,16 @@ public class EntityDamagerTask implements Runnable {
         for (Entity damagee : affectedWorld.getEntities()) {
             if (StormUtil.isEntityUnderSky(damagee) && StormUtil.isSnowy(damagee.getLocation().getBlock().getBiome())) {
                 if (StormUtil.isLocationNearBlock(damagee.getLocation(), glob.Blizzard_Heating__Blocks, glob.Blizzard_Heat__Radius)) {
-                    if (glob.Features_Blizzards_Entity__Damaging && damagee instanceof LivingEntity && !(damagee instanceof Player))
+                    if (glob.Blizzard_Features_Entity__Damaging && damagee instanceof LivingEntity && !(damagee instanceof Player))
                         ((LivingEntity) (damagee)).damage(glob.Blizzard_Entity_Damage__From__Exposure);
-                    else if (glob.Features_Blizzards_Player__Damaging && damagee instanceof Player) {
+                    else if (glob.Blizzard_Features_Player__Damaging && damagee instanceof Player) {
                         Player dam = (Player) damagee;
                         if (!dam.getGameMode().equals(GameMode.CREATIVE) && !dam.hasPermission("storm.blizzard.immune") && !glob.Blizzard_Heating__Blocks.contains(dam.getItemInHand().getTypeId())) {
                             if (dam.getHealth() > 0) {
                                 dam.addPotionEffect(blindness, true);
                                 dam.damage(glob.Blizzard_Player_Damage__From__Exposure);
                                 dam.sendMessage(glob.Blizzard_Messages_On__Player__Damaged__Cold);
-                                StormUtil.playSound(dam, glob.Blizzard_Sound, 1F, 1F);
+                                StormUtil.playSound(dam, glob.Blizzard_Sounds_Player__Damage, 1F, 1F);
                             }
                         }
                     }

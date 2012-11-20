@@ -49,7 +49,7 @@ public class Wildfire {
     private static void loadWorld(World world) throws WeatherNotFoundException {
         String name = world.getName();
         WorldVariables temp = Storm.wConfigs.get(name);
-        if (temp.Features_Wildfires) {
+        if (temp.Weathers__Enabled_Natural__Disasters_Wildfires) {
             Storm.manager.enableWeatherForWorld("storm_wildfire", name,
                     temp.Natural__Disasters_Wildfires_Chance__To__Start,
                     temp.Natural__Disasters_Wildfires_Wildfire__Base__Interval);

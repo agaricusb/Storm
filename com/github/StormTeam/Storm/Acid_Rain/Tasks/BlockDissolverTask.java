@@ -55,7 +55,7 @@ public class BlockDissolverTask implements Runnable {
                 if (tran.getTypeId() != 0 && StormUtil.isRainy(tran.getBiome()) && !StormUtil.isBlockProtected(tran)) {
                     for (BlockTransformer t : transformations) {
                         if (t.transform(tran)) {
-                            StormUtil.playSoundNearby(tran.getLocation(), 5, glob.Acid__Rain_Sound, 1F, 1F);
+                            StormUtil.playSoundNearby(tran.getLocation(), 5, glob.Acid__Rain_Sounds_Player__And__Block__Damage, 1F, 1F);
                             break;
                         }
                     }

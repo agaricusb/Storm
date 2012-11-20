@@ -45,7 +45,7 @@ public class Blizzard {
     private static void loadWorld(World world) throws WeatherNotFoundException {
         String name = world.getName();
         WorldVariables temp = Storm.wConfigs.get(name);
-        if (temp.Features_Blizzards_Player__Damaging || temp.Features_Blizzards_Slowing__Snow) {
+        if (temp.Weathers__Enabled_Blizzards) {
             Storm.manager.enableWeatherForWorld("storm_blizzard", name,
                     temp.Blizzard_Blizzard__Chance, temp.Blizzard_Blizzard__Base__Interval);
         }

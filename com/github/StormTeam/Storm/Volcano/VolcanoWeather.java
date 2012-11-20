@@ -21,6 +21,7 @@ package com.github.StormTeam.Storm.Volcano;
 import com.github.StormTeam.Storm.Storm;
 import com.github.StormTeam.Storm.StormUtil;
 import com.github.StormTeam.Storm.Weather.StormWeather;
+import com.github.StormTeam.Storm.WorldVariables;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -31,6 +32,9 @@ import java.util.Arrays;
 import java.util.List;
 
 public class VolcanoWeather extends StormWeather {
+    WorldVariables glob;
+    int killID;
+
     /**
      * Constructor. DO NOT CHANGE ARGUMENTS.
      *
@@ -39,6 +43,7 @@ public class VolcanoWeather extends StormWeather {
      */
     public VolcanoWeather(Storm storm, String world) {
         super(storm, world);
+        glob = Storm.wConfigs.get(world);
     }
 
     Location victim;
@@ -47,6 +52,9 @@ public class VolcanoWeather extends StormWeather {
 
     @Override
     public boolean canStart() {
+        if (!Storm.wConfigs.get(world).Weathers__Enabled_Natural__Disasters_Volcanoes)
+            return false;
+
         size = (int) Storm.random.gauss(25, 8);
         if (size < 5)
             return false;
@@ -61,11 +69,17 @@ public class VolcanoWeather extends StormWeather {
         if (candidate.size() == 0)
             return false;
         victim = candidate.get(Storm.random.nextInt(candidate.size()));
+        killID = Storm.manager.createAutoKillWeatherTask("storm_volcano", world, 1);
         return true;
     }
 
     @Override
     public void start() {
+        StormUtil.broadcast(glob.Natural__Disasters_Volcano_Message__On__Volcano__Start
+                .replaceAll("%x", victim.getX() + "")
+                .replaceAll("%y", victim.getY() + "")
+                .replaceAll("%z", victim.getZ() + ""),
+                world);
         Volcano.volcano(victim, size);
     }
 

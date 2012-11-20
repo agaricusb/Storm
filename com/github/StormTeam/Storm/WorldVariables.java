@@ -32,6 +32,7 @@ import java.util.List;
 
 public class WorldVariables extends ReflectConfiguration {
 
+
     /**
      * Creates a GlobalVariable object with the given name.
      *
@@ -101,7 +102,13 @@ public class WorldVariables extends ReflectConfiguration {
     @Comment(_ = "The delay between damaging entities, in ticks.")
     public int Acid__Rain_Scheduler_Damager__Calculation__Intervals__In__Ticks = 40;
     @Comment(_ = "Sound to play when a player is damaged.")
-    public String Acid__Rain_Sound = "random.fizz";
+    public String Acid__Rain_Sounds_Player__And__Block__Damage = "random.fizz";
+
+    public boolean Acid__Rain_Features_Dissolving__Blocks = true;
+    public boolean Acid__Rain_Features_Player__Damaging = true;
+    public boolean Acid__Rain_Features_Entity__Damaging = true;
+    public boolean Acid__Rain_Features_Entity__Shelter__Pathfinding = true;
+
     //Thunder Storms
     @LimitInteger
     @Comment(_ = "The chance for thunder storm to occur.")
@@ -117,6 +124,8 @@ public class WorldVariables extends ReflectConfiguration {
     public int Thunder__Storm_Strike__Chance = 5;
     @Comment(_ = "The delay between strikes, in ticks.")
     public int Thunder__Storm_Scheduler_Striker__Calculation__Intervals__In__Ticks = 10;
+    public boolean Thunder__Storm_Features_Thunder__Striking = true;
+    public boolean Thunder__Storm_Features_Entity__Shelter__Pathfinding = true;
     //Blizzards
     @LimitInteger
     @Comment(_ = "The chance for blizzard to occur.")
@@ -144,7 +153,12 @@ public class WorldVariables extends ReflectConfiguration {
     @Comment(_ = "The delay between damages by blizzard, in ticks.")
     public int Blizzard_Scheduler_Damager__Calculation__Intervals__In__Ticks = 40;
     @Comment(_ = "The sound to play when a player is damaged by blizzard.")
-    public String Blizzard_Sound = "random.breath";
+    public String Blizzard_Sounds_Player__Damage = "random.breath";
+
+    public boolean Blizzard_Features_Player__Damaging = true;
+    public boolean Blizzard_Features_Entity__Damaging = true;
+    public boolean Blizzard_Features_Entity__Shelter__Pathfinding = true;
+    public boolean Blizzard_Features_Slowing__Snow = true;
     //Better Lightning
 
     @Comment(_ = "The amount of damage caused by lightning in hearts.")
@@ -182,7 +196,11 @@ public class WorldVariables extends ReflectConfiguration {
         }
     };
     @Comment(_ = "The sound to play when lightning strikes.")
-    public String Lightning_Sound = "mob.enderman.scream";
+    public String Lightning_Sounds_Strike = "mob.enderman.scream";
+    public boolean Lightning_Features_Greater__Range__And__Damage = true;
+    public boolean Lightning_Features_Player__Attraction = true;
+    public boolean Lightning_Features_Block__Attraction = true;
+    public boolean Lightning_Features_Block__Transformations = true;
     //Natural Disasters
     //-Meteors
     @LimitInteger
@@ -214,7 +232,7 @@ public class WorldVariables extends ReflectConfiguration {
             add(Arrays.asList("129", "7"));
         }
     };
-    public String Natural__Disasters_Meteor_Sound = "random.explode";
+    public String Natural__Disasters_Meteor_Sounds_Trail = "random.explode";
     @LimitInteger
     public int Natural__Disasters_Wildfires_Chance__To__Start = 20;
     public int Natural__Disasters_Wildfires_Wildfire__Base__Interval = 72000;
@@ -225,12 +243,22 @@ public class WorldVariables extends ReflectConfiguration {
     public List<Integer> Natural__Disasters_Wildfires_Flammable__Blocks = Arrays.asList(Block.FENCE.id, Block.WOOD.id, Block.WOOD_STAIRS.id,
             Block.WOODEN_DOOR.id, Block.LEAVES.id, Block.BOOKSHELF.id,
             Block.GRASS.id, Block.WOOL.id);
+    @LimitInteger
+    public int Natural__Disasters_Earthquakes_Chance__To__Start = 1;
+    public int Natural__Disasters_Earthquakes_Earthquake__Base__Interval = 72000;
+    public String Natural__Disasters_Earthquakes_Message__On__Earthquake__Start = "The ground beneath you begins quaking with a magnitude of %m! Run mortal, run!";
+    public String Natural__Disasters_Earthquakes_Message__On__Earthquake__End = "The earth stops shaking.";
     @Comment(_ = "The horrible sound to play when the ground suddenly cracks.")
-    public String Natural__Disasters_Earthquakes_Ground__Crack__Sound = "ambient.weather.thunder";
-    //   public int Natural__Disasters_Earthquakes_Chance__To__Spawn = 1;
-    // public String Natural__Disasters_Earthquakes_Message__On__Earthquake__Start = "The ground beneath you begins quaking! Run mortal, run!";
-//   public List<Integer> Natural__Disasters_Earthquakes_Blocks__Can__Fall = Arrays.asList(Block.STONE.id, Block.COBBLESTONE.id);
-//   public long Natural__Disasters_Earthquake_Scheduler_Recalculation__Intervals__In__Ticks = 72000;
+    public String Natural__Disasters_Earthquakes_Sounds_Ground__Crack = "ambient.weather.thunder";
+    public boolean Natural__Disasters_Earthquake_Flying__Blocks = true;
+    public boolean Natural__Disasters_Earthquake_Entity__Damaging = true;
+
+    @LimitInteger
+    public int Natural__Disasters_Volcano_Chance__To__Start = 1;
+    public int Natural__Disasters_Volcano_Volcano__Base__Interval = 72000;
+    public String Natural__Disasters_Volcano_Message__On__Volcano__Start = "A volcano has burst out of the ground at %x, %y, %z!";
+    public boolean Natural__Disasters_Volcano_Features_Erupting = true;
+
     // Volcanoes
     //public List<Integer> Volcano_Composition = new ArrayList<Integer>() {{
     // for (int i = 0; i < 100; ++i)
@@ -246,26 +274,19 @@ public class WorldVariables extends ReflectConfiguration {
     //      add(Material.EMERALD_ORE.getId());
     //}};
 
+
+    public boolean Weathers__Enabled_Acid__Rain = true;
+    public boolean Weathers__Enabled_Thunder__Storms = true;
+    public boolean Weathers__Enabled_Blizzards = true;
+    public boolean Weathers__Enabled_Natural__Disasters_Meteors = true;
+    public boolean Weathers__Enabled_Natural__Disasters_Wildfires = true;
+    public boolean Weathers__Enabled_Natural__Disasters_Volcanoes = true;
+    public boolean Weathers__Enabled_Natural__Disasters_Earthquakes = true;
+
+    public boolean Force__Weather__Textures = true;
     public String Textures_Acid__Rain__Texture__Path = "http://dl.dropbox.com/u/67341745/Storm/Acid_Rain.zip";
     public String Textures_Blizzard__Texture__Path = "http://dl.dropbox.com/u/67341745/Storm/Blizzard.zip";
     public String Textures_Default__Texture__Path = "http://dl.dropbox.com/u/67341745/Storm/Default.zip";
-    // Features
 
-    public boolean Features_Acid__Rain_Dissolving__Blocks = true;
-    public boolean Features_Acid__Rain_Player__Damaging = true;
-    public boolean Features_Acid__Rain_Entity__Damaging = true;
-    public boolean Features_Acid__Rain_Entity__Shelter__Pathfinding = true;
-    public boolean Features_Thunder__Storms_Thunder__Striking = true;
-    public boolean Features_Thunder__Storms_Entity__Shelter__Pathfinding = true;
-    public boolean Features_Lightning_Greater__Range__And__Damage = true;
-    public boolean Features_Lightning_Player__Attraction = true;
-    public boolean Features_Lightning_Block__Attraction = true;
-    public boolean Features_Lightning_Block__Transformations = true;
-    public boolean Features_Blizzards_Player__Damaging = true;
-    public boolean Features_Blizzards_Entity__Damaging = true;
-    public boolean Features_Blizzards_Entity__Shelter__Pathfinding = true;
-    public boolean Features_Blizzards_Slowing__Snow = true;
-    public boolean Features_Meteor = true;
-    public boolean Features_Wildfires = true;
-    public boolean Features_Force__Weather__Textures = true;
+    public boolean Play__Weather__Sounds = true;
 }

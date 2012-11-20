@@ -45,16 +45,16 @@ public class EntityDamagerTask implements Runnable {
         for (Entity damagee : affectedWorld.getEntities()) {
             if (StormUtil.isEntityUnderSky(damagee) && StormUtil.isRainy(damagee.getLocation().getBlock().getBiome())) {
                 if (StormUtil.isLocationNearBlock(damagee.getLocation(), glob.Acid__Rain_Absorbing__Blocks, glob.Acid__Rain_Absorbing__Radius)) {
-                    if (glob.Features_Acid__Rain_Entity__Damaging && damagee instanceof LivingEntity && !(damagee instanceof Player))
+                    if (glob.Acid__Rain_Features_Entity__Damaging && damagee instanceof LivingEntity && !(damagee instanceof Player))
                         ((LivingEntity) (damagee)).damage(glob.Acid__Rain_Entity_Damage__From__Exposure);
-                    else if (glob.Features_Acid__Rain_Player__Damaging && damagee instanceof Player) {
+                    else if (glob.Acid__Rain_Features_Player__Damaging && damagee instanceof Player) {
                         Player dam = (Player) damagee;
                         if (!dam.getGameMode().equals(GameMode.CREATIVE) && !dam.hasPermission("storm.acidrain.immune") && !glob.Acid__Rain_Absorbing__Blocks.contains(dam.getItemInHand().getTypeId())) {
                             if (dam.getHealth() > 0) {
                                 dam.addPotionEffect(hunger, true);
                                 dam.damage(glob.Acid__Rain_Player_Damage__From__Exposure);
                                 dam.sendMessage(glob.Acid__Rain_Messages_On__Player__Damaged__By__Acid__Rain);
-                                StormUtil.playSound(dam, glob.Acid__Rain_Sound, 3F, 1F);
+                                StormUtil.playSound(dam, glob.Acid__Rain_Sounds_Player__And__Block__Damage, 3F, 1F);
                             }
                         }
                     }

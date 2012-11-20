@@ -1,13 +1,35 @@
 package com.github.StormTeam.Storm.Earthquake;
 
+import com.github.StormTeam.Storm.ErrorLogger;
 import com.github.StormTeam.Storm.ReflectCommand;
 import com.github.StormTeam.Storm.Storm;
+import com.github.StormTeam.Storm.Weather.Exceptions.WeatherNotFoundException;
+import com.github.StormTeam.Storm.WorldVariables;
+import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 public class Earthquake {
 
     public static void load() {
-        Storm.commandRegistrator.register(Earthquake.class);
+        try {
+            for (World w : Bukkit.getWorlds()) {
+                loadWorld(w);
+            }
+            Storm.manager.registerWorldLoadHandler(Earthquake.class.getDeclaredMethod("loadWorld", World.class));
+            Storm.commandRegistrator.register(Earthquake.class);
+        } catch (Exception e) {
+            ErrorLogger.generateErrorLog(e);
+        }
+    }
+
+    private static void loadWorld(World world) throws WeatherNotFoundException {
+        String name = world.getName();
+        WorldVariables temp = Storm.wConfigs.get(name);
+        if (temp.Weathers__Enabled_Natural__Disasters_Earthquakes) {
+            Storm.manager.enableWeatherForWorld("storm_earthquake", name,
+                    temp.Natural__Disasters_Earthquakes_Chance__To__Start, temp.Natural__Disasters_Earthquakes_Earthquake__Base__Interval);
+        }
     }
 
     @ReflectCommand.Command(

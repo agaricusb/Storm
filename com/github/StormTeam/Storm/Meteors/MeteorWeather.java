@@ -34,16 +34,17 @@ public class MeteorWeather extends StormWeather {
         glob = Storm.wConfigs.get(world);
     }
 
+    @Override
+    public boolean canStart() {
+        return glob.Weathers__Enabled_Natural__Disasters_Meteors;
+    }
+
     /**
      * Called when a meteor is called in the handled world.
      */
 
     @Override
     public void start() {
-
-        if (!glob.Features_Meteor) {
-            return;
-        }
 
         Chunk chunk = StormUtil.pickChunk(Bukkit.getWorld(world));
 

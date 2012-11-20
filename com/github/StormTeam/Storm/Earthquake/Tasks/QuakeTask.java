@@ -27,7 +27,6 @@ public class QuakeTask implements Runnable {
             if (p.getGameMode() == GameMode.CREATIVE || !quake.isQuaking(p.getLocation()))
                 continue;
 
-            //int a = (int) Math.sqrt(100 / ((Math.abs(quake.epicenter.getBlockX() - p.getLocation().getBlockX()) + Math.abs(quake.epicenter.getBlockZ() - p.getLocation().getBlockZ())) / 2)) * 2;
             if (toggle) {
                 p.setWalkSpeed(0.1F);
             } else {

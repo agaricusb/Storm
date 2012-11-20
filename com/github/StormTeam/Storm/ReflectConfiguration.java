@@ -96,6 +96,7 @@ public class ReflectConfiguration {
     private final String folder;
     private final Object mutex = new Object();
 
+
     /**
      * Creates a ReflectConfiguration file based on given name
      *

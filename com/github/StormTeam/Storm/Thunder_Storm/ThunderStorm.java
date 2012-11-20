@@ -39,7 +39,7 @@ public class ThunderStorm {
     private static void loadWorld(World world) throws WeatherNotFoundException {
         String name = world.getName();
         WorldVariables temp = Storm.wConfigs.get(name);
-        if (temp.Features_Thunder__Storms_Thunder__Striking) {
+        if (temp.Thunder__Storm_Features_Thunder__Striking) {
             Storm.manager.enableWeatherForWorld("storm_thunderstorm", name,
                     temp.Thunder__Storm_Thunder__Storm__Chance, temp.Thunder__Storm_Thunder__Storm__Base__Interval);
         }

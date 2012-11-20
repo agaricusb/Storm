@@ -37,29 +37,30 @@ public class AcidRainWeather extends StormWeather {
         this.needRainFlag = true;
     }
 
+    @Override
+    public boolean canStart() {
+        return glob.Weathers__Enabled_Acid__Rain;
+    }
+
     /**
      * Called when acid rain starts for the handled world.
      */
 
     @Override
     public void start() {
-        if (!glob.Features_Acid__Rain_Dissolving__Blocks && !glob.Features_Acid__Rain_Player__Damaging && !glob.Features_Acid__Rain_Entity__Damaging && !glob.Features_Acid__Rain_Entity__Shelter__Pathfinding) {
-            return;
-        }
-
         StormUtil.broadcast(glob.Acid__Rain_Messages_On__Acid__Rain__Start, bukkitWorld);
 
-        if (glob.Features_Acid__Rain_Entity__Damaging || glob.Features_Blizzards_Player__Damaging) {
+        if (glob.Acid__Rain_Features_Entity__Damaging || glob.Blizzard_Features_Player__Damaging) {
             enDamager = new EntityDamagerTask(storm, world);
             enDamager.start();
         }
 
-        if (glob.Features_Acid__Rain_Dissolving__Blocks) {
+        if (glob.Acid__Rain_Features_Dissolving__Blocks) {
             dissolver = new BlockDissolverTask(storm, world);
             dissolver.start();
         }
 
-        if (glob.Features_Acid__Rain_Entity__Shelter__Pathfinding) {
+        if (glob.Acid__Rain_Features_Entity__Shelter__Pathfinding) {
             shelter = new EntityShelterer(storm, world, "storm_acidrain", StormUtil.rainBiomes);
             shelter.start();
         }

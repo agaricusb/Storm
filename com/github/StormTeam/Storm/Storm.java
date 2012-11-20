@@ -79,20 +79,18 @@ public class Storm extends JavaPlugin implements Listener {
     //Easter egg :D
     @ReflectCommand.Command(name = "sound", usage = "/<command> [sound]")
     public static boolean sound(Player p, String sound, String pitch, String volume) {
-        StormUtil.playSound(p, sound, Float.parseFloat(pitch), Float.parseFloat(volume));
+        if (p.isOp()) {
+            StormUtil.playSound(p, sound, Float.parseFloat(pitch), Float.parseFloat(volume));
+        }
         return true;
     }
 
     @ReflectCommand.Command(name = "speed", usage = "/<command> [speed]")
     public static boolean speed(Player p, String amp) {
-        p.setFlySpeed(Float.parseFloat(amp));
-        p.setWalkSpeed(Float.parseFloat(amp));
-        return true;
-    }
-
-    @ReflectCommand.Command(name = "highest", usage = "/<command>")
-    public static boolean highest(Player p, String amp) {
-        p.sendMessage(StormUtil.getSurface(p.getTargetBlock(null, 200).getLocation(), Integer.parseInt(amp)).toString());
+        if (p.isOp()) {
+            p.setFlySpeed(Float.parseFloat(amp));
+            p.setWalkSpeed(Float.parseFloat(amp));
+        }
         return true;
     }
 
@@ -180,7 +178,7 @@ public class Storm extends JavaPlugin implements Listener {
             Metrics.Graph graph = met.createGraph("Weathers Enabled");
 
             for (WorldVariables gb : wConfigs.values()) {
-                if (gb.Features_Acid__Rain_Dissolving__Blocks || gb.Features_Acid__Rain_Player__Damaging || gb.Features_Acid__Rain_Entity__Damaging || gb.Features_Acid__Rain_Entity__Shelter__Pathfinding) {
+                if (gb.Acid__Rain_Features_Dissolving__Blocks || gb.Acid__Rain_Features_Player__Damaging || gb.Acid__Rain_Features_Entity__Damaging || gb.Acid__Rain_Features_Entity__Shelter__Pathfinding) {
                     graph.addPlotter(new Metrics.Plotter("Acid Rain") {
                         @Override
                         public int getValue() {
@@ -192,7 +190,7 @@ public class Storm extends JavaPlugin implements Listener {
             }
 
             for (WorldVariables gb : wConfigs.values()) {
-                if (gb.Features_Blizzards_Player__Damaging || gb.Features_Blizzards_Entity__Damaging || gb.Features_Blizzards_Entity__Shelter__Pathfinding || gb.Features_Blizzards_Slowing__Snow) {
+                if (gb.Blizzard_Features_Player__Damaging || gb.Blizzard_Features_Entity__Damaging || gb.Blizzard_Features_Entity__Shelter__Pathfinding || gb.Blizzard_Features_Slowing__Snow) {
                     graph.addPlotter(new Metrics.Plotter("Blizzard") {
                         @Override
                         public int getValue() {
@@ -204,7 +202,7 @@ public class Storm extends JavaPlugin implements Listener {
             }
 
             for (WorldVariables gb : wConfigs.values()) {
-                if (gb.Features_Meteor) {
+                if (gb.Weathers__Enabled_Natural__Disasters_Meteors) {
                     graph.addPlotter(new Metrics.Plotter("Meteor") {
                         public int getValue() {
                             return 1;
@@ -215,7 +213,7 @@ public class Storm extends JavaPlugin implements Listener {
             }
 
             for (WorldVariables gb : wConfigs.values()) {
-                if (gb.Features_Wildfires) {
+                if (gb.Weathers__Enabled_Natural__Disasters_Wildfires) {
                     graph.addPlotter(new Metrics.Plotter("Wildfire") {
                         public int getValue() {
                             return 1;
@@ -226,7 +224,7 @@ public class Storm extends JavaPlugin implements Listener {
             }
 
             for (WorldVariables gb : wConfigs.values()) {
-                if (gb.Features_Thunder__Storms_Thunder__Striking || gb.Features_Thunder__Storms_Entity__Shelter__Pathfinding) {
+                if (gb.Thunder__Storm_Features_Thunder__Striking || gb.Thunder__Storm_Features_Entity__Shelter__Pathfinding) {
                     graph.addPlotter(new Metrics.Plotter("Thunder Storm") {
                         public int getValue() {
                             return 1;
@@ -239,7 +237,7 @@ public class Storm extends JavaPlugin implements Listener {
             met.addCustomData(new Metrics.Plotter("Servers Forcing Texture Packs") {
                 public int getValue() {
                     for (WorldVariables gb : wConfigs.values()) {
-                        if (gb.Features_Force__Weather__Textures) {
+                        if (gb.Force__Weather__Textures) {
                             return 1;
                         }
                     }

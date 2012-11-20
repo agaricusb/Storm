@@ -52,7 +52,7 @@ public class Meteor {
     private static void loadWorld(World world) throws WeatherNotFoundException {
         String name = world.getName();
         WorldVariables temp = Storm.wConfigs.get(name);
-        if (temp.Features_Meteor) {
+        if (temp.Weathers__Enabled_Natural__Disasters_Meteors) {
             Storm.manager.enableWeatherForWorld("storm_meteor", name,
                     temp.Natural__Disasters_Meteor_Chance__To__Spawn,
                     temp.Natural__Disasters_Meteor_Meteor__Base__Interval);

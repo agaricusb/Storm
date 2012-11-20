@@ -35,28 +35,28 @@ public class BlizzardWeather extends StormWeather {
         this.needRainFlag = true;
     }
 
+    @Override
+    public boolean canStart() {
+        return glob.Weathers__Enabled_Blizzards;
+    }
+
     /**
-     * Called when acid rain starts for the handled world.
+     * Called when a blizzard starts for the handled world.
      */
 
     @Override
     public void start() {
-        if (!glob.Features_Blizzards_Player__Damaging
-                && !glob.Features_Blizzards_Slowing__Snow && !glob.Features_Blizzards_Entity__Shelter__Pathfinding) {
-            return;
-        }
-
         StormUtil.broadcast(glob.Blizzard_Messages_On__Blizzard__Start, bukkitWorld);
 
-        if (glob.Features_Blizzards_Slowing__Snow) {
+        if (glob.Blizzard_Features_Slowing__Snow) {
             Blizzard.modder.modBestFit();
         }
 
-        if (glob.Features_Blizzards_Entity__Damaging || glob.Features_Blizzards_Player__Damaging) {
+        if (glob.Blizzard_Features_Entity__Damaging || glob.Blizzard_Features_Player__Damaging) {
             enDamager = new EntityDamagerTask(storm, world);
             enDamager.start();
         }
-        if (glob.Features_Blizzards_Entity__Shelter__Pathfinding) {
+        if (glob.Blizzard_Features_Entity__Shelter__Pathfinding) {
             shelter = new EntityShelterer(storm, world, "storm_blizzard", StormUtil.snowyBiomes);
             shelter.start();
         }
@@ -70,7 +70,7 @@ public class BlizzardWeather extends StormWeather {
     @Override
     public void end() {
         try {
-            if (glob.Features_Blizzards_Slowing__Snow) {
+            if (glob.Blizzard_Features_Slowing__Snow) {
                 Blizzard.modder.reset();
             }
             StormUtil.broadcast(glob.Blizzard_Messages_On__Blizzard__Stop, bukkitWorld);

@@ -37,7 +37,7 @@ public class SnowLayer extends BlockSnow {
 
         String name = w.getWorld().getName();
 
-        if (!Storm.manager.getActiveWeathers(name).contains("storm_blizzard") || (!Storm.wConfigs.containsKey(name) && !Storm.wConfigs.get(name).Features_Blizzards_Slowing__Snow)) {
+        if (!Storm.manager.getActiveWeathers(name).contains("storm_blizzard") || (!Storm.wConfigs.containsKey(name) && !Storm.wConfigs.get(name).Blizzard_Features_Slowing__Snow)) {
             return;
         }
 

@@ -67,13 +67,13 @@ public class EarthquakeControl implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onBlockPlace(BlockPlaceEvent e) {
-        if (!e.isCancelled())
+        if (!Storm.wConfigs.get(e.getBlock().getWorld().getName()).Natural__Disasters_Earthquake_Flying__Blocks || !e.isCancelled())
             handleBlock(e.getBlock(), e.getPlayer());
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onBlockBreak(BlockBreakEvent e) {
-        if (!e.isCancelled())
+        if (!Storm.wConfigs.get(e.getBlock().getWorld().getName()).Natural__Disasters_Earthquake_Flying__Blocks || !e.isCancelled())
             handleBlock(e.getBlock(), e.getPlayer());
     }
 

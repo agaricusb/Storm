@@ -229,7 +229,8 @@ public class StormUtil {
     }
 
     public static void playSound(Player to, String sound, Location loc, float pitch, float volume) {
-        ((CraftPlayer) to).getHandle().netServerHandler.sendPacket(new Packet62NamedSoundEffect(sound, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), pitch, volume));
+        if (Storm.wConfigs.get(loc.getWorld().getName()).Play__Weather__Sounds)
+            ((CraftPlayer) to).getHandle().netServerHandler.sendPacket(new Packet62NamedSoundEffect(sound, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), pitch, volume));
     }
 
     public static void playSound(Player to, String sound, float pitch, float volume) {
@@ -383,7 +384,7 @@ public class StormUtil {
      * @param texture URI to texture
      */
     public static void setTexture(Player player, String texture) {
-        if (Storm.version >= 1.3 && Storm.wConfigs.get(player.getWorld().getName()).Features_Force__Weather__Textures) {
+        if (Storm.version >= 1.3 && Storm.wConfigs.get(player.getWorld().getName()).Force__Weather__Textures) {
             ((CraftPlayer) player).getHandle().netServerHandler.sendPacket(new Packet250CustomPayload("MC|TPack", (texture + "\0" + 16).getBytes()));
         }
     }
@@ -452,35 +453,8 @@ public class StormUtil {
     }
 
     public static Location getSurface(Location location, int tolerance) {
+        //TODO Make better
         return location.getWorld().getHighestBlockAt(location).getLocation();
-    }
-
-    public static LinkedHashMap sortHashMapByValues(HashMap passedMap, boolean ascending) {
-
-        List mapKeys = new ArrayList(passedMap.keySet());
-        List mapValues = new ArrayList(passedMap.values());
-        Collections.sort(mapValues);
-        Collections.sort(mapKeys);
-
-        if (!ascending)
-            Collections.reverse(mapValues);
-
-        LinkedHashMap someMap = new LinkedHashMap();
-        Iterator valueIt = mapValues.iterator();
-        while (valueIt.hasNext()) {
-            Object val = valueIt.next();
-            Iterator keyIt = mapKeys.iterator();
-            while (keyIt.hasNext()) {
-                Object key = keyIt.next();
-                if (passedMap.get(key).toString().equals(val.toString())) {
-                    passedMap.remove(key);
-                    mapKeys.remove(key);
-                    someMap.put(key, val);
-                    break;
-                }
-            }
-        }
-        return someMap;
     }
 
     /**

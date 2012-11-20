@@ -38,7 +38,7 @@ public class AcidRain {
     private static void loadWorld(World world) throws WeatherNotFoundException {
         String name = world.getName();
         WorldVariables temp = Storm.wConfigs.get(name);
-        if (temp.Features_Acid__Rain_Dissolving__Blocks || temp.Features_Acid__Rain_Player__Damaging) {
+        if (temp.Weathers__Enabled_Acid__Rain) {
             Storm.manager.enableWeatherForWorld("storm_acidrain", name,
                     temp.Acid__Rain_Acid__Rain__Chance, temp.Acid__Rain_Acid__Rain__Base__Interval);
         }

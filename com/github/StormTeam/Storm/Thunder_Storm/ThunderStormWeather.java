@@ -37,19 +37,20 @@ public class ThunderStormWeather extends StormWeather {
      */
 
     @Override
-    public void start() {
-        if (!glob.Features_Thunder__Storms_Thunder__Striking && !glob.Features_Thunder__Storms_Entity__Shelter__Pathfinding) {
-            return;
-        }
+    public boolean canStart() {
+        return glob.Weathers__Enabled_Thunder__Storms;
+    }
 
+    @Override
+    public void start() {
         StormUtil.broadcast(glob.Thunder__Storm_Messages_On__Thunder__Storm__Start, bukkitWorld);
 
-        if (glob.Features_Thunder__Storms_Thunder__Striking) {
+        if (glob.Thunder__Storm_Features_Thunder__Striking) {
             striker = new StrikerTask(storm, bukkitWorld);
             striker.start();
         }
 
-        if (glob.Features_Thunder__Storms_Entity__Shelter__Pathfinding) {
+        if (glob.Thunder__Storm_Features_Entity__Shelter__Pathfinding) {
             shelter = new EntityShelterer(storm, world, "storm_thunderstorm", StormUtil.rainBiomes);
             shelter.start();
         }

@@ -18,10 +18,7 @@
 
 package com.github.StormTeam.Storm.Volcano;
 
-import com.github.StormTeam.Storm.Cuboid;
-import com.github.StormTeam.Storm.Storm;
-import com.github.StormTeam.Storm.StormUtil;
-import com.github.StormTeam.Storm.Verbose;
+import com.github.StormTeam.Storm.*;
 import com.github.StormTeam.Storm.Volcano.Tasks.EruptTask;
 import com.github.StormTeam.Storm.Volcano.Tasks.GrowthTask;
 import net.minecraft.server.EntityTNTPrimed;
@@ -52,11 +49,14 @@ public class VolcanoWorker {
     public EruptTask eruptor;
     public GrowthTask grower;
 
+    private WorldVariables glob;
+
     public VolcanoWorker(Location center, int radius, int layer) {
         this.center = center;
         this.world = center.getWorld();
         this.radius = radius;
         this.layer = layer;
+        this.glob = Storm.wConfigs.get(this.world.getName());
     }
 
     public VolcanoWorker() {
@@ -83,8 +83,10 @@ public class VolcanoWorker {
 
         grower = new GrowthTask(this);
         grower.start();
-        eruptor = new EruptTask(this);
-        eruptor.start();
+        if (glob.Natural__Disasters_Volcano_Features_Erupting) {
+            eruptor = new EruptTask(this);
+            eruptor.start();
+        }
         VolcanoControl.volcanoes.add(this);
     }
 

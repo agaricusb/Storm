@@ -29,7 +29,7 @@ public class RuptureTask implements Runnable {
         this.length = length;
         this.width = width;
         this.area = area;
-        this.glob = Storm.wConfigs.get(this.world);
+        this.glob = Storm.wConfigs.get(this.world.getName());
 
         cracker = new Cracker(length, location.getBlockX(), location.getBlockY(), location.getBlockZ(), width, depth);
         cracker.plot();
@@ -61,7 +61,7 @@ public class RuptureTask implements Runnable {
                     toInspect.setTypeId(0, true);
             }
         }
-        StormUtil.playSoundNearby(location, (length * width) / 2, glob.Natural__Disasters_Earthquakes_Ground__Crack__Sound, 1F, Storm.random.nextInt(3) + 1);
+        StormUtil.playSoundNearby(location, (length * width) / 2, glob.Natural__Disasters_Earthquakes_Sounds_Ground__Crack, 1F, Storm.random.nextInt(3) + 1);
         area.sendClientChanges();
         ++layerIndex;
     }

@@ -28,7 +28,7 @@ public class StrikeListener implements Listener {
 
         Location strikeLocation = strike.getLightning().getLocation();
 
-        if (glob.Features_Lightning_Greater__Range__And__Damage) {
+        if (glob.Lightning_Features_Greater__Range__And__Damage) {
             StormUtil.damageNearbyPlayers(
                     strikeLocation,
                     glob.Lightning_Damage_Damage__Radius,
@@ -37,21 +37,21 @@ public class StrikeListener implements Listener {
             );
         }
 
-        if (glob.Features_Lightning_Block__Attraction) {
+        if (glob.Lightning_Features_Block__Attraction) {
             if (Storm.random.nextInt(100) < glob.Lightning_Attraction_Blocks_AttractionChance) {
                 strikeLocation = LightningUtils.hitMetal(strike.getLightning().getLocation());
                 strike.getLightning().teleport(strikeLocation);
             } else {
-                if (glob.Features_Lightning_Player__Attraction && Storm.random.nextInt(100) < glob.Lightning_Attraction_Players_AttractionChance) {
+                if (glob.Lightning_Features_Player__Attraction && Storm.random.nextInt(100) < glob.Lightning_Attraction_Players_AttractionChance) {
                     strikeLocation = LightningUtils.hitPlayers(strike.getLightning().getLocation());
                     strike.getLightning().teleport(strikeLocation);
                 }
             }
         }
 
-        if (glob.Features_Lightning_Block__Transformations) {
+        if (glob.Lightning_Features_Block__Transformations) {
             StormUtil.transform(strikeLocation.getBlock(), glob.Lightning_Melter_Block__Transformations);
         }
-        StormUtil.playSoundNearby(strikeLocation, 10, glob.Lightning_Sound, 3F, Storm.random.nextInt(3) + 1F);
+        StormUtil.playSoundNearby(strikeLocation, 10, glob.Lightning_Sounds_Strike, 3F, Storm.random.nextInt(3) + 1F);
     }
 }

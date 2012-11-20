@@ -33,16 +33,17 @@ public class WildfireWeather extends StormWeather { //TODO: Make use of getTicke
         glob = Storm.wConfigs.get(world);
     }
 
+    @Override
+    public boolean canStart() {
+        return glob.Weathers__Enabled_Natural__Disasters_Wildfires;
+    }
+
     /**
      * Called when wildfire starts for the handled world.
      */
 
     @Override
     public void start() {
-
-        if (!glob.Features_Wildfires) {
-            return;
-        }
 
         Block toBurn;
         int recurse = 0;
