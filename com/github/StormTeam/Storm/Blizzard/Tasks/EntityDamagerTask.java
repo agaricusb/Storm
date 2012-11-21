@@ -29,18 +29,15 @@ public class EntityDamagerTask implements Runnable {
     /**
      * Creates a damager object for given world.
      *
-     * @param storm         The Storm plugin used for config retrieving
-     * @param affectedWorld The world to handle
+     * @param ztorm The Storm plugin used for config retrieving
+     * @param world The world to handle
      */
 
-    public EntityDamagerTask(Storm storm, String affectedWorld) {
-        this.storm = storm;
-        this.affectedWorld = Bukkit.getWorld(affectedWorld);
+    public EntityDamagerTask(Storm ztorm, String world) {
+        storm = ztorm;
+        affectedWorld = Bukkit.getWorld(world);
         glob = Storm.wConfigs.get(affectedWorld);
-        blindness = new PotionEffect(
-                PotionEffectType.BLINDNESS,
-                glob.Blizzard_Scheduler_Damager__Calculation__Intervals__In__Ticks + 60,
-                0);
+        blindness = new PotionEffect(PotionEffectType.BLINDNESS, glob.Blizzard_Scheduler_Damager__Calculation__Intervals__In__Ticks + 60, 0);
     }
 
     @Override

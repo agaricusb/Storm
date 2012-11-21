@@ -14,11 +14,11 @@ public class Quake {
     public final int radius;
     public final int magnitude;
 
-    public Quake(Location epicenter, int magnitude) {
-        this.epicenter = epicenter;
-        this.radius = magnitude * 100;
-        this.magnitude = magnitude;
-        this.world = epicenter.getWorld();
+    public Quake(Location epic, int magn) {
+        epicenter = epic;
+        radius = magn * 100;
+        magnitude = magn;
+        world = epicenter.getWorld();
     }
 
     public void start() {

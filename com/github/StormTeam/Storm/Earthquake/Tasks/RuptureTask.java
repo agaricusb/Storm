@@ -23,13 +23,13 @@ public class RuptureTask implements Runnable {
     private World world;
     private WorldVariables glob;
 
-    public RuptureTask(Cuboid area, Location location, int length, int width, int depth) {
-        this.location = location;
-        this.world = location.getWorld();
-        this.length = length;
-        this.width = width;
-        this.area = area;
-        this.glob = Storm.wConfigs.get(this.world.getName());
+    public RuptureTask(Cuboid cube, Location loc, int ruptureLength, int ruptureWidth, int depth) {
+        location = loc;
+        world = location.getWorld();
+        length = ruptureLength;
+        width = ruptureWidth;
+        area = cube;
+        glob = Storm.wConfigs.get(world.getName());
 
         cracker = new Cracker(length, location.getBlockX(), location.getBlockY(), location.getBlockZ(), width, depth);
         cracker.plot();

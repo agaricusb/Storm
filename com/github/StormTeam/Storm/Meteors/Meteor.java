@@ -33,7 +33,6 @@ public class Meteor {
      */
 
     public static void load() {
-
         try {
             Storm.pm.registerEvents(new SafeExplosion(), Storm.instance);
             patchMeteor();

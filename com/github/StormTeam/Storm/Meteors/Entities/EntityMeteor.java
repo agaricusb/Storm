@@ -66,7 +66,7 @@ public class EntityMeteor extends EntityFireball {
 
     public EntityMeteor(World world) {
         super(world);
-        glob = Storm.wConfigs.get(world);
+        glob = Storm.wConfigs.get(world.getWorld().getName());
     }
 
     /**
@@ -188,9 +188,9 @@ public class EntityMeteor extends EntityFireball {
                 StormUtil.createExplosion(this, locX, this.locY, locZ, trailPower, true);
             }
         } while (false);
-        motX *= 1.0F;
-        motY *= 1.0F;
-        motZ *= 1.0F;
+        motX *= 1.5F;
+        motY *= 1.5F;
+        motZ *= 1.5F;
     }
 
     /**

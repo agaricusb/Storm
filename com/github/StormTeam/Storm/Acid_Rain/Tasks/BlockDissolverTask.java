@@ -26,12 +26,12 @@ public class BlockDissolverTask implements Runnable {
     /**
      * Creates a dissolver object for given world.
      *
-     * @param storm         The Storm plugin used for config retrieving
+     * @param ztorm         The Storm plugin used for config retrieving
      * @param affectedWorld The world to handle
      */
 
-    public BlockDissolverTask(Storm storm, String affectedWorld) {
-        this.storm = storm;
+    public BlockDissolverTask(Storm ztorm, String affectedWorld) {
+        storm = ztorm;
         glob = Storm.wConfigs.get(affectedWorld);
         try {
             ticker = new BlockTickSelector(Bukkit.getWorld(affectedWorld),

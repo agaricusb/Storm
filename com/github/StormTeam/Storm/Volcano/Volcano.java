@@ -21,6 +21,7 @@ public class Volcano {
             vulkanos = new File(Storm.instance.getDataFolder() + File.separator + "volcanoes.bin");
             if (vulkanos.exists() || vulkanos.createNewFile())
                 VolcanoControl.load(vulkanos);
+            Storm.manager.registerWeather(VolcanoWeather.class, "storm_volcano");
             for (World w : Bukkit.getWorlds()) {
                 loadWorld(w);
             }

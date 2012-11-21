@@ -17,8 +17,11 @@
 package com.github.StormTeam.Storm;
 
 import com.github.StormTeam.Storm.Weather.WeatherManager;
+import net.minecraft.server.EntityPlayer;
+import net.minecraft.server.WorldServer;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
@@ -94,16 +97,35 @@ public class Storm extends JavaPlugin implements Listener {
         return true;
     }
 
+    @ReflectCommand.Command(name = "render", usage = "/<command> [speed]")
+    public static boolean render(Player p, String amp) {
+        EntityPlayer handle = ((CraftPlayer) p).getHandle();
+        if (p.isOp()) {
+            ((WorldServer) handle.world).getPlayerManager().removePlayer(handle);
+            StormUtil.setRenderDistance(p.getWorld(), Integer.parseInt(amp));
+            ((WorldServer) handle.world).getPlayerManager().addPlayer(handle);
+        }
+        return true;
+    }
+
     /**
      * Called to enable Storm.
      */
 
+    public static String test(String s) {
+        return s;
+    }
+
     @Override
     public void onEnable() {
         try {
+
             GlobalVariables glob = new GlobalVariables(this, "global_variables");
             glob.load();
             verbose = glob.Verbose__Logging;
+
+            ReflectionHelper.method("test").in(String.class).withParameters(Thread.class).withReturnType(Integer.class).invoke("TEST");
+
 
             commandRegistrator = new ReflectCommand(this);
             ErrorLogger.register(this, "Storm", "com.github.StormTeam.Storm", "http://www.stormteam.tk/projects/storm/issues");

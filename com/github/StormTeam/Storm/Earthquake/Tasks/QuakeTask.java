@@ -17,8 +17,8 @@ public class QuakeTask implements Runnable {
     private boolean toggle;
     private int id;
 
-    public QuakeTask(Quake quake) {
-        this.quake = quake;
+    public QuakeTask(Quake eq) {
+        quake = eq;
     }
 
     @Override

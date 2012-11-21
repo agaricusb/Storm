@@ -21,10 +21,10 @@ package com.github.StormTeam.Storm;
 import com.bekvon.bukkit.residence.Residence;
 import com.sk89q.worldguard.bukkit.BukkitUtil;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import net.minecraft.server.*;
+import net.minecraft.server.Packet250CustomPayload;
+import net.minecraft.server.Packet62NamedSoundEffect;
+import net.minecraft.server.WorldData;
 import org.bukkit.*;
-import org.bukkit.Chunk;
-import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.CraftWorld;
@@ -33,9 +33,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -51,8 +48,6 @@ public class StormUtil {
     private static WorldGuardPlugin wg;
     private static boolean hasWG = false;
     private static boolean hasResidence = false;
-    private static Field isRaining, isThundering, rainTicks, thunderTicks;
-    private static Method explode;
     private static Logger log;
 
     static {
@@ -62,24 +57,6 @@ public class StormUtil {
             if (hasWG)
                 wg = (WorldGuardPlugin) wgp;
             hasResidence = Bukkit.getServer().getPluginManager().getPlugin("Residence") != null;
-
-            isRaining = WorldData.class.getDeclaredField("isRaining");
-            isRaining.setAccessible(true);
-            isThundering = WorldData.class.getDeclaredField("isThundering");
-            isThundering.setAccessible(true);
-            rainTicks = WorldData.class.getDeclaredField("rainTicks");
-            rainTicks.setAccessible(true);
-            thunderTicks = WorldData.class.getDeclaredField("thunderTicks");
-            thunderTicks.setAccessible(true);
-
-            if (Storm.version >= 1.4D) {
-                explode = net.minecraft.server.World.class.getDeclaredMethod("createExplosion",
-                        net.minecraft.server.Entity.class, double.class, double.class, double.class, float.class, boolean.class, boolean.class);
-            } else {
-                explode = net.minecraft.server.World.class.getDeclaredMethod("createExplosion",
-                        net.minecraft.server.Entity.class, double.class, double.class, double.class, float.class, boolean.class);
-            }
-
             log = Storm.instance.getLogger();
 
         } catch (Exception e) {
@@ -96,8 +73,8 @@ public class StormUtil {
     public static void setRainNoEvent(World world, boolean flag) {
         try {
             WorldData data = ((CraftWorld) world).getHandle().worldData;
-            isRaining.set(data, flag);
-            rainTicks.setInt(data, flag ? Integer.MAX_VALUE : 0);
+            ReflectionHelper.field("isRaining").in(data).set(flag);
+            ReflectionHelper.field("rainTicks").in(data).set(flag ? Integer.MAX_VALUE : 0);
         } catch (Exception ex) {
             world.setStorm(true); //Can still set the storm
         }
@@ -112,8 +89,8 @@ public class StormUtil {
     public static void setThunderNoEvent(World world, boolean flag) {
         try {
             WorldData data = ((CraftWorld) world).getHandle().worldData;
-            isThundering.set(data, flag);
-            thunderTicks.setInt(data, flag ? Integer.MAX_VALUE : 0);
+            ReflectionHelper.field("isThundering").in(data).set(flag);
+            ReflectionHelper.field("thunderTicks").in(data).set(flag ? Integer.MAX_VALUE : 0);
         } catch (Exception ex) {
             world.setStorm(true); //Can still set the storm
         }
@@ -229,7 +206,7 @@ public class StormUtil {
     }
 
     public static void playSound(Player to, String sound, Location loc, float pitch, float volume) {
-        if (Storm.wConfigs.get(loc.getWorld().getName()).Play__Weather__Sounds)
+        if (Storm.version > 1.2 && Storm.wConfigs.get(loc.getWorld().getName()).Play__Weather__Sounds)
             ((CraftPlayer) to).getHandle().netServerHandler.sendPacket(new Packet62NamedSoundEffect(sound, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), pitch, volume));
     }
 
@@ -260,27 +237,7 @@ public class StormUtil {
 
     public static void setRenderDistance(World world, int distance) {
         try {
-
-            net.minecraft.server.WorldServer cWorld = ((CraftWorld) world).getHandle();
-
-            Field viewDistance = PlayerManager.class.getDeclaredField("e");
-            viewDistance.setAccessible(true);
-
-
-            Field modifiersField = Field.class.getDeclaredField("modifiers");
-            modifiersField.setAccessible(true);
-            modifiersField.setInt(viewDistance, viewDistance.getModifiers() & ~Modifier.FINAL);
-
-            Field manager = WorldServer.class.getDeclaredField("manager");
-            manager.setAccessible(true);
-
-            modifiersField = Field.class.getDeclaredField("modifiers");
-            modifiersField.setAccessible(true);
-            modifiersField.setInt(manager, manager.getModifiers() & ~Modifier.FINAL);
-
-            viewDistance.set(manager.get(cWorld), distance);
-
-
+            ReflectionHelper.field("e").in(ReflectionHelper.field("manager").in(((CraftWorld) world).getHandle()).get()).set(distance);
         } catch (Exception ignored) {
             ignored.printStackTrace();
         }
@@ -321,10 +278,17 @@ public class StormUtil {
 
     public static void createExplosion(net.minecraft.server.Entity entity, double locX, double locY, double locZ, float power, boolean incendiary) {
         try {
-            if (Storm.version > 1.3D)
-                explode.invoke(entity.world, entity, locX, locY, locZ, power, incendiary, true);
-            else
-                explode.invoke(entity.world, entity, locX, locY, locZ, power, incendiary);
+            if (Storm.version > 1.3D) {
+                ReflectionHelper.method("createExplosion")
+                        .withParameters(net.minecraft.server.Entity.class, double.class, double.class, double.class, float.class, boolean.class, boolean.class)
+                        .in(entity.world)
+                        .invoke(entity, locX, locY, locZ, power, incendiary, true);
+            } else {
+                ReflectionHelper.method("createExplosion")
+                        .withParameters(net.minecraft.server.Entity.class, double.class, double.class, double.class, float.class, boolean.class)
+                        .in(entity.world)
+                        .invoke(entity, locX, locY, locZ, power, incendiary);
+            }
         } catch (Exception e) {
             entity.world.getWorld().createExplosion(locX, locY, locZ, power);
             ErrorLogger.generateErrorLog(e);

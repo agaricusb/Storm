@@ -32,7 +32,7 @@ public class BlizzardWeather extends StormWeather {
     public BlizzardWeather(Storm storm, String world) {
         super(storm, world);
         glob = Storm.wConfigs.get(world);
-        this.needRainFlag = true;
+        needRainFlag = true;
     }
 
     @Override

@@ -40,7 +40,7 @@ public class EarthquakeWeather extends StormWeather {
      * @param storm Storm plugin object
      * @param world World name to act opon
      */
-    protected EarthquakeWeather(Storm storm, String world) {
+    public EarthquakeWeather(Storm storm, String world) {
         super(storm, world);
         glob = Storm.wConfigs.get(world);
     }

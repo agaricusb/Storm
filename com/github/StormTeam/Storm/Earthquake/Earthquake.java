@@ -13,6 +13,7 @@ public class Earthquake {
 
     public static void load() {
         try {
+            Storm.manager.registerWeather(EarthquakeWeather.class, "storm_earthquake");
             for (World w : Bukkit.getWorlds()) {
                 loadWorld(w);
             }
