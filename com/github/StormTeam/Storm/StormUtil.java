@@ -264,10 +264,11 @@ public class StormUtil {
     public static Set<Player> getNearbyPlayers(Location location, double radius) {
         Set<Player> playerList = new HashSet<Player>();
         World locWorld = location.getWorld();
+        radius *= radius;
 
         for (Player p : Bukkit.getServer().getOnlinePlayers()) {
             if (p.getWorld().equals(locWorld)) {
-                if (p.getLocation().distance(location) <= radius) {
+                if (p.getLocation().distanceSquared(location) <= radius) {
                     playerList.add(p);
                 }
             }
