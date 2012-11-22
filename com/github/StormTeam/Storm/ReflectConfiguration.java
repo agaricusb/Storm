@@ -235,31 +235,31 @@ public class ReflectConfiguration {
         int mod = field.getModifiers();
         return Modifier.isFinal(mod) || Modifier.isTransient(mod) || Modifier.isVolatile(mod);
     }
+}
 
-    @Target(ElementType.FIELD)
-    @Retention(RetentionPolicy.RUNTIME)
-    public @interface LimitInteger {
-        int limit() default 100;
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
+@interface LimitInteger {
+    int limit() default 100;
 
-        String warning() default "%node cannot be over %limit! Defaulted to value of %limit.";
+    String warning() default "%node cannot be over %limit! Defaulted to value of %limit.";
 
-        boolean correct() default true;
-    }
+    boolean correct() default true;
+}
 
-    @Target(ElementType.FIELD)
-    @Retention(RetentionPolicy.RUNTIME)
-    public @interface Comment {
-        String[] _();
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
+@interface Comment {
+    String[] _();
 
-        CommentLocation location() default CommentLocation.TOP;
+    CommentLocation location() default CommentLocation.TOP;
 
-        public enum CommentLocation {
-            INLINE(1),
-            TOP(2),
-            BOTTOM(3);
+    public enum CommentLocation {
+        INLINE(1),
+        TOP(2),
+        BOTTOM(3);
 
-            CommentLocation(int location) {
-            }
+        CommentLocation(int location) {
         }
     }
 }

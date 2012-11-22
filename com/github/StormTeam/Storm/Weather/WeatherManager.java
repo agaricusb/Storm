@@ -1,9 +1,6 @@
 package com.github.StormTeam.Storm.Weather;
 
-import com.github.StormTeam.Storm.ErrorLogger;
-import com.github.StormTeam.Storm.Pair;
-import com.github.StormTeam.Storm.Storm;
-import com.github.StormTeam.Storm.StormUtil;
+import com.github.StormTeam.Storm.*;
 import com.github.StormTeam.Storm.Weather.Exceptions.WeatherAlreadyRegisteredException;
 import com.github.StormTeam.Storm.Weather.Exceptions.WeatherNotAllowedException;
 import com.github.StormTeam.Storm.Weather.Exceptions.WeatherNotFoundException;
@@ -18,8 +15,6 @@ import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.event.world.WorldUnloadEvent;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 
@@ -79,28 +74,23 @@ public class WeatherManager implements Listener {
      */
     public void enableWeatherForWorld(String name, String world, int chance, int recalculation, Object... args) throws WeatherNotFoundException {
         synchronized (this) {
-            if (!registeredWeathers.containsKey(name)) {
+            if (!registeredWeathers.containsKey(name))
                 throw new WeatherNotFoundException(String.format("Weather %s not found", name));
-            }
-            Map<String, StormWeather> instances = registeredWeathers.get(name).RIGHT;
-            Map<String, Pair<Integer, WeatherTrigger>> triggers = weatherTriggers.get(name);
-            Class<? extends StormWeather> weather = registeredWeathers.get(name).LEFT;
 
             Class[] classes = new Class[args.length + 2];
             classes[0] = Storm.class;
             classes[1] = String.class;
-            for (int i = 2; i < classes.length; ++i)
-                classes[i] = args[i].getClass();
+            for (int i = 2; i < classes.length; ++i) classes[i] = args[i].getClass();
 
             Object[] arguments = new Object[args.length + 2];
             arguments[0] = storm;
             arguments[1] = world;
             System.arraycopy(args, 0, arguments, 2, args.length);
             try {
-                instances.put(world, weather.getConstructor(classes).newInstance(arguments));
+                registeredWeathers.get(name).RIGHT.put(world, ReflectionHelper.constructor().in(registeredWeathers.get(name).LEFT).withParameters(classes).newInstance(arguments));
                 WeatherTrigger trigger = new WeatherTrigger(this, name, world, chance);
                 int id = Bukkit.getScheduler().scheduleSyncRepeatingTask(storm, trigger, recalculation, recalculation);
-                triggers.put(world, new Pair<Integer, WeatherTrigger>(id, trigger));
+                weatherTriggers.get(name).put(world, new Pair<Integer, WeatherTrigger>(id, trigger));
             } catch (Exception e) {
                 ErrorLogger.generateErrorLog(e);
             }
@@ -117,9 +107,8 @@ public class WeatherManager implements Listener {
     public void disableWeatherForWorld(String name, String world) throws WeatherNotFoundException {
         synchronized (this) {
             stopWeatherReal(name, Arrays.asList(world));
-            Map<String, StormWeather> instances = registeredWeathers.get(name).RIGHT;
             Map<String, Pair<Integer, WeatherTrigger>> triggers = weatherTriggers.get(name);
-            instances.remove(world);
+            registeredWeathers.get(name).RIGHT.remove(world);
             Bukkit.getScheduler().cancelTask(triggers.get(world).LEFT);
             triggers.remove(world);
         }
@@ -186,38 +175,16 @@ public class WeatherManager implements Listener {
 
     private boolean isConflictingWeatherOneWay(String w1, String w2) {
         StormWeather sampleInstance = getSampleInstance(w1);
-        Method getConflicts;
-        Set<String> conflicts;
-        try {
-            getConflicts = sampleInstance.getClass().getDeclaredMethod("getConflicts");
-            //noinspection unchecked
-            conflicts = (Set<String>) getConflicts.invoke(sampleInstance);
-        } catch (IllegalAccessException e) {
-            return false;
-        } catch (IllegalArgumentException e) {
-            return false;
-        } catch (InvocationTargetException e) {
-            return false;
-        } catch (NoSuchMethodException e) {
-            return false;
-        }
-        return conflicts.contains(w2);
+        return ReflectionHelper.method("getConflicts").in(sampleInstance).withReturnType(Set.class).invoke().contains(sampleInstance);
     }
 
     protected void controlMinecraftFlags(String world) {
         try {
-            Field needRain = StormWeather.class.getDeclaredField("needRainFlag");
-            Field needThunder = StormWeather.class.getDeclaredField("needThunderFlag");
             boolean rain = false, thunder = false;
             for (String weather : getActiveWeathersReal(world)) {
-                // System.out.print
                 StormWeather sample = registeredWeathers.get(weather).RIGHT.get(world);
-                if (needRain.getBoolean(sample)) {
-                    rain = true;
-                }
-                if (needThunder.getBoolean(sample)) {
-                    thunder = true;
-                }
+                rain = ReflectionHelper.field("needRainFlag").in(sample).ofType(boolean.class).get();
+                thunder = ReflectionHelper.field("needThunderFlag").in(sample).ofType(boolean.class).get();
             }
             if (currentRain != rain) {
                 StormUtil.setRainNoEvent(Bukkit.getWorld(world), rain);
@@ -346,18 +313,7 @@ public class WeatherManager implements Listener {
 
                 // Optional state passing
                 Class[] classes = StormUtil.getClasses(args);
-                try {
-                    Method setState = weather.getClass().getMethod("setState", classes);
-                    setState.invoke(weather, args);
-                } catch (NoSuchMethodException ignored) {
-                    // Don't care, just don't invoke then
-                } catch (InvocationTargetException e) {
-                    // Don't really care if you can't invoke it
-                    e.printStackTrace();
-                } catch (IllegalAccessException e) {
-                    // Important but still recoverable
-                    e.printStackTrace();
-                }
+                ReflectionHelper.method("setState").in(weather).invoke(args);
 
                 weather.start();
                 String texture = weather.getTexture();
@@ -395,7 +351,7 @@ public class WeatherManager implements Listener {
      * @param name Weather name
      * @throws WeatherNotFoundException
      */
-    void stopWeather(String name, Collection<String> worlds) throws WeatherNotFoundException {
+    public void stopWeather(String name, Collection<String> worlds) throws WeatherNotFoundException {
         synchronized (this) {
             stopWeatherReal(name, worlds);
         }
@@ -526,7 +482,7 @@ public class WeatherManager implements Listener {
             String world = event.getWorld().getName();
             List<String> worlds = Arrays.asList(world);
             synchronized (this) {
-                for (String weather : new HashSet<String>(getActiveWeathersReal(world))) {
+                for (String weather : getActiveWeathersReal(world)) {
                     try {
                         stopWeatherReal(weather, worlds);
                     } catch (WeatherNotFoundException ex) {

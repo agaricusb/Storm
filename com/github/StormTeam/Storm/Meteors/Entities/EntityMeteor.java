@@ -18,11 +18,8 @@
 
 package com.github.StormTeam.Storm.Meteors.Entities;
 
-import com.github.StormTeam.Storm.IDBlock;
+import com.github.StormTeam.Storm.*;
 import com.github.StormTeam.Storm.Meteors.Meteor;
-import com.github.StormTeam.Storm.Storm;
-import com.github.StormTeam.Storm.StormUtil;
-import com.github.StormTeam.Storm.WorldVariables;
 import net.minecraft.server.*;
 import org.bukkit.Location;
 import org.bukkit.block.Biome;
@@ -110,9 +107,10 @@ public class EntityMeteor extends EntityFireball {
         this.doSnow = snow;
         this.spawnMeteorOnImpact = spawnOnImpact;
         this.radius = radius;
+        this.glob = Storm.wConfigs.get(world.getWorld().getName());
 
         if (spawnMeteorOnImpact)
-            for (List<String> ore : Storm.wConfigs.get(world.getWorld().getName()).Natural__Disasters_Meteor_Ore__Chance__Percentages)
+            for (List<String> ore : glob.Natural__Disasters_Meteor_Ore__Chance__Percentages)
                 ores.put(new IDBlock(ore.get(0)), Integer.parseInt(ore.get(1)));
     }
 
@@ -201,6 +199,7 @@ public class EntityMeteor extends EntityFireball {
 
     @Override
     public void a(MovingObjectPosition movingobjectposition) {
+        Verbose.log("Burrowing meteor " + this);
         if (burrowCount > 0) {
             // Not yet dead, so burrow.
             if (!StormUtil.isBlockProtected(world.getWorld().getBlockAt((int) locX, (int) locY, (int) locZ))) {

@@ -56,13 +56,13 @@ public class VolcanoWorker {
         this.world = center.getWorld();
         this.radius = radius;
         this.layer = layer;
-        this.glob = Storm.wConfigs.get(this.world.getName());
     }
 
     public VolcanoWorker() {
     }
 
     public void start() {
+        this.glob = Storm.wConfigs.get(this.world.getName());
         if (controller == null)
             Storm.pm.registerEvents((controller = new VolcanoControl()), Storm.instance);
 
