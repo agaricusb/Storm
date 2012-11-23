@@ -174,25 +174,22 @@ public class WeatherManager implements Listener {
     }
 
     private boolean isConflictingWeatherOneWay(String w1, String w2) {
-        StormWeather sampleInstance = getSampleInstance(w1);
-        return ReflectionHelper.method("getConflicts").in(sampleInstance).withReturnType(Set.class).invoke().contains(sampleInstance);
+        return getSampleInstance(w1).getConflicts().contains(w2);
     }
 
     protected void controlMinecraftFlags(String world) {
         try {
-            boolean rain = false, thunder = false;
             for (String weather : getActiveWeathersReal(world)) {
                 StormWeather sample = registeredWeathers.get(weather).RIGHT.get(world);
-                rain = ReflectionHelper.field("needRainFlag").in(sample).ofType(boolean.class).get();
-                thunder = ReflectionHelper.field("needThunderFlag").in(sample).ofType(boolean.class).get();
-            }
-            if (currentRain != rain) {
-                StormUtil.setRainNoEvent(Bukkit.getWorld(world), rain);
-                currentRain = rain;
-            }
-            if (currentThunder != thunder) {
-                StormUtil.setThunderNoEvent(Bukkit.getWorld(world), thunder);
-                currentThunder = thunder;
+
+                if (currentRain != sample.needRainFlag) {
+                    StormUtil.setRainNoEvent(Bukkit.getWorld(world), sample.needRainFlag);
+                    currentRain = sample.needRainFlag;
+                }
+                if (currentThunder != sample.needThunderFlag) {
+                    StormUtil.setThunderNoEvent(Bukkit.getWorld(world), sample.needThunderFlag);
+                    currentThunder = sample.needThunderFlag;
+                }
             }
         } catch (Exception e) {
             ErrorLogger.generateErrorLog(e);
@@ -311,9 +308,8 @@ public class WeatherManager implements Listener {
                     return;
                 }
 
-                // Optional state passing
-                Class[] classes = StormUtil.getClasses(args);
-                ReflectionHelper.method("setState").in(weather).invoke(args);
+                if (args.length > 0)
+                    weather.setState(args);
 
                 weather.start();
                 String texture = weather.getTexture();
