@@ -33,7 +33,6 @@ import java.util.List;
 
 public class VolcanoWeather extends StormWeather {
     WorldVariables glob;
-    int killID;
 
     /**
      * Constructor. DO NOT CHANGE ARGUMENTS.
@@ -44,6 +43,7 @@ public class VolcanoWeather extends StormWeather {
     public VolcanoWeather(Storm storm, String world) {
         super(storm, world);
         glob = Storm.wConfigs.get(world);
+        autoKillTicks = 1;
     }
 
     Location victim;
@@ -69,7 +69,6 @@ public class VolcanoWeather extends StormWeather {
         if (candidate.size() == 0)
             return false;
         victim = candidate.get(Storm.random.nextInt(candidate.size()));
-        killID = Storm.manager.createAutoKillWeatherTask("storm_volcano", world, 1);
         return true;
     }
 

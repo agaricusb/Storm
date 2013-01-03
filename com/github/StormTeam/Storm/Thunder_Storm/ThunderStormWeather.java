@@ -6,7 +6,6 @@ import com.github.StormTeam.Storm.StormUtil;
 import com.github.StormTeam.Storm.Thunder_Storm.Tasks.StrikerTask;
 import com.github.StormTeam.Storm.Weather.StormWeather;
 import com.github.StormTeam.Storm.WorldVariables;
-import org.bukkit.Bukkit;
 
 /**
  * A thunder storm weather object.
@@ -17,7 +16,6 @@ public class ThunderStormWeather extends StormWeather {
     private final WorldVariables glob;
     private StrikerTask striker;
     private EntityShelterer shelter;
-    private int killID;
 
     /**
      * Creates a thunder storm weather object for given world.
@@ -28,8 +26,10 @@ public class ThunderStormWeather extends StormWeather {
 
     public ThunderStormWeather(Storm storm, String world) {
         super(storm, world);
-        this.glob = Storm.wConfigs.get(world);
-        this.needRainFlag = true;
+        glob = Storm.wConfigs.get(world);
+        needRainFlag = true;
+        autoKillTicks = 7500 + Storm.random.nextInt(1024);
+
     }
 
     /**
@@ -54,9 +54,6 @@ public class ThunderStormWeather extends StormWeather {
             shelter = new EntityShelterer(storm, world, "storm_thunderstorm", StormUtil.rainBiomes);
             shelter.start();
         }
-
-        //Set the timer to kill
-        killID = Storm.manager.createAutoKillWeatherTask("storm_thunderstorm", world, 7500 + Storm.random.nextInt(1024));
     }
 
     /**
@@ -66,10 +63,11 @@ public class ThunderStormWeather extends StormWeather {
     @Override
     public void end() {
         StormUtil.broadcast(glob.Thunder__Storm_Messages_On__Thunder__Storm__Stop, bukkitWorld);
-        striker.stop();
+        if (striker != null)
+            striker.stop();
         striker = null; //Remove references
-        shelter.stop();
+        if (shelter != null)
+            shelter.stop();
         shelter = null;
-        Bukkit.getScheduler().cancelTask(killID);
     }
 }

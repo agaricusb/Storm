@@ -7,7 +7,6 @@ import com.github.StormTeam.Storm.Storm;
 import com.github.StormTeam.Storm.StormUtil;
 import com.github.StormTeam.Storm.Weather.StormWeather;
 import com.github.StormTeam.Storm.WorldVariables;
-import org.bukkit.Bukkit;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -22,7 +21,6 @@ public class AcidRainWeather extends StormWeather {
     private EntityDamagerTask enDamager;
     private EntityShelterer shelter;
     private BlockDissolverTask dissolver;
-    private int killID;
 
     /**
      * Creates a acid rain weather object for given world.
@@ -35,6 +33,7 @@ public class AcidRainWeather extends StormWeather {
         super(storm, world);
         glob = Storm.wConfigs.get(world);
         needRainFlag = true;
+        autoKillTicks = 7500 + Storm.random.nextInt(1024);
     }
 
     @Override
@@ -64,8 +63,6 @@ public class AcidRainWeather extends StormWeather {
             shelter = new EntityShelterer(storm, world, "storm_acidrain", StormUtil.rainBiomes);
             shelter.start();
         }
-
-        killID = Storm.manager.createAutoKillWeatherTask("storm_acidrain", world, 7500 + Storm.random.nextInt(1024));
     }
 
     /**
@@ -74,17 +71,16 @@ public class AcidRainWeather extends StormWeather {
 
     @Override
     public void end() {
-        try {
-            StormUtil.broadcast(glob.Acid__Rain_Messages_On__Acid__Rain__Stop, bukkitWorld);
+        StormUtil.broadcast(glob.Acid__Rain_Messages_On__Acid__Rain__Stop, bukkitWorld);
+        if (enDamager != null)
             enDamager.stop();
-            enDamager = null;
+        enDamager = null;
+        if (shelter != null)
             shelter.stop();
-            shelter = null;
+        shelter = null;
+        if (dissolver != null)
             dissolver.stop();
-            dissolver = null;
-            Bukkit.getScheduler().cancelTask(killID);
-        } catch (Exception e) {
-        }
+        dissolver = null;
     }
 
     /**

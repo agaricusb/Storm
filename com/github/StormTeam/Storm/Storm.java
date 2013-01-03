@@ -17,12 +17,8 @@
 package com.github.StormTeam.Storm;
 
 import com.github.StormTeam.Storm.Weather.WeatherManager;
-import net.minecraft.server.EntityPlayer;
-import net.minecraft.server.WorldServer;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
@@ -64,10 +60,7 @@ public class Storm extends JavaPlugin implements Listener {
      * The server's plugin manager, to avoid fetching each use.
      */
     public static PluginManager pm;
-    /**
-     * The MC version.
-     */
-    public static double version = 0.0;
+
     /**
      * The Storm WeatherManager.
      */
@@ -75,46 +68,11 @@ public class Storm extends JavaPlugin implements Listener {
 
     public static Storm instance = null;
 
-    public static boolean verbose = true;
+    public static boolean verbose = false;
 
     public static ReflectCommand commandRegistrator = null;
 
-    //Easter egg :D
-    @ReflectCommand.Command(name = "sound", usage = "/<command> [sound]")
-    public static boolean sound(Player p, String sound, String pitch, String volume) {
-        if (p.isOp()) {
-            StormUtil.playSound(p, sound, Float.parseFloat(pitch), Float.parseFloat(volume));
-        }
-        return true;
-    }
-
-    @ReflectCommand.Command(name = "speed", usage = "/<command> [speed]")
-    public static boolean speed(Player p, String amp) {
-        if (p.isOp()) {
-            p.setFlySpeed(Float.parseFloat(amp));
-            p.setWalkSpeed(Float.parseFloat(amp));
-        }
-        return true;
-    }
-
-    @ReflectCommand.Command(name = "render", usage = "/<command> [speed]")
-    public static boolean render(Player p, String amp) {
-        EntityPlayer handle = ((CraftPlayer) p).getHandle();
-        if (p.isOp()) {
-            ((WorldServer) handle.world).getPlayerManager().removePlayer(handle);
-            StormUtil.setRenderDistance(p.getWorld(), Integer.parseInt(amp));
-            ((WorldServer) handle.world).getPlayerManager().addPlayer(handle);
-        }
-        return true;
-    }
-
-    /**
-     * Called to enable Storm.
-     */
-
-    public static String test(String s) {
-        return s;
-    }
+    public static boolean incompatible = false;
 
     @Override
     public void onEnable() {
@@ -125,7 +83,7 @@ public class Storm extends JavaPlugin implements Listener {
             verbose = glob.Verbose__Logging;
 
             commandRegistrator = new ReflectCommand(this);
-            // ErrorLogger.register(this, "Storm", "com.github.StormTeam.Storm", "http://www.stormteam.tk/projects/storm/issues");
+            ErrorLogger.register(this, "Storm", "com.github.StormTeam.Storm", "http://www.stormteam.tk/projects/storm/issues");
 
             if (instance != null) {
                 getLogger().log(Level.SEVERE, "Error! Only one instance of Storm may run at once! Storm detected running version: " +
@@ -144,7 +102,7 @@ public class Storm extends JavaPlugin implements Listener {
             if (glob.Auto__Updating)
                 initUpdater();
 
-            initGraphs(new Metrics(this));
+            Statistics.graph(new Metrics(this));
 
             //For the modular builder later on
             com.github.StormTeam.Storm.Acid_Rain.AcidRain.load();
@@ -164,8 +122,11 @@ public class Storm extends JavaPlugin implements Listener {
     }
 
     private void configureVersion() {
-        version = Double.parseDouble(Bukkit.getBukkitVersion().substring(0, 3));
-        getLogger().log(Level.INFO, "Loading with MC {0}.X compatibility.", version);
+        String v = Bukkit.getBukkitVersion().substring(0, 5);
+        if (!v.equals("1.4.6")) {
+            getLogger().log(Level.WARNING, "Storm is not compatible with MC version " + v + ". Storm suspended.");
+            incompatible = true;
+        }
     }
 
     private void initConfiguration() {
@@ -189,84 +150,6 @@ public class Storm extends JavaPlugin implements Listener {
             StormUtil.log(updater.getLatestVersionString() + " will be enabled on reload!");
         } else {
             StormUtil.log("No update found: running latest version.");
-        }
-    }
-
-    private void initGraphs(Metrics met) {
-        try {
-            Metrics.Graph graph = met.createGraph("Weathers Enabled");
-
-            for (WorldVariables gb : wConfigs.values()) {
-                if (gb.Acid__Rain_Features_Dissolving__Blocks || gb.Acid__Rain_Features_Player__Damaging || gb.Acid__Rain_Features_Entity__Damaging || gb.Acid__Rain_Features_Entity__Shelter__Pathfinding) {
-                    graph.addPlotter(new Metrics.Plotter("Acid Rain") {
-                        @Override
-                        public int getValue() {
-                            return 1;
-                        }
-                    });
-                    break;
-                }
-            }
-
-            for (WorldVariables gb : wConfigs.values()) {
-                if (gb.Blizzard_Features_Player__Damaging || gb.Blizzard_Features_Entity__Damaging || gb.Blizzard_Features_Entity__Shelter__Pathfinding || gb.Blizzard_Features_Slowing__Snow) {
-                    graph.addPlotter(new Metrics.Plotter("Blizzard") {
-                        @Override
-                        public int getValue() {
-                            return 1;
-                        }
-                    });
-                    break;
-                }
-            }
-
-            for (WorldVariables gb : wConfigs.values()) {
-                if (gb.Weathers__Enabled_Natural__Disasters_Meteors) {
-                    graph.addPlotter(new Metrics.Plotter("Meteor") {
-                        public int getValue() {
-                            return 1;
-                        }
-                    });
-                    break;
-                }
-            }
-
-            for (WorldVariables gb : wConfigs.values()) {
-                if (gb.Weathers__Enabled_Natural__Disasters_Wildfires) {
-                    graph.addPlotter(new Metrics.Plotter("Wildfire") {
-                        public int getValue() {
-                            return 1;
-                        }
-                    });
-                    break;
-                }
-            }
-
-            for (WorldVariables gb : wConfigs.values()) {
-                if (gb.Thunder__Storm_Features_Thunder__Striking || gb.Thunder__Storm_Features_Entity__Shelter__Pathfinding) {
-                    graph.addPlotter(new Metrics.Plotter("Thunder Storm") {
-                        public int getValue() {
-                            return 1;
-                        }
-                    });
-                    break;
-                }
-            }
-
-            met.addCustomData(new Metrics.Plotter("Servers Forcing Texture Packs") {
-                public int getValue() {
-                    for (WorldVariables gb : wConfigs.values()) {
-                        if (gb.Force__Weather__Textures) {
-                            return 1;
-                        }
-                    }
-                    return 0;
-                }
-            });
-
-            met.start();
-        } catch (Exception e) {
-            ErrorLogger.generateErrorLog(e);
         }
     }
 

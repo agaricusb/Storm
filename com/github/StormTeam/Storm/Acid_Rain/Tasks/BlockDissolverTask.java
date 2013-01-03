@@ -43,7 +43,6 @@ public class BlockDissolverTask implements Runnable {
         for (List<String> trans : glob.Acid__Rain_Dissolver_Block__Transformations) {
             transformations.add(new BlockTransformer(new IDBlock(trans.get(0)), new IDBlock(trans.get(1))));
         }
-
     }
 
     @Override

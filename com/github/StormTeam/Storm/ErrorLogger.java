@@ -1,10 +1,10 @@
 package com.github.StormTeam.Storm;
 
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.v1_4_6.MinecraftServer;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.CraftServer;
+import org.bukkit.craftbukkit.v1_4_6.CraftServer;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginLogger;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -163,6 +163,7 @@ public class ErrorLogger extends PluginLogger {
                     generateErrorLog(throwable);
                 }
             });
+
             mcLogger = MinecraftServer.class.getDeclaredField("log");
             mcLogger.setAccessible(true);
             craftbukkitServer = CraftServer.class.getDeclaredField("console");

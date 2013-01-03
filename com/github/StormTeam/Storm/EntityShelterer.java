@@ -1,12 +1,12 @@
 package com.github.StormTeam.Storm;
 
-import net.minecraft.server.*;
+import net.minecraft.server.v1_4_6.*;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
-import org.bukkit.craftbukkit.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_4_6.entity.CraftEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
@@ -26,10 +26,7 @@ public class EntityShelterer implements Runnable {
     private Method register;
     private final ArrayList<Integer> registered = new ArrayList<Integer>();
     private Set<Biome> filter = new HashSet<Biome>();
-    private final Set<Class<?>> filteredEntities = new HashSet<Class<?>>() {{
-        add(EntityPlayer.class);
-        add(EntityEnderDragon.class);
-    }};
+    private final Set<Class<? extends EntityLiving>> filteredEntities;
     private final String name;
     private Method vec3DCreate;
 
@@ -38,10 +35,9 @@ public class EntityShelterer implements Runnable {
         this.storm = storm;
         this.affectedWorld = Bukkit.getWorld(affectedWorld);
         this.name = name;
-        this.filter = biomeFilter;
+        filter = biomeFilter;
+        filteredEntities = StormUtil.asSet(EntityEnderDragon.class, EntityPlayer.class);
         try {
-            if (Storm.version == 1.2)
-                vec3DCreate = Vec3D.class.getDeclaredMethod("b", double.class, double.class, double.class);
             selector = EntityLiving.class.getDeclaredField("goalSelector");
             register = PathfinderGoalSelector.class.getDeclaredMethod("a", int.class, PathfinderGoal.class);
             selector.setAccessible(true);
@@ -55,7 +51,7 @@ public class EntityShelterer implements Runnable {
     public void run() {
         try {
             for (Entity en : affectedWorld.getEntities()) {
-                net.minecraft.server.Entity notchMob = ((CraftEntity) en).getHandle();
+                net.minecraft.server.v1_4_6.Entity notchMob = ((CraftEntity) en).getHandle();
                 if (notchMob instanceof EntityLiving && !filteredEntities.contains(notchMob.getClass())) {
                     int eid = en.getEntityId();
                     if (!registered.contains(eid) && filter.contains(en.getLocation().getBlock().getBiome())) {
@@ -74,7 +70,8 @@ public class EntityShelterer implements Runnable {
     }
 
     public void stop() {
-        Bukkit.getScheduler().cancelTask(id);
+        if (Bukkit.getScheduler().isCurrentlyRunning(id))
+            Bukkit.getScheduler().cancelTask(id);
     }
 
     public class PathfinderGoalFleeSky extends PathfinderGoal {
@@ -84,7 +81,7 @@ public class EntityShelterer implements Runnable {
         private double y;
         private double z;
         private final float speed;
-        private final net.minecraft.server.World world;
+        private final net.minecraft.server.v1_4_6.World world;
         private final String name;
 
         public PathfinderGoalFleeSky(EntityLiving creature, float fast, String weather) {
@@ -109,22 +106,12 @@ public class EntityShelterer implements Runnable {
         //1.2, e is if it can continue
         //1.3, e is to start
         //Nasty workaround
-        public boolean e() {
-            if (Storm.version == 1.2)
-                return canEnd();
-            else if (Storm.version == 1.3) {
-                start();
-                return true;
-            }
-            return false;
+        public void e() {
+            start();
         }
 
         //1.3/1.2 starting/ending
         public void c() {
-            if (Storm.version == 1.2) {
-                start();
-                return;
-            }
             end();
         }
 
@@ -143,7 +130,7 @@ public class EntityShelterer implements Runnable {
         }
 
         private void start() {
-            if (isUnderSky() && (((Storm.version == 1.3 || Storm.version == 1.4) && entity.getNavigation().f()) || (Storm.version == 1.2 && entity.getNavigation().e()))) {
+            if (isUnderSky() && entity.getNavigation().f()) {
                 entity.getNavigation().a(x, y, z, speed);
                 entity.getNavigation().d(true);
             }
@@ -173,21 +160,10 @@ public class EntityShelterer implements Runnable {
         }
 
         private void setup(Vec3D path) {
-
-            if (Storm.version <= 1.3) {
-                x = (Integer) ((Object) path.a);
-                y = (Integer) ((Object) path.b);
-                z = (Integer) ((Object) path.c);
-                Verbose.log("(1.3)Moving entity to " + x + "|" + y + "|" + z + ".");
-                return;
-            }
-
-            //NASTY!
-            x = (int) path.c;
-            y = (int) path.d;
-            z = (int) path.e;
+            x = path.c;
+            y = path.d;
+            z = path.e;
             Verbose.log("(1.4)Moving entity to " + x + "|" + y + "|" + z + ".");
-
         }
 
         private Vec3D getPathToShelter() throws InvocationTargetException, IllegalAccessException {
@@ -196,10 +172,7 @@ public class EntityShelterer implements Runnable {
                         py = MathHelper.floor((entity.boundingBox.b + (double) Storm.random.nextInt(6)) - 6D),
                         pz = MathHelper.floor((entity.locZ + (double) Storm.random.nextInt(20)) - 10D);
                 if (!isUnderSky(world, px, py, pz))
-                    if (Storm.version <= 1.3)
-                        return (Vec3D) vec3DCreate.invoke(null, px, py, pz);
-                    else
-                        return world.getVec3DPool().create(px, py, pz);
+                    return world.getVec3DPool().create(px, py, pz);
             }
             return null;
         }
@@ -208,7 +181,7 @@ public class EntityShelterer implements Runnable {
             return isUnderSky(world, entity.locX, entity.locY, entity.locZ);
         }
 
-        public boolean isUnderSky(net.minecraft.server.World world, double x, double y, double z) {
+        public boolean isUnderSky(net.minecraft.server.v1_4_6.World world, double x, double y, double z) {
             return StormUtil.isLocationUnderSky(new Location(world.getWorld(), x, y, z));
         }
     }

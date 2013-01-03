@@ -20,10 +20,13 @@ package com.github.StormTeam.Storm.Meteors.Entities;
 
 import com.github.StormTeam.Storm.*;
 import com.github.StormTeam.Storm.Meteors.Meteor;
-import net.minecraft.server.*;
+import net.minecraft.server.v1_4_6.Block;
+import net.minecraft.server.v1_4_6.EntityFireball;
+import net.minecraft.server.v1_4_6.MovingObjectPosition;
+import net.minecraft.server.v1_4_6.World;
 import org.bukkit.Location;
 import org.bukkit.block.Biome;
-import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.craftbukkit.v1_4_6.CraftWorld;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 
 import java.util.ArrayList;
@@ -58,7 +61,7 @@ public class EntityMeteor extends EntityFireball {
     /**
      * Constructs a meteor for the given world.
      *
-     * @param world The net.minecraft.server.World that this entity will be spawned in
+     * @param world The net.minecraft.server.v1_4_6.World that this entity will be spawned in
      */
 
     public EntityMeteor(World world) {
@@ -127,29 +130,7 @@ public class EntityMeteor extends EntityFireball {
      */
     @Override
     public void j_() {
-        move();
         super.j_();
-    }
-
-    /**
-     * Move method for 1.3.X.
-     */
-    @Override
-    public void h_() {
-        move();
-        super.h_();
-    }
-
-    /**
-     * Move method for 1.2.X.
-     */
-    @Override
-    public void F_() {
-        move();
-        super.F_();
-    }
-
-    private void move() {
         do {
             h_lock = !h_lock;
             if (h_lock) {
@@ -183,12 +164,13 @@ public class EntityMeteor extends EntityFireball {
             }
             if (!StormUtil.isBlockProtected(world.getWorld().getBlockAt((int) locX, locY, (int) locZ))) {
                 StormUtil.playSoundNearby(new Location(world.getWorld(), locX, locY, locZ), 500, glob.Natural__Disasters_Meteor_Sounds_Trail, 10F, Storm.random.nextInt(3) + 1F);
-                StormUtil.createExplosion(this, locX, this.locY, locZ, trailPower, true);
+                world.createExplosion(this, locX, this.locY, locZ, trailPower, true, true);
             }
         } while (false);
         motX *= 1.5F;
         motY *= 1.5F;
         motZ *= 1.5F;
+
     }
 
     /**
@@ -204,7 +186,7 @@ public class EntityMeteor extends EntityFireball {
             // Not yet dead, so burrow.
             if (!StormUtil.isBlockProtected(world.getWorld().getBlockAt((int) locX, (int) locY, (int) locZ))) {
                 StormUtil.playSoundNearby(new Location(world.getWorld(), locX, locY, locZ), 500, glob.Natural__Disasters_Meteor_Sounds_Trail, 1F, Storm.random.nextInt(3) + 1F);
-                StormUtil.createExplosion(this, locX, locY, locZ, burrowPower, true);
+                world.createExplosion(this, locX, this.locY, locZ, trailPower, true, true);
             }
             --burrowCount;
             return;
@@ -222,7 +204,7 @@ public class EntityMeteor extends EntityFireball {
     }
 
     private void explode() {
-        StormUtil.createExplosion(this, locX, locY, locZ, explosionRadius, true);
+        world.createExplosion(this, locX, this.locY, locZ, trailPower, true, true);
 
         Location origin = new Location(world.getWorld(), locX, locY, locZ);
 
@@ -348,11 +330,5 @@ public class EntityMeteor extends EntityFireball {
     @Override
     public float c(float f) {
         return this.brightness;
-    }
-
-    protected void a(NBTTagCompound nbtTagCompound) {
-    }
-
-    protected void b(NBTTagCompound nbtTagCompound) {
     }
 }

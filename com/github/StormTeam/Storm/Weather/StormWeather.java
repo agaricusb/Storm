@@ -56,10 +56,13 @@ public abstract class StormWeather {
         return Collections.EMPTY_SET;
     }
 
+    public void setState(Object[] args) {
+    }
+
     /**
      * Number of ticks before this weather is auto-killed.
      */
-    public int autoKillTicks;
+    public int autoKillTicks = -1;
 
     /**
      * Set to true to enable minecraft rain mode.

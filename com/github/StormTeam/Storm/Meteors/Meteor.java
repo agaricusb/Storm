@@ -12,7 +12,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.craftbukkit.v1_4_6.CraftWorld;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 
@@ -101,7 +101,7 @@ public class Meteor {
     }
 
     private static void trajectoryMeteor(Location targetLoc, Location spawnLoc) {
-        net.minecraft.server.WorldServer mcWorld = ((CraftWorld) (spawnLoc.getWorld())).getHandle();
+        net.minecraft.server.v1_4_6.WorldServer mcWorld = ((CraftWorld) (spawnLoc.getWorld())).getHandle();
 
         WorldVariables glob = Storm.wConfigs.get(mcWorld.getWorld().getName());
         EntityMeteor mm = new EntityMeteor(
@@ -121,7 +121,7 @@ public class Meteor {
 
     private static void patchMeteor() {
         try {
-            Method a = net.minecraft.server.EntityTypes.class.getDeclaredMethod("a", Class.class, String.class, int.class);
+            Method a = net.minecraft.server.v1_4_6.EntityTypes.class.getDeclaredMethod("a", Class.class, String.class, int.class);
             a.setAccessible(true);
             a.invoke(a, EntityMeteor.class, "StormMeteor", 12);
         } catch (Exception e) {

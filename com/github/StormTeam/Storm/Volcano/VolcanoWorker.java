@@ -18,16 +18,19 @@
 
 package com.github.StormTeam.Storm.Volcano;
 
-import com.github.StormTeam.Storm.*;
+import com.github.StormTeam.Storm.Cuboid;
+import com.github.StormTeam.Storm.Storm;
+import com.github.StormTeam.Storm.Verbose;
 import com.github.StormTeam.Storm.Volcano.Tasks.EruptTask;
 import com.github.StormTeam.Storm.Volcano.Tasks.GrowthTask;
-import net.minecraft.server.EntityTNTPrimed;
+import com.github.StormTeam.Storm.WorldVariables;
+import net.minecraft.server.v1_4_6.EntityTNTPrimed;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.craftbukkit.v1_4_6.CraftWorld;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -114,10 +117,11 @@ public class VolcanoWorker {
     }
 
     public void explode(final Location exp, final float power) {
-        EntityTNTPrimed dummy = new EntityTNTPrimed(((CraftWorld) world).getHandle()); //Entity is abstract, and really, we just need the id...
+        net.minecraft.server.v1_4_6.World nw = ((CraftWorld) world).getHandle();
+        EntityTNTPrimed dummy = new EntityTNTPrimed(nw); //Entity is abstract, and really, we just need the id...
         explosionIDs.add(dummy.id);
         Verbose.log("Adding explosion with associated id: " + dummy.id + " for volcano.");
-        StormUtil.createExplosion(dummy, exp.getX(), exp.getY(), exp.getZ(), power, true);
+        nw.createExplosion(dummy, exp.getX(), exp.getY(), exp.getZ(), power, true, true);
     }
 
     @Override

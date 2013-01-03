@@ -32,7 +32,7 @@ public class EarthquakeWeather extends StormWeather {
     Location victim;
     Quake quake;
     WorldVariables glob;
-    int killID;
+    int magnitude;
 
     /**
      * Constructor. DO NOT CHANGE ARGUMENTS.
@@ -43,6 +43,8 @@ public class EarthquakeWeather extends StormWeather {
     public EarthquakeWeather(Storm storm, String world) {
         super(storm, world);
         glob = Storm.wConfigs.get(world);
+        magnitude = (int) Storm.random.triangular(1, 9, 2);
+        autoKillTicks = magnitude * 30;
     }
 
     @Override
@@ -67,13 +69,11 @@ public class EarthquakeWeather extends StormWeather {
         int magnitude = (int) Storm.random.triangular(1, 9, 2);
         StormUtil.broadcast(glob.Natural__Disasters_Earthquakes_Message__On__Earthquake__Start.replace("%m", magnitude + ""), world);
         quake = EarthquakeControl.loadQuake(victim, magnitude);
-        killID = Storm.manager.createAutoKillWeatherTask("storm_earthquake", world, magnitude * 30);
     }
 
     @Override
     public void end() {
         StormUtil.broadcast(glob.Natural__Disasters_Earthquakes_Message__On__Earthquake__End, world);
         quake.stop();
-        Bukkit.getScheduler().cancelTask(killID);
     }
 }

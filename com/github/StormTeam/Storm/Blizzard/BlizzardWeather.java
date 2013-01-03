@@ -6,7 +6,6 @@ import com.github.StormTeam.Storm.Storm;
 import com.github.StormTeam.Storm.StormUtil;
 import com.github.StormTeam.Storm.Weather.StormWeather;
 import com.github.StormTeam.Storm.WorldVariables;
-import org.bukkit.Bukkit;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -20,7 +19,6 @@ public class BlizzardWeather extends StormWeather {
     private final WorldVariables glob;
     private EntityDamagerTask enDamager;
     private EntityShelterer shelter;
-    private int killID;
 
     /**
      * Creates a blizzard weather object for given world.
@@ -33,6 +31,7 @@ public class BlizzardWeather extends StormWeather {
         super(storm, world);
         glob = Storm.wConfigs.get(world);
         needRainFlag = true;
+        autoKillTicks = 7500 + Storm.random.nextInt(1024);
     }
 
     @Override
@@ -49,7 +48,11 @@ public class BlizzardWeather extends StormWeather {
         StormUtil.broadcast(glob.Blizzard_Messages_On__Blizzard__Start, bukkitWorld);
 
         if (glob.Blizzard_Features_Slowing__Snow) {
-            Blizzard.modder.modBestFit();
+            try {
+                Blizzard.modder.mod();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         if (glob.Blizzard_Features_Entity__Damaging || glob.Blizzard_Features_Player__Damaging) {
@@ -60,7 +63,6 @@ public class BlizzardWeather extends StormWeather {
             shelter = new EntityShelterer(storm, world, "storm_blizzard", StormUtil.snowyBiomes);
             shelter.start();
         }
-        killID = Storm.manager.createAutoKillWeatherTask("storm_blizzard", world, 7500 + Storm.random.nextInt(1024));
     }
 
     /**
@@ -69,19 +71,17 @@ public class BlizzardWeather extends StormWeather {
 
     @Override
     public void end() {
-        try {
-            if (glob.Blizzard_Features_Slowing__Snow) {
-                Blizzard.modder.reset();
-            }
-            StormUtil.broadcast(glob.Blizzard_Messages_On__Blizzard__Stop, bukkitWorld);
-            StormUtil.setRainNoEvent(bukkitWorld, false);
-            enDamager.stop();
-            enDamager = null;
-            shelter.stop();
-            shelter = null;
-            Bukkit.getScheduler().cancelTask(killID);
-        } catch (Exception ignored) {
+        if (glob.Blizzard_Features_Slowing__Snow) {
+            Blizzard.modder.reset();
         }
+        StormUtil.broadcast(glob.Blizzard_Messages_On__Blizzard__Stop, bukkitWorld);
+        StormUtil.setRainNoEvent(bukkitWorld, false);
+        if (enDamager != null)
+            enDamager.stop();
+        enDamager = null;
+        if (shelter != null)
+            shelter.stop();
+        shelter = null;
     }
 
 

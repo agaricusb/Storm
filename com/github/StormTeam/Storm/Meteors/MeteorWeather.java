@@ -9,7 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.craftbukkit.v1_4_6.CraftWorld;
 import org.bukkit.entity.Fireball;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 
@@ -20,7 +20,6 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 public class MeteorWeather extends StormWeather {
 
     private final WorldVariables glob;
-    private int killID;
 
     /**
      * Creates a meteor weather object for given world.
@@ -32,6 +31,7 @@ public class MeteorWeather extends StormWeather {
     public MeteorWeather(Storm storm, String world) {
         super(storm, world);
         glob = Storm.wConfigs.get(world);
+        autoKillTicks = 1;
     }
 
     @Override
@@ -51,30 +51,17 @@ public class MeteorWeather extends StormWeather {
         if (chunk == null) {
             return;
         }
-
-        int x = Storm.random.nextInt(16);
-        int z = Storm.random.nextInt(16);
-        Block b = chunk.getBlock(x, 4, z);
-
-        spawnMeteorNaturallyAndRandomly(chunk.getWorld(),
-                b.getX(),
-                b.getZ());
-
-        //Abusing the API. Who cares?
-        killID = Storm.manager.createAutoKillWeatherTask("storm_meteor", world, 1);
+        Block b = chunk.getBlock(Storm.random.nextInt(16), 4, Storm.random.nextInt(16));
+        spawnMeteorNaturallyAndRandomly(chunk.getWorld(), b.getX(), b.getZ());
     }
-
-    /**
-     * Called to kill the meteor weather.
-     */
 
     @Override
     public void end() {
-        Bukkit.getScheduler().cancelTask(killID);
+
     }
 
     private void spawnMeteorNaturallyAndRandomly(World world, double x, double z) {
-        net.minecraft.server.World meteoriteWorld = ((CraftWorld) bukkitWorld).getHandle();
+        net.minecraft.server.v1_4_6.World meteoriteWorld = ((CraftWorld) bukkitWorld).getHandle();
 
         EntityMeteor meteor = new EntityMeteor(
                 meteoriteWorld,

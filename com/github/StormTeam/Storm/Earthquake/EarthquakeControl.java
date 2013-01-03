@@ -78,16 +78,14 @@ public class EarthquakeControl implements Listener {
     }
 
     public void handleBlock(final Block block, Player p) {
-        if (Storm.version > 1.2) {
-            for (Quake quake : quakes)
-                if (p.getGameMode() == GameMode.CREATIVE || !quake.isQuaking(block.getLocation()) || StormUtil.isBlockProtected(block) || !isBounceable(block))
-                    return;
+        for (Quake quake : quakes)
+            if (p.getGameMode() == GameMode.CREATIVE || !quake.isQuaking(block.getLocation()) || StormUtil.isBlockProtected(block) || !isBounceable(block))
+                return;
 
-            FallingBlock fB = block.getWorld().spawnFallingBlock(block.getLocation(), block.getType(), block.getData());
-            fB.setDropItem(true);
-            block.setTypeId(0);
-            fB.setVelocity(new Vector(Math.random() - 0.5, 0.3, Math.random() - 0.5));
-        }
+        FallingBlock fB = block.getWorld().spawnFallingBlock(block.getLocation(), block.getType(), block.getData());
+        fB.setDropItem(true);
+        block.setTypeId(0);
+        fB.setVelocity(new Vector(Math.random() - 0.5, 0.3, Math.random() - 0.5));
     }
 
     public static boolean isQuaking(Location location) {

@@ -2,9 +2,9 @@ package com.github.StormTeam.Storm.Blizzard.Blocks;
 
 import com.github.StormTeam.Storm.Storm;
 import com.github.StormTeam.Storm.StormUtil;
-import net.minecraft.server.BlockSnow;
-import net.minecraft.server.Entity;
-import net.minecraft.server.World;
+import net.minecraft.server.v1_4_6.BlockSnow;
+import net.minecraft.server.v1_4_6.Entity;
+import net.minecraft.server.v1_4_6.World;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
@@ -25,11 +25,11 @@ public class SnowLayer extends BlockSnow {
     /**
      * Called when an entity collides with this block: slow them down.
      *
-     * @param w The net.minecraft.server.World this happened in
+     * @param w The net.minecraft.server.v1_4_6.v1_4_6.World this happened in
      * @param x The x coordinate
      * @param y The y coordinate
      * @param z The z coordinate
-     * @param e The net.minecraft.server.Entity this collision occured with
+     * @param e The net.minecraft.server.v1_4_6.v1_4_6.Entity this collision occured with
      */
 
     @Override

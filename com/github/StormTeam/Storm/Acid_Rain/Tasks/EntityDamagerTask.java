@@ -36,7 +36,7 @@ public class EntityDamagerTask implements Runnable {
     public EntityDamagerTask(Storm ztorm, String world) {
         storm = ztorm;
         affectedWorld = Bukkit.getWorld(world);
-        glob = Storm.wConfigs.get(affectedWorld);
+        glob = Storm.wConfigs.get(world);
         hunger = new PotionEffect(PotionEffectType.POISON, glob.Acid__Rain_Scheduler_Damager__Calculation__Intervals__In__Ticks + 60, 1);
     }
 

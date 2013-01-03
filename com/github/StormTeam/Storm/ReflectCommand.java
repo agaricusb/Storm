@@ -39,14 +39,12 @@ public class ReflectCommand {
                         for (Method m : everyoneCommands.get(command.getName()))
                             if (varargs.length >= m.getParameterTypes().length)
                                 returnValue = m.invoke(null, trim(varargs, m.getParameterTypes().length));
-                    }
-                    if (commandSender instanceof Player) {
+                    } else if (commandSender instanceof Player) {
                         if (playerCommands.containsKey(commandName))
                             for (Method m : playerCommands.get(commandName))
                                 if (varargs.length >= m.getParameterTypes().length)
                                     returnValue = m.invoke(null, trim(varargs, m.getParameterTypes().length));
-                    }
-                    if (commandSender instanceof ConsoleCommandSender) {
+                    } else if (commandSender instanceof ConsoleCommandSender) {
                         if (consoleCommands.containsKey(commandName))
                             for (Method m : consoleCommands.get(commandName))
                                 if (varargs.length >= m.getParameterTypes().length)
@@ -102,6 +100,7 @@ public class ReflectCommand {
     Object[] trim(Object[] input, int newSize) {
         Object result[] = new Object[newSize];
         System.arraycopy(input, 0, result, 0, newSize);
+        System.out.println("Trimmed " + Arrays.asList(input) + " to " + Arrays.asList(result));
         return result;
     }
 
@@ -138,6 +137,7 @@ public class ReflectCommand {
         public Object registeredWith;
         public Plugin owningPlugin;
         public String[] permissions = new String[0];
+        public List alias;
 
         public DynamicCommand(String[] aliases, String name, String usage, String[] perms, String permMessage, CommandExecutor owner, Object registeredWith, Plugin plugin) {
             super(name, name, usage, Arrays.asList(aliases));
@@ -148,6 +148,7 @@ public class ReflectCommand {
                 setPermissions(perms);
             if (!StringUtils.isEmpty(permMessage))
                 setPermissionMessage(ChatColor.RED + permMessage);
+            alias = Arrays.asList(aliases);
         }
 
         @Override
@@ -161,6 +162,7 @@ public class ReflectCommand {
                 sender.sendMessage(getPermissionMessage());
                 return false;
             }
+
             return owner.onCommand(sender, this, label, args);
         }
 

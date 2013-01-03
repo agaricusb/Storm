@@ -17,7 +17,6 @@ import org.bukkit.block.Block;
 public class WildfireWeather extends StormWeather { //TODO: Make use of getTickedBlock(Chunk) to get better ranges of wildfires 
 
     private final WorldVariables glob;
-    private int killID;
     private final World affectedWorld;
 
     /**
@@ -31,6 +30,7 @@ public class WildfireWeather extends StormWeather { //TODO: Make use of getTicke
         super(storm, world);
         affectedWorld = Bukkit.getWorld(world);
         glob = Storm.wConfigs.get(world);
+        autoKillTicks = 7500 + Storm.random.nextInt(1024);
     }
 
     @Override
@@ -70,8 +70,6 @@ public class WildfireWeather extends StormWeather { //TODO: Make use of getTicke
                 break;
             }
         }
-        //Abusing the API once again. Once again, who cares?
-        killID = Storm.manager.createAutoKillWeatherTask("storm_wildfire", world, 1);
     }
 
     /**
@@ -80,6 +78,6 @@ public class WildfireWeather extends StormWeather { //TODO: Make use of getTicke
 
     @Override
     public void end() {
-        Bukkit.getScheduler().cancelTask(killID);
+
     }
 }

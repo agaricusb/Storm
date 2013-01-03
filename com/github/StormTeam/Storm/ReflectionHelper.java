@@ -34,9 +34,11 @@ public class ReflectionHelper {
         }
 
         public MethodContainer<T> in(Object clazz) {
-            target = clazz.getClass();
-            if (!(clazz instanceof Class))
+            if (!(clazz instanceof Class)) {
                 in = clazz;
+                target = clazz.getClass();
+            } else
+                target = (Class) clazz;
             return this;
         }
 
@@ -65,12 +67,10 @@ public class ReflectionHelper {
     }
 
     public static class ConstructorContainer<T> extends Container {
-        private Class[] param;
+        private Class<?>[] param;
 
-        public ConstructorContainer<T> withParameters(Object... args) {
-            Class[] classes = new Class[args.length];
-            for (int i = 0; i < args.length; ++i) classes[i] = args[i].getClass();
-            param = classes;
+        public ConstructorContainer<T> withParameters(Class... args) {
+            param = args;
             return this;
         }
 
@@ -78,7 +78,7 @@ public class ReflectionHelper {
             ConstructorContainer<T> clone = new ConstructorContainer<T>();
             clone.name = name;
             clone.param = param;
-            clone.target = clazz.getClass();
+            clone.target = clazz;
             return clone;
         }
 
@@ -122,9 +122,11 @@ public class ReflectionHelper {
         }
 
         public FieldContainer<T> in(Object clazz) {
-            target = clazz.getClass();
-            if (!(clazz instanceof Class))
+            if (!(clazz instanceof Class)) {
                 in = clazz;
+                target = clazz.getClass();
+            } else
+                target = (Class) clazz;
             return this;
         }
 

@@ -19,16 +19,17 @@
 package com.github.StormTeam.Storm;
 
 import com.bekvon.bukkit.residence.Residence;
+import com.google.common.collect.Sets;
 import com.sk89q.worldguard.bukkit.BukkitUtil;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import net.minecraft.server.Packet250CustomPayload;
-import net.minecraft.server.Packet62NamedSoundEffect;
-import net.minecraft.server.WorldData;
+import net.minecraft.server.v1_4_6.Packet250CustomPayload;
+import net.minecraft.server.v1_4_6.Packet62NamedSoundEffect;
+import net.minecraft.server.v1_4_6.WorldData;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.CraftWorld;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_4_6.CraftWorld;
+import org.bukkit.craftbukkit.v1_4_6.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -154,6 +155,15 @@ public class StormUtil {
         broadcast(message, bw);
     }
 
+    public Location getSurfaceAt(Location origin) {
+        Chunk chunky = origin.getChunk();
+        int x = origin.getBlockX(), z = origin.getBlockZ(), surface = 0, envid = origin.getWorld().getEnvironment().getId();
+        Set dimmap = Sets.newHashSet(envid == 0 ? new int[]{1, 2, 3, 7, 15, 16} : envid == -1 ? 87 : 121);
+        for (int y = 0; y != 256; y++)
+            if (dimmap.contains(chunky.getBlock(x, y, z).getTypeId())) surface = y;
+        return chunky.getBlock(x, surface, z).getLocation();
+    }
+
     /**
      * Messages a player.
      *
@@ -205,18 +215,18 @@ public class StormUtil {
         }
     }
 
-    public static void playSound(Player to, String sound, Location loc, float pitch, float volume) {
-        if (Storm.version > 1.2 && Storm.wConfigs.get(loc.getWorld().getName()).Play__Weather__Sounds)
-            ((CraftPlayer) to).getHandle().netServerHandler.sendPacket(new Packet62NamedSoundEffect(sound, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), pitch, volume));
+    public static void playSound(Player to, String sound, Location loc, float volume, float data) {
+        if (Storm.wConfigs.get(to.getWorld().getName()).Play__Weather__Sounds)
+            ((CraftPlayer) to).getHandle().playerConnection.sendPacket(new Packet62NamedSoundEffect(sound, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), volume, data));
     }
 
-    public static void playSound(Player to, String sound, float pitch, float volume) {
-        playSound(to, sound, to.getLocation(), pitch, volume);
+    public static void playSound(Player to, String sound, float volume, float data) {
+        playSound(to, sound, to.getLocation(), volume, data);
     }
 
-    public static void playSoundNearby(Location origin, double radius, String sound, float pitch, float volume) {
+    public static void playSoundNearby(Location origin, double radius, String sound, float volume, float data) {
         for (Player p : getNearbyPlayers(origin, radius)) {
-            playSound(p, sound, origin, pitch, volume);
+            playSound(p, sound, origin, volume, data);
         }
     }
 
@@ -277,25 +287,6 @@ public class StormUtil {
         return playerList;
     }
 
-    public static void createExplosion(net.minecraft.server.Entity entity, double locX, double locY, double locZ, float power, boolean incendiary) {
-        try {
-            if (Storm.version > 1.3D) {
-                ReflectionHelper.method("createExplosion")
-                        .withParameters(net.minecraft.server.Entity.class, double.class, double.class, double.class, float.class, boolean.class, boolean.class)
-                        .in(entity.world)
-                        .invoke(entity, locX, locY, locZ, power, incendiary, true);
-            } else {
-                ReflectionHelper.method("createExplosion")
-                        .withParameters(net.minecraft.server.Entity.class, double.class, double.class, double.class, float.class, boolean.class)
-                        .in(entity.world)
-                        .invoke(entity, locX, locY, locZ, power, incendiary);
-            }
-        } catch (Exception e) {
-            entity.world.getWorld().createExplosion(locX, locY, locZ, power);
-            ErrorLogger.generateErrorLog(e);
-        }
-    }
-
     /**
      * Applies a list of transformation on a block, if the block is not protected.
      *
@@ -349,8 +340,8 @@ public class StormUtil {
      * @param texture URI to texture
      */
     public static void setTexture(Player player, String texture) {
-        if (Storm.version >= 1.3 && Storm.wConfigs.get(player.getWorld().getName()).Force__Weather__Textures) {
-            ((CraftPlayer) player).getHandle().netServerHandler.sendPacket(new Packet250CustomPayload("MC|TPack", (texture + "\0" + 16).getBytes()));
+        if (Storm.wConfigs.get(player.getWorld().getName()).Force__Weather__Textures) {
+            ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new Packet250CustomPayload("MC|TPack", (texture + "\0" + 16).getBytes()));
         }
     }
 

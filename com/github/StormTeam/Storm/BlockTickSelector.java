@@ -1,16 +1,17 @@
 package com.github.StormTeam.Storm;
 
-import net.minecraft.server.Chunk;
-import net.minecraft.server.ChunkCoordIntPair;
-import net.minecraft.server.EntityHuman;
-import net.minecraft.server.WorldServer;
+import net.minecraft.server.v1_4_6.Chunk;
+import net.minecraft.server.v1_4_6.ChunkCoordIntPair;
+import net.minecraft.server.v1_4_6.EntityHuman;
+import net.minecraft.server.v1_4_6.WorldServer;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.craftbukkit.v1_4_6.CraftWorld;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * An object for returning large lists of pseudorandom blocks at high speeds.
@@ -22,15 +23,8 @@ public class BlockTickSelector {
 
     private final WorldServer world;
     private final World bWorld;
-    private Method a, recheckGaps;
     private int chan;
     private int radius;
-
-    private final Map<String, String> recheckGapsName = new HashMap<String, String>() {{
-        put("1.2", "o");
-        put("1.3", "k");
-        put("1.4", "q");
-    }};
 
     /**
      * Creates a BlockTickSelector for given world with given chance.
@@ -51,16 +45,7 @@ public class BlockTickSelector {
         this.world = ((CraftWorld) world).getHandle();
         this.bWorld = world;
         this.radius = rad;
-
-        if (!recheckGapsName.containsKey(Storm.version + "")) {
-            throw new UnsupportedOperationException("BlockTickSelector not updated for MineCraft " + Storm.version);
-        }
-        this.recheckGaps = Chunk.class.getDeclaredMethod(recheckGapsName.get(Storm.version + ""));
-        this.recheckGaps.setAccessible(true); //Is private by default
-        this.a = net.minecraft.server.World.class.getDeclaredMethod("a", int.class, int.class, Chunk.class);
-        this.a.setAccessible(true);
         this.chan = selChance;
-
     }
 
     public BlockTickSelector(World world, int selChance)
@@ -118,9 +103,7 @@ public class BlockTickSelector {
         for (ChunkCoordIntPair pair : ticked) {
             int xOffset = pair.x << 4, zOffset = pair.z << 4;
             Chunk chunk = world.getChunkAt(pair.x, pair.z);
-            //I am not sure what the a method does, but it seems to be needed for this to return anything.
-            a.invoke(world, xOffset, zOffset, chunk);
-            recheckGaps.invoke(chunk);
+            chunk.bukkitChunk.load();
             if (Storm.random.nextInt(100) <= chan) {
                 int x = Storm.random.nextInt(radius), z = Storm.random.nextInt(radius);
                 doTick.add(world.getWorld().getBlockAt(x + xOffset, bWorld.getHighestBlockYAt(x + xOffset, z + zOffset), z + zOffset));
