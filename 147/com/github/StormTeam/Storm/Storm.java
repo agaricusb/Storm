@@ -80,12 +80,14 @@ public class Storm extends JavaPlugin implements Listener {
          Class.forName("org.surgeproject.Main");
          this.getLogger().log(Level.WARNING, "Storm running off Surge compatibility patch. Stability not guaranteed.");
       } catch (Exception var4) {
+      /*
          try {
             Class.forName("net.minecraft.server.v1_4_R1.World");
          } catch (Exception var3) {
             this.getLogger().log(Level.WARNING, "Storm is not compatible with current MC version. Storm suspended.");
             this.setEnabled(false);
          }
+      */
       }
 
    }
