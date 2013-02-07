@@ -46,7 +46,7 @@ public class Storm extends JavaPlugin implements Listener {
          e.load();
          verbose = e.Verbose__Logging;
          commandRegistrator = new ReflectCommand(this);
-         ErrorLogger.register(this, "Storm", "com.github.StormTeam.Storm", "http://www.stormteam.tk/projects/storm/issues");
+         //ErrorLogger.register(this, "Storm", "com.github.StormTeam.Storm", "http://www.stormteam.tk/projects/storm/issues");
          if(instance != null) {
             this.getLogger().log(Level.SEVERE, "Error! Only one instance of Storm may run at once! Storm detected running version: " + instance.getDescription().getVersion() + ". Please disable that version of Storm, and restart your server. Storm disabled.");
             this.setEnabled(false);
